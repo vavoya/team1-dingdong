@@ -1,0 +1,13 @@
+// tsconfig.json
+{
+  "compilerOptions": {
+    "baseUrl": "./src",  // `src` 폴더를 기준으로 설정
+    "paths": {
+      "@/*": ["*"]  // `@`을 `src` 폴더로 매핑
+    }
+  },
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
+}
