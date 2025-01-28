@@ -1,13 +1,48 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 700;
+  font-display: swap;
+  src:
+    local('Pretendard Bold'),
+    url('/src/assets/fonts/Pretendard-Bold.subset.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 600;
+  font-display: swap;
+  src:
+    local('Pretendard SemiBold'),
+    url('/src/assets/fonts/Pretendard-SemiBold.subset.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 500;
+  font-display: swap;
+  src:
+    local('Pretendard Medium'),
+    url('/src/assets/fonts/Pretendard-Medium.subset.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 400;
+  font-display: swap;
+  src:
+    local('Pretendard Regular'),
+    url('/src/assets/fonts/Pretendard-Regular.subset.woff2') format('woff2');
+}
   /* CSS 변수 정의 */
   :root {
     --primary-color: #3498db;
     --secondary-color: #2ecc71;
     --text-color: #333;
     --background-color: #f5f5f5;
-    --font-family: 'Roboto', sans-serif;
+    --font-family: 'Pretendard', sans-serif;
     --max-width: 1200px;
   }
 
@@ -23,7 +58,6 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
     font-family: var(--font-family);
     background-color: var(--background-color);
-    color: var(--text-color);
     line-height: 1.6;
     font-size: 16px;
   }
