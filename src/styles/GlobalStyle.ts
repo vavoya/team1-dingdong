@@ -38,9 +38,7 @@ const GlobalStyle = createGlobalStyle`
 }
   /* CSS 변수 정의 */
   :root {
-    --primary-color: #3498db;
-    --secondary-color: #2ecc71;
-    --text-color: #333;
+ 
     --background-color: #f5f5f5;
     --font-family: 'Pretendard', sans-serif;
     --max-width: 1200px;
@@ -72,13 +70,10 @@ const GlobalStyle = createGlobalStyle`
   /* 링크 기본 스타일 */
   a {
     text-decoration: none;
-    color: var(--primary-color);
     transition: all 0.3s ease-in-out;
   }
 
-  a:hover {
-    color: var(--secondary-color);
-  }
+  
 
   /* 기본 버튼 스타일 */
   button {
@@ -87,14 +82,12 @@ const GlobalStyle = createGlobalStyle`
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: var(--primary-color);
+    
     color: white;
     transition: background-color 0.3s ease;
   }
 
-  button:hover {
-    background-color: var(--secondary-color);
-  }
+
 
   /* 컨테이너 레이아웃 설정 */
   .container {

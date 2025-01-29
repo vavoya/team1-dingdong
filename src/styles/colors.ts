@@ -8,9 +8,11 @@ export const colors = {
   orange700: "#FFA000",
   orange800: "#FF8F00",
   orange900: "#FF6F00",
+  orangeHover: "#ce5a00",
   // Main CTA
   neutral300: "#CBD5E1",
   white: "#FFFFFF",
+  gray0: "#FFFFFF",
   gray10: "#FAFAFC", // Background
   gray20: "#F3F3F6", // Divider
   gray30: "#DDDDE5", // Stroke
