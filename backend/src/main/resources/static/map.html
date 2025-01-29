@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Map with Clusters</title>
+    <!-- Leaflet CSS/JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <style>
+        #map { width: 100%; height: 600px; }
+    </style>
+</head>
+<body>
+<h1>클러스터링 결과 지도 표시</h1>
+<div id="map"></div>
+
+<script>
+    // 지도 초기화 (경기도 중간쯤)
+    const map = L.map('map').setView([37.45, 127.2], 9);
+
+    // 배경 지도 (OSM)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © OpenStreetMap'
+    }).addTo(map);
+
+    // clusterLabel -> 색상 매핑
+    function getColor(label) {
+        // -1이면 노이즈, 회색
+        if (label < 0) {
+            return 'gray';
+        }
+
+        // 라벨 정수값에 따라 hue(0~359) 범위 내에서 색을 생성
+        // 1) 황금각(약 137.5)으로 곱해 hue 분산
+        // 2) mod 360 해서 [0, 360) 범위로 만듦
+        const hue = (label * 137.508) % 360;
+
+        // HSL(색상각, 채도, 명도)
+        // 채도/명도는 취향에 맞게 조정 (여기서는 채도=70%, 명도=50%)
+        return `hsl(${hue}, 70%, 50%)`;
+    }
+
+    // 서버에서 /locations API로 좌표 목록 가져오기
+    fetch('/locations')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(loc => {
+                const label = loc.clusterLabel;
+                const color = getColor(label);
+
+                // CircleMarker로 표시 (5px 반경)
+                L.circleMarker([loc.latitude, loc.longitude], {
+                    radius: 5,
+                    color: color,
+                    fillColor: color,
+                    fillOpacity: 0.8
+                })
+                    .addTo(map)
+                    .bindPopup(`<b>${loc.name}</b><br>Label: ${label}`);
+            });
+        })
+        .catch(err => console.error(err));
+</script>
+</body>
+</html>
