@@ -30,7 +30,7 @@ dependencies {
 
 	// 클러스터링 관련
 	implementation 'com.github.haifengl:smile-core:3.1.0'
-	implementation 'io.github.elki-project:elki-core:0.8.0'
+	implementation 'de.lmu.ifi.dbs.elki:elki:0.7.5'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
