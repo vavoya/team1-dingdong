@@ -1,6 +1,6 @@
 import { colors } from "@/styles/colors";
 import styled from "styled-components";
-
+// 버튼
 export const ButtonContainer = styled.button`
   display: flex;
   height: 50px;
