@@ -1,6 +1,6 @@
 import { AI_RECOMMENDATION_TEXT } from "@/constants/buttonTexts";
-import SparklesIcon from "../designSystem/Icons/SparklesIcon";
-import CheckCircleIcon from "../designSystem/Icons/CheckCircleIcon";
+import SparklesIcon from "@/components/designSystem/Icons/SparklesIcon";
+import CheckCircleIcon from "@/components/designSystem/Icons/CheckCircleIcon";
 import { ButtonContainer, Text } from "./styles";
 interface AIRecommendationButtonProps {
   active?: boolean;

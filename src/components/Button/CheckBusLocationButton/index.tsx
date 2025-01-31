@@ -1,7 +1,8 @@
 import { CHECK_BUS_LOCATION_TEXT } from "@/constants/buttonTexts";
 
 import { ButtonContainer, Text } from "./styles";
-import VectorIcon from "../designSystem/Icons/VectorIcon";
+import VectorIcon from "@/components/designSystem/Icons/VectorIcon";
+
 interface CheckBusLocationButtonProps {
   isDeparture?: boolean;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
