@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import smile.clustering.DBSCAN;
 import smile.clustering.KMeans;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -42,47 +41,29 @@ public class ClusteringService {
     public void smileKmeans(int k) {
         // 1) DB에서 모든 location 데이터 읽어오기
         List<Location> allLocations = locationRepository.findAll();
-        if (allLocations.isEmpty()) {
-            return; // 데이터가 없으면 아무것도 안 하고 반환
-        }
+        if (allLocations.isEmpty()) return;
 
         // 2) double[][] 형태로 (위도, 경도) 좌표 추출
-        double[][] data = new double[allLocations.size()][2];
-        for (int i = 0; i < allLocations.size(); i++) {
-            Location loc = allLocations.get(i);
-            data[i][0] = loc.getLatitude();
-            data[i][1] = loc.getLongitude();
-        }
+        double[][] data = getAllLocations(allLocations);
 
         // 3) Smile K-Means 수행 (k개의 클러스터)
         KMeans kmeans = KMeans.fit(data, k);
         int[] labels = kmeans.y; // 각 점의 클러스터 라벨 배열
 
         // 4) 라벨 정보 DB에 업데이트
-        for (int i = 0; i < allLocations.size(); i++) {
-            allLocations.get(i).setClusterLabel(labels[i] == Integer.MAX_VALUE ? -1 : labels[i]);
-        }
-        locationRepository.saveAll(allLocations);
+        saveResults(allLocations, labels);
 
         // 필요하다면 중심점(centroids)도 활용 가능
         double[][] centroids = kmeans.centroids;
-
-        logger.info(Arrays.deepToString(centroids));
-        logger.info(Arrays.toString(centroids));
-
     }
 
     public void smileDBScan(double radius, int minPts) {
+        // DB에서 모든 location 데이터 읽어오기
         List<Location> allLocations = locationRepository.findAll();
         if (allLocations.isEmpty()) return;
 
-        // data[i][0] = lat, data[i][1] = lon 로 셋팅
-        double[][] data = new double[allLocations.size()][2];
-        for (int i = 0; i < allLocations.size(); i++) {
-            Location loc = allLocations.get(i);
-            data[i][0] = loc.getLatitude();
-            data[i][1] = loc.getLongitude();
-        }
+        // double[][] 형태로 (위도, 경도) 좌표 추출
+        double[][] data = getAllLocations(allLocations);
 
         // DBSCAN 파라미터: Default eps=3.0 (3km), minPts=2
         DBSCAN<double[]> dbscan = DBSCAN.fit(data, new HaversineDistanceFunction(), minPts, radius);
@@ -91,34 +72,21 @@ public class ClusteringService {
         // -1이면 noise
         int[] labels = dbscan.y;
 
-        logger.info("Labels Length: " + labels.length);
         // DB에 반영
-        for (int i = 0; i < labels.length; i++) {
-            allLocations.get(i).setClusterLabel(labels[i] == Integer.MAX_VALUE ? -1 : labels[i]);
-            var point = allLocations.get(i);
-            logger.info(i + ") " + point.getLatitude() + ", " + point.getLongitude() + ": " + point.getClusterLabel());
-        }
+        saveResults(allLocations, labels);
 
-        locationRepository.saveAll(allLocations);
     }
 
     public void elkiKmeans(int k) {
+        // DB에서 모든 location 데이터 읽어오기
         List<Location> allLocations = locationRepository.findAll();
+        if (allLocations.isEmpty()) return;
 
-        // ELKI DB에 저장할 double[][] 데이터 초기화
-        double[][] data = new double[allLocations.size()][2];
-        for (int i = 0; i < allLocations.size(); i++) {
-            Location loc = allLocations.get(i);
-            data[i][0] = loc.getLatitude();
-            data[i][1] = loc.getLongitude();
-        }
+        // double[][] 형태로 (위도, 경도) 좌표 추출
+        double[][] data = getAllLocations(allLocations);
 
-        // ELKI DB 연결
-        DatabaseConnection memconn = new ArrayAdapterDatabaseConnection(data);
-
-        // StaticArrayDatabase로 초기화
-        Database db = new StaticArrayDatabase(memconn, null);
-        db.initialize();
+        // ELKI Database 초기화
+        Database db = initializeElkiDatabase(data);
 
         // K-Means에 활용할 매개변수 초기화
         RandomUniformGeneratedInitialMeans init = new RandomUniformGeneratedInitialMeans(RandomFactory.DEFAULT);
@@ -128,38 +96,34 @@ public class ClusteringService {
 
         Clustering<KMeansModel> result = kmeans.run(db);
 
-        // 각 노드의 결과 라벨 노이즈 값으로 초기화 (노이즈 = -1)
-        int[] labels = new int[allLocations.size()];
-        for (int i = 0; i < allLocations.size(); i++) {
-            labels[i] = -1;
-        }
-
-        Relation<NumberVector> relation = db.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
-        DBIDRange ids = (DBIDRange) relation.getDBIDs();
-
-        // 결과 추출
-        List<? extends Cluster<KMeansModel>> clusters = result.getAllClusters();
-        int cid = 0; // 결과에 해당하는 클러스터 ID 부여
-        for (Cluster<KMeansModel> cluster : clusters) {
-            if (!cluster.isNoise()) {
-                // internalGetIndex() 사용 시, Offset이 꼬일 수 있으므로 사용하지 말 것
-                for (DBIDIter it = cluster.getIDs().iter(); it.valid(); it.advance()) {
-                    final int offset = ids.getOffset(it);
-                    labels[offset] = cid;
-                }
-                cid++;
-            }
-        }
-
-        for (int i = 0; i < allLocations.size(); i++) {
-            allLocations.get(i).setClusterLabel(labels[i]);
-        }
-        locationRepository.saveAll(allLocations);
+        saveElkiResults(allLocations, db, result);
     }
 
     public void elkiDBScan(double radius, int minPts) {
+        // DB에서 모든 location 데이터 읽어오기
         List<Location> allLocations = locationRepository.findAll();
+        if (allLocations.isEmpty()) return;
 
+        // double[][] 형태로 (위도, 경도) 좌표 추출
+        double[][] data = getAllLocations(allLocations);
+
+        // ELKI Database 초기화
+        Database db = initializeElkiDatabase(data);
+
+        // ELKI DBSCAN에 사용할 매개변수 초기화
+        de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN<NumberVector> dbscan = new de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN<>(HaversineDistanceFunction.getInstance(), radius, minPts);
+
+        // ELKI DBSCAN 수행 (초기 값: eps = 3.0(3km), minPts = 2)
+        Clustering<Model> result = dbscan.run(db);
+
+        saveElkiResults(allLocations, db, result);
+    }
+
+//    public void elkiKmedians(int k) {
+//        KMediansLloyd
+//    }
+
+    private double[][] getAllLocations(List<Location> allLocations) {
         // ELKI DB에 저장할 double[][] 데이터 초기화
         double[][] data = new double[allLocations.size()][2];
         for (int i = 0; i < allLocations.size(); i++) {
@@ -168,6 +132,10 @@ public class ClusteringService {
             data[i][1] = loc.getLongitude();
         }
 
+        return data;
+    }
+
+    private Database initializeElkiDatabase(double[][] data) {
         // ELKI DB 연결
         DatabaseConnection memconn = new ArrayAdapterDatabaseConnection(data);
 
@@ -175,12 +143,10 @@ public class ClusteringService {
         Database db = new StaticArrayDatabase(memconn, null);
         db.initialize();
 
-        // ELKI DBSCAN에 사용할 매개변수 초기화
-        de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN<NumberVector> dbscan = new de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN<>(HaversineDistanceFunction.getInstance(), radius, minPts);
+        return db;
+    }
 
-        // ELKI DBSCAN 수행 (초기 값: eps = 3.0(3km), minPts = 2)
-        Clustering<Model> result = dbscan.run(db);
-
+    private <T extends Model> void saveElkiResults(List<Location> allLocations, Database db, Clustering<T> result) {
         // 각 노드의 결과 라벨 노이즈 값으로 초기화 (노이즈 = -1)
         int[] labels = new int[allLocations.size()];
         for (int i = 0; i < allLocations.size(); i++) {
@@ -191,9 +157,9 @@ public class ClusteringService {
         DBIDRange ids = (DBIDRange) relation.getDBIDs();
 
         // 결과 추출
-        List<? extends Cluster<Model>> clusters = result.getAllClusters();
-        int cid = 0; // 결과에 해당하는 클러스터 ID 값 부여
-        for (Cluster<Model> cluster : clusters) {
+        List<? extends Cluster<T>> clusters = result.getAllClusters();
+        int cid = 0; // 결과에 해당하는 클러스터 ID 부여
+        for (Cluster<T> cluster : clusters) {
             if (!cluster.isNoise()) {
                 // internalGetIndex() 사용 시, Offset이 꼬일 수 있으므로 사용하지 말 것
                 for (DBIDIter it = cluster.getIDs().iter(); it.valid(); it.advance()) {
@@ -204,8 +170,12 @@ public class ClusteringService {
             }
         }
 
+        saveResults(allLocations, labels);
+    }
+
+    private void saveResults(List<Location> allLocations, int[] labels) {
         for (int i = 0; i < allLocations.size(); i++) {
-            allLocations.get(i).setClusterLabel(labels[i]);
+            allLocations.get(i).setClusterLabel(labels[i] == Integer.MAX_VALUE ? -1 : labels[i]);
         }
         locationRepository.saveAll(allLocations);
     }
