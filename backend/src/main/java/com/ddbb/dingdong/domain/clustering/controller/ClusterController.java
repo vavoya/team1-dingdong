@@ -16,15 +16,27 @@ public class ClusterController {
         this.clusteringService = clusteringService;
     }
 
-    @GetMapping("/kmeans")
-    public String performKmeans(@RequestParam(defaultValue = "3") int k) {
-        clusteringService.performKmeans(k);
-        return "K-Means 클러스터링 완료! 클러스터 수 = " + k;
+    @GetMapping("/smile/kmeans")
+    public String smileKmeans(@RequestParam(defaultValue = "3") int k) {
+        clusteringService.smileKmeans(k);
+        return "Smile - K-Means 클러스터링 완료! 클러스터 수 = " + k;
     }
 
-    @GetMapping("/dbscan")
-    public String performDBScan(@RequestParam(defaultValue = "10") double radius) {
-        clusteringService.performDBScan(radius);
-        return "DBSCAN 클러스터링 완료! 반경 = " + radius + "km";
+    @GetMapping("/smile/dbscan")
+    public String smileDBScan(@RequestParam(defaultValue = "3") double radius, @RequestParam(defaultValue = "2") int minPts) {
+        clusteringService.smileDBScan(radius, minPts);
+        return "Smile - DBSCAN 클러스터링 완료! 반경 = " + radius + "km" + ", 최소 점 갯수 = " + minPts;
+    }
+
+    @GetMapping("/elki/kmeans")
+    public String elkiKmeans(@RequestParam(defaultValue = "3") int k) {
+        clusteringService.elkiKmeans(k);
+        return "ELKI - K-Means 클러스터링 완료! 클러스터 수 = " + k;
+    }
+
+    @GetMapping("/elki/dbscan")
+    public String elkiDBScan(@RequestParam(defaultValue = "3") double radius, @RequestParam(defaultValue = "2") int minPts) {
+        clusteringService.elkiDBScan(radius, minPts);
+        return "ELKI - DBSCAN 클러스터링 완료! 반경 = " + radius + "km" + ", 최소 점 갯수 = " + minPts;
     }
 }

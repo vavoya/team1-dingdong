@@ -1,8 +1,18 @@
 package com.ddbb.dingdong.domain.clustering.util;
 
+import de.lmu.ifi.dbs.elki.data.NumberVector;
+import de.lmu.ifi.dbs.elki.distance.distancefunction.AbstractNumberVectorDistanceFunction;
+import lombok.Getter;
 import smile.math.distance.Distance;
 
-public class HaversineDistance implements Distance<double[]> {
+public class HaversineDistanceFunction
+        extends AbstractNumberVectorDistanceFunction
+        implements Distance<double[]> {
+
+    private static final double R = 6371.0; // 지구 반경(km)
+
+    @Getter
+    private static final HaversineDistanceFunction instance = new HaversineDistanceFunction();
 
     @Override
     public double d(double[] a, double[] b) {
@@ -14,9 +24,18 @@ public class HaversineDistance implements Distance<double[]> {
         return haversine(lat1, lon1, lat2, lon2);
     }
 
+    @Override
+    public double distance(NumberVector v1, NumberVector v2) {
+        double lat1 = v1.doubleValue(0);
+        double lon1 = v1.doubleValue(1);
+        double lat2 = v2.doubleValue(0);
+        double lon2 = v2.doubleValue(1);
+
+        return haversine(lat1, lon1, lat2, lon2);
+    }
+
     // 하버사인 공식
     private double haversine(double lat1, double lon1, double lat2, double lon2) {
-        final double R = 6371.0; // 지구 반경(km)
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);
         double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
