@@ -22,7 +22,7 @@ public class Notification {
     private NotificationType type;
 
     @Column(nullable = false)
-    private Boolean read;
+    private Boolean isRead;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
