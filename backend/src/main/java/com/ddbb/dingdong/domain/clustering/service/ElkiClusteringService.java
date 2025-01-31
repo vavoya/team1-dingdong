@@ -3,6 +3,7 @@ package com.ddbb.dingdong.domain.clustering.service;
 import com.ddbb.dingdong.domain.clustering.entity.Location;
 import com.ddbb.dingdong.domain.clustering.repository.LocationRepository;
 import com.ddbb.dingdong.domain.clustering.util.HaversineDistanceFunction;
+import de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.kmeans.KMeansLloyd;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.kmeans.initialization.RandomUniformGeneratedInitialMeans;
 import de.lmu.ifi.dbs.elki.data.Cluster;
@@ -18,63 +19,29 @@ import de.lmu.ifi.dbs.elki.database.ids.DBIDRange;
 import de.lmu.ifi.dbs.elki.database.relation.Relation;
 import de.lmu.ifi.dbs.elki.datasource.ArrayAdapterDatabaseConnection;
 import de.lmu.ifi.dbs.elki.datasource.DatabaseConnection;
-import de.lmu.ifi.dbs.elki.utilities.random.RandomFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import smile.clustering.DBSCAN;
-import smile.clustering.KMeans;
 
 import java.util.List;
 
 @Service
-public class ClusteringService {
+public class ElkiClusteringService {
 
     private final LocationRepository locationRepository;
+    private final HaversineDistanceFunction haversineDistanceFunction;
+    private final RandomUniformGeneratedInitialMeans randomInit; // ELKI K-Means 초기화용
 
-    private static final Logger logger = LoggerFactory.getLogger(ClusteringService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ElkiClusteringService.class);
 
-    public ClusteringService(LocationRepository locationRepository) {
+    public ElkiClusteringService(
+            LocationRepository locationRepository,
+            HaversineDistanceFunction haversineDistanceFunction,
+            RandomUniformGeneratedInitialMeans randomInit
+    ) {
         this.locationRepository = locationRepository;
-    }
-
-    public void smileKmeans(int k) {
-        // 1) DB에서 모든 location 데이터 읽어오기
-        List<Location> allLocations = locationRepository.findAll();
-        if (allLocations.isEmpty()) return;
-
-        // 2) double[][] 형태로 (위도, 경도) 좌표 추출
-        double[][] data = getAllLocations(allLocations);
-
-        // 3) Smile K-Means 수행 (k개의 클러스터)
-        KMeans kmeans = KMeans.fit(data, k);
-        int[] labels = kmeans.y; // 각 점의 클러스터 라벨 배열
-
-        // 4) 라벨 정보 DB에 업데이트
-        saveResults(allLocations, labels);
-
-        // 필요하다면 중심점(centroids)도 활용 가능
-        double[][] centroids = kmeans.centroids;
-    }
-
-    public void smileDBScan(double radius, int minPts) {
-        // DB에서 모든 location 데이터 읽어오기
-        List<Location> allLocations = locationRepository.findAll();
-        if (allLocations.isEmpty()) return;
-
-        // double[][] 형태로 (위도, 경도) 좌표 추출
-        double[][] data = getAllLocations(allLocations);
-
-        // DBSCAN 파라미터: Default eps=3.0 (3km), minPts=2
-        DBSCAN<double[]> dbscan = DBSCAN.fit(data, new HaversineDistanceFunction(), minPts, radius);
-
-        // 각 포인트의 클러스터 라벨
-        // -1이면 noise
-        int[] labels = dbscan.y;
-
-        // DB에 반영
-        saveResults(allLocations, labels);
-
+        this.haversineDistanceFunction = haversineDistanceFunction;
+        this.randomInit = randomInit;
     }
 
     public void elkiKmeans(int k) {
@@ -88,11 +55,8 @@ public class ClusteringService {
         // ELKI Database 초기화
         Database db = initializeElkiDatabase(data);
 
-        // K-Means에 활용할 매개변수 초기화
-        RandomUniformGeneratedInitialMeans init = new RandomUniformGeneratedInitialMeans(RandomFactory.DEFAULT);
-
         // ELKI K-Means 수행 (초기 값: k(클러스터 수, 초기값: 3))
-        KMeansLloyd<NumberVector> kmeans = new KMeansLloyd<>(new HaversineDistanceFunction(), k, 0, init);
+        KMeansLloyd<NumberVector> kmeans = new KMeansLloyd<>(haversineDistanceFunction, k, 0, randomInit);
 
         Clustering<KMeansModel> result = kmeans.run(db);
 
@@ -111,17 +75,13 @@ public class ClusteringService {
         Database db = initializeElkiDatabase(data);
 
         // ELKI DBSCAN에 사용할 매개변수 초기화
-        de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN<NumberVector> dbscan = new de.lmu.ifi.dbs.elki.algorithm.clustering.DBSCAN<>(HaversineDistanceFunction.getInstance(), radius, minPts);
+        DBSCAN<NumberVector> dbscan = new DBSCAN<>(HaversineDistanceFunction.getInstance(), radius, minPts);
 
         // ELKI DBSCAN 수행 (초기 값: eps = 3.0(3km), minPts = 2)
         Clustering<Model> result = dbscan.run(db);
 
         saveElkiResults(allLocations, db, result);
     }
-
-//    public void elkiKmedians(int k) {
-//        KMediansLloyd
-//    }
 
     private double[][] getAllLocations(List<Location> allLocations) {
         // ELKI DB에 저장할 double[][] 데이터 초기화
