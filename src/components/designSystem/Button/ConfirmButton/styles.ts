@@ -14,7 +14,7 @@ export const ButtonContainer = styled.button<{
     background-color: ${colors.orangeHover};
   }
   color: ${colors.white};
-  width: auto;
+  width: 100%;
   display: flex;
   height: 50px;
   padding: 10px;
