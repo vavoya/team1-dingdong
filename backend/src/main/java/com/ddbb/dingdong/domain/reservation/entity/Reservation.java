@@ -1,7 +1,6 @@
 package com.ddbb.dingdong.domain.reservation.entity;
 
-import com.ddbb.dingdong.domain.payment.WalletHistory;
-import com.ddbb.dingdong.domain.reservation.entity.vo.BusDirection;
+import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Getter
@@ -22,7 +20,7 @@ public class Reservation {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private BusDirection busDirection;
+    private Direction direction;
 
     @Column(nullable = false)
     private LocalDateTime startDate;
