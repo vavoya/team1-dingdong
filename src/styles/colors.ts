@@ -31,4 +31,6 @@ export const colors = {
   red10: "#FFC3BF",
   red50: "#FF776F",
   red100: "#FF3B30", // Red
+
+  error100: "#D2092D",
 } as const;
