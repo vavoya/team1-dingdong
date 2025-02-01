@@ -13,7 +13,11 @@ export default function ConfirmButton({
   active = true,
 }: ConfirmButtonProps) {
   return (
-    <ButtonContainer active={active} onClick={onClick} clicked={clicked}>
+    <ButtonContainer
+      disabled={!active}
+      active={active}
+      onClick={onClick}
+      clicked={clicked}>
       {text}
     </ButtonContainer>
   );

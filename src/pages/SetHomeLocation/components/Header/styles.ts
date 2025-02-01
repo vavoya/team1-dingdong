@@ -4,7 +4,8 @@ import styled from "styled-components";
 // 헤더
 export const Header = styled.header`
   display: flex;
-  width: 375px; //layout 작업시 빼기
+  margin: 0px -20px;
+
   height: 60px;
   padding: 0px 20px; // layout 작업시 빼기
   justify-content: space-between;
