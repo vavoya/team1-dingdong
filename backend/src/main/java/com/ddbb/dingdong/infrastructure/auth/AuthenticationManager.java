@@ -14,16 +14,16 @@ public class AuthenticationManager {
 
     public void setAuthentication(AuthUser user) {
         HttpServletRequest request = getCurrentRequest();
-        HttpSession session = Objects.requireNonNull(request).getSession();
+        if(request == null) return;
+        HttpSession session = request.getSession();
         session.setAttribute(SESSION_ATTRIBUTE_NAME, user);
     }
 
     public AuthUser getAuthentication() {
         HttpServletRequest request = getCurrentRequest();
-        HttpSession session = Objects.requireNonNull(request).getSession(false);
-        if (session == null) {
-            return null;
-        }
+        if(request == null) return null;
+        HttpSession session = request.getSession(false);
+        if (session == null) return null;
 
         return (AuthUser) session.getAttribute(SESSION_ATTRIBUTE_NAME);
     }
@@ -31,17 +31,13 @@ public class AuthenticationManager {
     public void removeAuthentication() {
         HttpServletRequest request = getCurrentRequest();
         HttpSession session = Objects.requireNonNull(request).getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
+        if (session != null) session.invalidate();
     }
 
     private HttpServletRequest getCurrentRequest() {
         ServletRequestAttributes attributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if(attributes == null) {
-            return null;
-        }
+        if(attributes == null) return null;
 
         return attributes.getRequest();
     }
