@@ -21,7 +21,10 @@ public class AuthenticationManager {
     public AuthUser getAuthentication() {
         HttpServletRequest request = getCurrentRequest();
         HttpSession session = Objects.requireNonNull(request).getSession(false);
-        if (session == null) return null;
+        if (session == null) {
+            return null;
+        }
+
         return (AuthUser) session.getAttribute(SESSION_ATTRIBUTE_NAME);
     }
 
@@ -36,7 +39,10 @@ public class AuthenticationManager {
     private HttpServletRequest getCurrentRequest() {
         ServletRequestAttributes attributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if(attributes == null) {
+            return null;
+        }
 
-        return (attributes != null ? attributes.getRequest() : null);
+        return attributes.getRequest();
     }
 }
