@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import { colors } from "./colors";
 
 const GlobalStyle = createGlobalStyle`
 @font-face {
@@ -37,11 +38,11 @@ const GlobalStyle = createGlobalStyle`
     url('/src/assets/fonts/Pretendard-Regular.subset.woff2') format('woff2');
 }
   /* CSS 변수 정의 */
-  :root {
- 
-    --background-color: #f5f5f5;
-    --font-family: 'Pretendard', sans-serif;
-    --max-width: 1200px;
+  #root {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   /* 기본적인 전역 스타일 */
@@ -52,10 +53,8 @@ const GlobalStyle = createGlobalStyle`
   }
 
   html, body {
-    width: 100%;
-    height: 100%;
-    font-family: var(--font-family);
-    background-color: var(--background-color);
+    font-family:'Pretendard', sans-serif;
+    background-color: ${colors.gray10};
     line-height: 1.6;
     font-size: 16px;
   }
