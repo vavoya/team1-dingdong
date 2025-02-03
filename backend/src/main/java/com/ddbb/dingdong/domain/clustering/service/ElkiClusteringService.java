@@ -63,10 +63,10 @@ public class ElkiClusteringService {
         saveElkiResults(allLocations, db, result);
     }
 
-    public void elkiDBScan(double radius, int minPts) {
+    public List<Location> elkiDBScan(double radius, int minPts) {
         // DB에서 모든 location 데이터 읽어오기
         List<Location> allLocations = locationRepository.findAll();
-        if (allLocations.isEmpty()) return;
+        if (allLocations.isEmpty()) return null;
 
         // double[][] 형태로 (위도, 경도) 좌표 추출
         double[][] data = getAllLocations(allLocations);
@@ -81,6 +81,8 @@ public class ElkiClusteringService {
         Clustering<Model> result = dbscan.run(db);
 
         saveElkiResults(allLocations, db, result);
+
+        return allLocations;
     }
 
     private double[][] getAllLocations(List<Location> allLocations) {
