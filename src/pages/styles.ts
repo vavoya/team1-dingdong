@@ -3,7 +3,6 @@ import styled from "styled-components";
 export const PageWrapper = styled.div`
   height: 100%;
   background-color: white;
-  padding: 0px 20px;
 
   position: relative;
   @media (min-width: 441px) {
