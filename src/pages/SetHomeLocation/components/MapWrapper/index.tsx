@@ -7,6 +7,8 @@ import {
   PinTitle,
 } from "./styles";
 import { CustomOverlayMap, Map } from "react-kakao-maps-sdk";
+import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader.ts";
+
 import PinIcon from "@/components/designSystem/Icons/PinIcon";
 import { getAddressFromCoords } from "@/utils/geoLocation/coordinateToAddress";
 
@@ -23,6 +25,7 @@ export default function SetLocationHomeMap({
   setShowBottomSheet,
   setRoadAddress,
 }: SetLocationHomeMapProps) {
+  useKakaoLoader();
   const startPoint = useRef({ x: 0, y: 0 });
   const overlayPoint = useRef<kakao.maps.Point>();
   const mapRef = useRef<kakao.maps.Map>();
