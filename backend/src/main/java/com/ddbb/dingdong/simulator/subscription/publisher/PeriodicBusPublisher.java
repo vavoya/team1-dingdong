@@ -11,7 +11,7 @@ public class PeriodicBusPublisher<T> extends SubmissionPublisher<T> {
     private final ScheduledExecutorService scheduler;
     private final ScheduledFuture<?> periodicTask;
 
-    public PeriodicBusPublisher(
+    PeriodicBusPublisher(
             BusSubscriptionManager manager, long busId,
             Supplier<T> supplier, long period, long initialDelay, TimeUnit unit
     ) {
