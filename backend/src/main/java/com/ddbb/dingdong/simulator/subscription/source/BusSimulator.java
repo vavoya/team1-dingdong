@@ -1,9 +1,8 @@
-package com.ddbb.dingdong.simulator;
+package com.ddbb.dingdong.simulator.subscription.source;
 
 import org.springframework.data.geo.Point;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class BusSimulator{
     private final List<Point> simulatedPoints;
