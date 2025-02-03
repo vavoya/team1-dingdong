@@ -34,7 +34,7 @@ export const PinTitle = styled.div`
   ${fonts.body2SemiBold}
   font-style: normal;
 `;
-export const PinDescription = styled.div`
+export const PinDescription = styled.p`
   color: ${colors.white};
   text-align: center;
   ${fonts.detail1Regular}

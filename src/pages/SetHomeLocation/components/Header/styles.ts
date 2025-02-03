@@ -24,7 +24,7 @@ export const HeaderLeft = styled.div`
 `;
 
 export const HeaderTitle = styled.div`
-  color: var(--gray-100, #222235);
-  ${fonts.body1SemiBold}
+  color: ${colors.gray100};
+  ${fonts.body1SemiBold};
   font-style: normal;
 `;

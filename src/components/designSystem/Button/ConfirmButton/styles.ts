@@ -3,12 +3,9 @@ import styled from "styled-components";
 
 export const ButtonContainer = styled.button<{
   active: boolean;
-  clicked: boolean;
 }>`
   background-color: ${(props) =>
     props.active ? colors.orange900 : colors.gray40};
-
-  background-color: ${(props) => props.clicked && colors.orangeHover};
 
   &:hover {
     background-color: ${colors.orangeHover};

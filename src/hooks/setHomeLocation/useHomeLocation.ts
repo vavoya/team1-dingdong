@@ -9,12 +9,18 @@ export interface HomeLocationInfo {
   nickname: string;
 }
 
-export const useHomeLocation = () => {
+export const useGetHomeLocation = () => {
   const homeLocationInfo = useQuery({
     queryKey: ["setHomeLocation"],
     queryFn: getHomeLocationAndNickname,
   });
 
+  return {
+    homeLocationInfo,
+  };
+};
+
+export const usePutHomeLocation = () => {
   const queryClient = useQueryClient();
   const { mutateAsync: putHomeLocationMutation } = useMutation({
     mutationFn: (data: HomeLocationInfo) => {
@@ -26,9 +32,5 @@ export const useHomeLocation = () => {
       });
     },
   });
-
-  return {
-    homeLocationInfo,
-    putHomeLocationMutation,
-  };
+  return putHomeLocationMutation;
 };
