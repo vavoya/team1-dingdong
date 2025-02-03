@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "locations")
-public class Location {
+public class Location implements Comparable<Location> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +22,15 @@ public class Location {
     public Location(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    @Override
+    public int compareTo(Location other) {
+        if (this.clusterLabel < other.clusterLabel) {
+            return -1;
+        } else {
+            if (this.clusterLabel > other.clusterLabel) return 1;
+            return 0;
+        }
     }
 }
