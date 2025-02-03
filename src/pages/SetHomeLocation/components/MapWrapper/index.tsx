@@ -9,12 +9,13 @@ import {
   PinMark,
   PinTitle,
 } from "./styles";
-import { CustomOverlayMap, Map, MapMarker } from "react-kakao-maps-sdk";
+import { CustomOverlayMap, Map } from "react-kakao-maps-sdk";
 import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader.ts";
 
 import PinIcon from "@/components/designSystem/Icons/PinIcon";
 import { getAddressFromCoords } from "@/utils/geoLocation/coordinateToAddress";
 import { colors } from "@/styles/colors";
+import HomeIcon from "@/components/designSystem/Icons/HomeIcon";
 
 interface SetLocationHomeMapProps {
   userHomeCoordinate: {
@@ -141,17 +142,7 @@ export default function SetLocationHomeMap({
             <HomePinMark>
               <HomePinTitle>
                 {/* 아래 부분은 수정 예정 */}
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 18 18"
-                  fill="none">
-                  <path
-                    d="M9.63638 2.06361C9.28491 1.71214 8.71506 1.71214 8.36359 2.06361L2.06359 8.36361C1.71212 8.71508 1.71212 9.28493 2.06359 9.6364C2.41506 9.98787 2.98491 9.98787 3.33638 9.6364L3.59999 9.3728V15.3C3.59999 15.7971 4.00293 16.2 4.49999 16.2H6.29999C6.79704 16.2 7.19999 15.7971 7.19999 15.3V13.5C7.19999 13.0029 7.60293 12.6 8.09999 12.6H9.89999C10.397 12.6 10.8 13.0029 10.8 13.5V15.3C10.8 15.7971 11.2029 16.2 11.7 16.2H13.5C13.997 16.2 14.4 15.7971 14.4 15.3V9.3728L14.6636 9.6364C15.0151 9.98787 15.5849 9.98787 15.9364 9.6364C16.2879 9.28493 16.2879 8.71508 15.9364 8.36361L9.63638 2.06361Z"
-                    fill={colors.gray90}
-                  />
-                </svg>
+                <HomeIcon fill={colors.white} />
               </HomePinTitle>
             </HomePinMark>
             <PinIcon stroke={colors.orange900} />
