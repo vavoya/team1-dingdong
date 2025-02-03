@@ -5,7 +5,7 @@ export default function SetLocationHomeHeader() {
     <Header>
       <HeaderLeft>
         <ArrowLeftIcon />
-        <HeaderTitle>집 위치 설정</HeaderTitle>
+        <HeaderTitle>탑승지 위치 설정</HeaderTitle>
       </HeaderLeft>
     </Header>
   );
