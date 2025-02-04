@@ -33,4 +33,6 @@ export const colors = {
   red100: "#FF3B30", // Red
 
   error100: "#D2092D",
+
+  textDontEditTextPrimary: "#101828" // 마이페이지에 사용
 } as const;
