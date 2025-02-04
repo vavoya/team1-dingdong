@@ -22,7 +22,6 @@ export const BottomModal = styled.div<{ showBottomSheet: boolean }>`
   z-index: 1;
 
   width: 100%;
-  margin: 0px -20px;
   height: 217px;
 
   display: ${(props) => (props.showBottomSheet ? "flex" : "none")};

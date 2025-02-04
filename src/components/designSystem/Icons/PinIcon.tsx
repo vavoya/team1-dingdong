@@ -1,6 +1,8 @@
 import { colors } from "@/styles/colors";
-
-export default function PinIcon() {
+interface PinIconProps {
+  stroke?: string;
+}
+export default function stroke({ stroke = colors.gray100 }: PinIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -13,10 +15,10 @@ export default function PinIcon() {
         y1="4.37114e-08"
         x2="2"
         y2="13"
-        stroke={colors.gray100}
+        stroke={stroke}
         strokeWidth="2"
       />
-      <circle cx="2" cy="14" r="2" fill={colors.gray100} />
+      <circle cx="2" cy="14" r="2" fill={stroke} />
     </svg>
   );
 }

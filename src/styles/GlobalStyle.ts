@@ -56,6 +56,16 @@ const GlobalStyle = createGlobalStyle`
     font-display: swap;
     src: url('/fonts/Happiness-Sans-Regular.woff2') format('woff2');
 }
+
+  html, body {
+    font-family:'Pretendard', sans-serif;
+  }
+
+  #root {
+    width: 100%;
+    height: 100%;
+  }
+  
 `;
 
 export default GlobalStyle;
