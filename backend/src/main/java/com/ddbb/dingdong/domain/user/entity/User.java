@@ -17,6 +17,9 @@ public class User {
     private Long id = null;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
