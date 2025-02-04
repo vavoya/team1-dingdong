@@ -1,15 +1,19 @@
 import {useEffect, useRef, useState} from "react";
 import {ScheduledDepartures} from "./styles.ts";
-import ArrowRightSvg from "@/pages/Reservations/components/ArrowRightSvg";
-import ArrowLeftSvg from "@/pages/Reservations/components/ArrowLeftSvg";
-import LocationSvg from "@/pages/Reservations/components/LocationSvg";
-import CalenderSvg from "@/pages/Reservations/components/CalenderSvg";
-import ClockSvg from "@/pages/Reservations/components/ClockSvg";
-import ArrowRight2Svg from "@/pages/Reservations/components/ArrowRight2Svg";
+import ArrowRightIcon from "@/components/designSystem/Icons/Reservations/ArrowRightIcon";
+import ArrowLeftIcon from "@/components/designSystem/Icons/Reservations/ArrowLeftIcon";
+import LocationIcon from "@/components/designSystem/Icons/Reservations/LocationIcon";
+import CalenderIcon from "@/components/designSystem/Icons/Reservations/CalenderIcon"
+import ClockIcon from "@/components/designSystem/Icons/Reservations/ClockIcon"
+import ArrowRight2Icon from "@/components/designSystem/Icons/Reservations/ArrowRight2Icon"
+
+const PREV = -1;
+const CURRENT = 0;
+const NEXT = 1;
 
 // @ts-ignore data 때문에 임시로
 export default function CardSlider({data}) {
-    const countRef = useRef<number[]>([-1, 0, 1]);
+    const countRef = useRef<number[]>([PREV, CURRENT, NEXT]);
     const slideCurrent = useRef<number>(0);
     const [slideState, setSlideState] = useState<{ isNext: boolean } | null>(null);
     const slideBlock = useRef<boolean>(false);
@@ -22,71 +26,6 @@ export default function CardSlider({data}) {
             return () => clearTimeout(timer);
         }
     }, [slideState])
-
-    const renderCards = () => {
-        const prev = slideCurrent.current > 0 ? slideCurrent.current - 1 : data.length - 1;
-        const current = slideCurrent.current
-        const next = slideCurrent.current < data.length - 1 ? slideCurrent.current + 1 : 0;
-
-        if (slideState == null) {
-            return countRef.current.map((count, index) => {
-                if (count === -1) {
-                    return (
-                        <Card key={index} count={count} toUniversity={true} date={data[prev].date} location={data[prev].location} time={data[prev].time}/>
-                    )
-                }
-                if (count === 0) {
-                    return (
-                        <Card key={index} count={count} toUniversity={true} date={data[current].date} location={data[current].location} time={data[current].time}/>
-                    )
-                }
-                if (count === 1) {
-                    return (
-                        <Card key={index} count={count} toUniversity={true} date={data[next].date} location={data[next].location} time={data[next].time}/>
-                    )
-                }
-            })
-        }
-        else if (slideState.isNext) {
-            return countRef.current.map((count, index) => {
-                if (count === -1) {
-                    return (
-                        <Card key={index} count={count} toUniversity={true} date={data[prev].date} location={data[prev].location} time={data[prev].time}/>
-                    )
-                }
-                if (count === 0) {
-                    return (
-                        <Card key={index} count={count} toUniversity={true} date={data[current].date} location={data[current].location} time={data[current].time}/>
-                    )
-                }
-                if (count === 1) {
-                    return (
-                        <Card key={index} count={count} isHidden={true} toUniversity={true} date={data[next].date} location={data[next].location} time={data[next].time}/>
-                    )
-                }
-            })
-        }
-        else {
-            return countRef.current.map((count, index) => {
-                if (count === -1) {
-                    return (
-                        <Card key={index} count={count} isHidden={true} toUniversity={true} date={data[prev].date} location={data[prev].location} time={data[prev].time}/>
-                    )
-                }
-                if (count === 0) {
-                    return (
-                        <Card key={index} count={count} toUniversity={true} date={data[current].date} location={data[current].location} time={data[current].time}/>
-                    )
-                }
-                if (count === 1) {
-                    return (
-                        <Card key={index} count={count} toUniversity={true} date={data[next].date} location={data[next].location} time={data[next].time}/>
-                    )
-                }
-            })
-        }
-
-    }
 
     const slideNext = () => {
         if (slideBlock.current) return;
@@ -113,14 +52,19 @@ export default function CardSlider({data}) {
             <ScheduledDepartures.Slider>
                 <HiddenCard />
                 {
-                    renderCards()
+                    renderCards({
+                        slideCurrent,
+                        slideState,
+                        countRef,
+                        data: data
+                    })
                 }
             </ScheduledDepartures.Slider>
             <ScheduledDepartures.SliderControls>
                 {
                     data.length > 1 ?
                         <ScheduledDepartures.SlideButton onClick={slidePrev}>
-                            <ArrowLeftSvg />
+                            <ArrowLeftIcon />
                         </ScheduledDepartures.SlideButton>:
                         null
                 }
@@ -136,7 +80,7 @@ export default function CardSlider({data}) {
                 {
                     data.length > 1 ?
                         <ScheduledDepartures.SlideButton onClick={slideNext}>
-                            <ArrowRightSvg />
+                            <ArrowRightIcon />
                         </ScheduledDepartures.SlideButton> :
                         null
                 }
@@ -145,6 +89,7 @@ export default function CardSlider({data}) {
     )
 }
 
+/* 종속적인 컴포넌트(모듈) */
 type CardProps = {
     count: number,
     toUniversity: boolean,
@@ -168,7 +113,7 @@ function Card({count, toUniversity, date, location, time, isHidden = false, isAb
                             toUniversity ? "집" : "학교"
                         }
                     </ScheduledDepartures.DirectionText>
-                    <ArrowRight2Svg />
+                    <ArrowRight2Icon />
                     <ScheduledDepartures.DirectionText>
                         {
                             toUniversity ? "학교" : "집"
@@ -180,19 +125,19 @@ function Card({count, toUniversity, date, location, time, isHidden = false, isAb
             <ScheduledDepartures.CardPunchHole left={false}/>
             <ScheduledDepartures.CardBody>
                 <ScheduledDepartures.InfoBox>
-                    <CalenderSvg />
+                    <CalenderIcon />
                     <ScheduledDepartures.InfoText>
                         {date}
                     </ScheduledDepartures.InfoText>
                 </ScheduledDepartures.InfoBox>
                 <ScheduledDepartures.InfoBox>
-                    <LocationSvg />
+                    <LocationIcon />
                     <ScheduledDepartures.InfoText>
                         {location}
                     </ScheduledDepartures.InfoText>
                 </ScheduledDepartures.InfoBox>
                 <ScheduledDepartures.InfoBox>
-                    <ClockSvg />
+                    <ClockIcon />
                     <ScheduledDepartures.InfoText>
                         {time}
                     </ScheduledDepartures.InfoText>
@@ -207,3 +152,42 @@ function HiddenCard() {
         <Card count={0} toUniversity={true} date={'1'} location={'1'} time={'1'} isHidden={true} isAbsolute={false}/>
     )
 }
+
+
+
+/* helper function */
+interface renderCardsProps {
+    slideCurrent: React.MutableRefObject<number>,
+    slideState: { isNext: boolean } | null,
+    countRef: React.MutableRefObject<number[]>,
+    data: {
+        date: string,
+        location: string,
+        time: string
+    }[]
+}
+function renderCards({slideCurrent, slideState, countRef, data}: renderCardsProps) {
+    const prev = slideCurrent.current > 0 ? slideCurrent.current - 1 : data.length - 1;
+    const current = slideCurrent.current
+    const next = slideCurrent.current < data.length - 1 ? slideCurrent.current + 1 : 0;
+
+    return countRef.current.map((count, index) => {
+        if (count === PREV) {
+            return (
+                <Card key={index} isHidden={!slideState?.isNext} count={count} toUniversity={true} date={data[prev].date} location={data[prev].location} time={data[prev].time}/>
+            )
+        }
+        if (count === CURRENT) {
+            return (
+                <Card key={index} count={count} toUniversity={true} date={data[current].date} location={data[current].location} time={data[current].time}/>
+            )
+        }
+        if (count === NEXT) {
+            return (
+                <Card key={index} isHidden={!!slideState?.isNext} count={count} toUniversity={true} date={data[next].date} location={data[next].location} time={data[next].time}/>
+            )
+        }
+    })
+
+}
+

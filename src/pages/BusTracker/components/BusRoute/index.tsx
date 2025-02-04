@@ -1,11 +1,8 @@
 import {Polyline} from "react-kakao-maps-sdk";
+import {PositionType} from "@/pages/BusTracker/page.tsx";
 
-type PathPoint = {
-    lat: number;
-    lng: number;
-}
-type BusRouteProps = {
-    path: PathPoint[]
+interface BusRouteProps {
+    path: PositionType[]
 }
 export default function BusRoute({path}: BusRouteProps) {
 
