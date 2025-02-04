@@ -1,11 +1,11 @@
 import PinIcon from "@/components/designSystem/Icons/PinIcon";
 import { PinContainer, PinDescription, PinMark, PinTitle } from "./styles";
 
-interface PinProps {
+interface DragPinProps {
   onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export const Pin = ({ onMouseDown }: PinProps) => (
+export const DragPin = ({ onMouseDown }: DragPinProps) => (
   <PinContainer onMouseDown={onMouseDown}>
     <PinMark>
       <PinTitle>탑승지</PinTitle>

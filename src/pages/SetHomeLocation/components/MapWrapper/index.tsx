@@ -11,9 +11,10 @@ import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader.ts";
 import PinIcon from "@/components/designSystem/Icons/PinIcon";
 import { colors } from "@/styles/colors";
 import HomeIcon from "@/components/designSystem/Icons/HomeIcon";
-import { Pin } from "../Pin";
+
 import { useAddress } from "../../hooks/useCoodinateToAddress";
 import { usePinDrag } from "../../hooks/usePinDrag";
+import { DragPin } from "../DragPin";
 
 interface SetLocationHomeMapProps {
   userHomeCoordinate: {
@@ -53,7 +54,7 @@ export default function SetLocationHomeMap({
           mapRef.current = map;
         }}>
         <CustomOverlayMap position={pinPosition} yAnchor={1}>
-          <Pin onMouseDown={onMouseDown} />
+          <DragPin onMouseDown={onMouseDown} />
         </CustomOverlayMap>
 
         <CustomOverlayMap position={userHomeCoordinate}>
