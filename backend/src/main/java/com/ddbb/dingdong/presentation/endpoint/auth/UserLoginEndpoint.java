@@ -1,8 +1,8 @@
 package com.ddbb.dingdong.presentation.endpoint.auth;
 
-import com.ddbb.dingdong.application.exception.APIErrors;
+import com.ddbb.dingdong.application.exception.APIErrorInfos;
 import com.ddbb.dingdong.application.exception.APIException;
-import com.ddbb.dingdong.application.usecase.auth.LoginUseCase;
+import com.ddbb.dingdong.application.usecase.user.LoginUseCase;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.presentation.endpoint.auth.dto.LoginRequest;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class UserLoginEndpoint {
         } catch (DomainException e) {
             throw new APIException(e, HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
-            throw new APIException(APIErrors.UNKNOWN, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new APIException(APIErrorInfos.UNKNOWN, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return ResponseEntity.ok().build();

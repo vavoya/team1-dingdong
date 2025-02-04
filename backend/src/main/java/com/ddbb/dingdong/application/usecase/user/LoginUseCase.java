@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.application.usecase.auth;
+package com.ddbb.dingdong.application.usecase.user;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
@@ -30,8 +30,8 @@ public class LoginUseCase implements UseCase<LoginUseCase.Param,Void> {
 
         @Override
         public boolean validate() {
-            if (email.isBlank()) throw AuthInvalidParamErrors.REQUIRED_EMAIL.toException();
-            if (rawPassword.isBlank()) throw AuthInvalidParamErrors.REQUIRED_PASSWORD.toException();
+            if (email.isBlank()) throw UserInvalidParamErrors.REQUIRED_EMAIL.toException();
+            if (rawPassword.isBlank()) throw UserInvalidParamErrors.REQUIRED_PASSWORD.toException();
 
             return true;
         }
