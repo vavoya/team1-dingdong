@@ -1,5 +1,6 @@
-package com.ddbb.dingdong.domain.clustering.model;
+package com.ddbb.dingdong.domain.clustering.model.dto;
 
+import com.ddbb.dingdong.domain.clustering.model.Coordinate;
 import lombok.Data;
 
 import java.io.IOException;
@@ -21,13 +22,8 @@ class Feature {
 
 @Data
 class Geometry {
-    private List<Coordinate> coordinates;
     private GeometryType type;
-}
-
-class Coordinate {
-    public Double DoubleValue;
-    public List<Double> DoubleArrayValue;
+    private List<Coordinate> coordinates;
 }
 
 enum GeometryType {

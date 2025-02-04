@@ -1,8 +1,6 @@
-package com.ddbb.dingdong.domain.clustering.model;
+package com.ddbb.dingdong.domain.clustering.model.dto;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -10,6 +8,7 @@ import java.util.List;
 
 @Data
 @RequiredArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RequestRouteOptimizationDTO {
     private String reqCoordType = "WGS84GEO";
     private String resCoordType = "WGS84GEO";
@@ -33,10 +32,9 @@ public class RequestRouteOptimizationDTO {
 
     @Data
     @RequiredArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class ViaPoint {
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private String viaPointId;
+        private final String viaPointId;
         private String viaPointName = "test";
         private String viaDetailAddress;
         private final String viaX;
