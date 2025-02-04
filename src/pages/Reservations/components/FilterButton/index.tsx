@@ -1,4 +1,4 @@
-import {BookingHistory} from "@/pages/Reservations/styles.ts";
+import {Button, Text} from "@/pages/Reservations/components/FilterButton/styles.ts";
 
 type FilterButtonProps = {
     text: string;
@@ -7,10 +7,10 @@ type FilterButtonProps = {
 }
 export default function FilterButton({text, onClick, isActive = false}: FilterButtonProps) {
     return (
-        <BookingHistory.FilterButton isActive={isActive} onClick={onClick}>
-            <BookingHistory.FilterText isActive={isActive}>
+        <Button isActive={isActive} onClick={onClick}>
+            <Text isActive={isActive}>
                 {text}
-            </BookingHistory.FilterText>
-        </BookingHistory.FilterButton>
+            </Text>
+        </Button>
     )
 }

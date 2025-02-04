@@ -5,7 +5,6 @@ import styled from "styled-components";
 // 위치
 export const MapContainer = styled.div``;
 export const MapWrapper = styled.section`
-  margin: 0px -20px;
   height: calc(100% - 60px);
 `;
 
@@ -14,7 +13,30 @@ export const PinContainer = styled.div`
   flex-direction: column;
   align-items: center;
 `;
+export const HomePinContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
+export const HomePinMark = styled.div`
+  display: flex;
+  width: auto;
+  height: 30px;
+  width: 30px;
+  justify-content: center;
+  border-radius: 8px;
+  align-items: center;
+  background-color: ${colors.orange900};
+`;
+
+export const HomePinTitle = styled.div`
+  color: ${colors.gray90};
+  ${fonts.body2SemiBold}
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 export const PinMark = styled.div`
   display: flex;
   width: 190px;

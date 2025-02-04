@@ -1,7 +1,7 @@
-import SetLocationHomeHeader from "./components/Header";
 import SetLocationHomeMap from "./components/MapWrapper";
 import SetLocationBottomModal from "./components/BottomModal";
 import { useState } from "react";
+import PopHeader from "@/components/Headers/PopHeader";
 // import { useHomeLocation } from "@/hooks/setHomeLocation/useHomeLocation";
 export default function SetHomeLocation() {
   // api 요청 후, 온보딩에서 지정한 주소를 지도 center위치로,
@@ -26,7 +26,7 @@ export default function SetHomeLocation() {
   };
   return (
     <>
-      <SetLocationHomeHeader />
+      <PopHeader text="탑승지 위치 설정" />
       <SetLocationHomeMap
         userHomeCoordinate={initHomePosition}
         setRoadAddress={setRoadAddress}
