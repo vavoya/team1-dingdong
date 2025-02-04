@@ -1,6 +1,6 @@
 
 
-export default function LocationSvg() {
+export default function LocationIcon() {
 
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="29" height="28" viewBox="0 0 29 28" fill="none">
