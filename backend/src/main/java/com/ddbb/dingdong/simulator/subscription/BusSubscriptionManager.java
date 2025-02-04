@@ -68,22 +68,30 @@ public class BusSubscriptionManager {
     /**
      * @param busId : 메모리에서 지울 publisher의 버스 아이디
      * 매개변수로 들어온 버스아이디와 관련된 publisher과 관련된 자원(Subscriber 등)의 메모리를 해제합니다.
-     * Publisher에는 따로 close 메시지를 호출하지 않으므로, 이 메서드를 호출하고 따로 해당 publisher에 close 메서드를 호출해야 합니다.
+     * 자동으로 publisher의 close를 호출하므로 동일한 publisher에 대해서 close 메서드를 재호출하지 않아야 합니다.
      * **/
     public void cleanPublisher(Long busId) {
         StampedLock lock = lockMap.computeIfAbsent(busId, id -> new StampedLock());
         long stamp = lock.writeLock();
 
-        publishers.remove(busId);
-        Set<UserSubscription> subscriberSet = subscribers.remove(busId);
-        if (subscriberSet != null) {
-            for (UserSubscription subscription : subscriberSet) {
-                subscription.getSubscriber().cancel();
-            }
-        }
-        if (!(publishers.containsKey(busId) || subscribers.containsKey(busId))) {
-            lockMap.remove(busId);
-        }
+        SubmissionPublisher<Point> publisher = publishers.remove(busId);
+        subscribers.remove(busId);
+        lockMap.remove(busId);
+        publisher.close();
+        lock.unlockWrite(stamp);
+    }
+
+    /**
+     * @param busId : 참조를 제거할 publisher의 버스 아이디
+     * 매개변수로 들어온 버스아이디와 관련된 publisher와 연관된 subscriber들의 참조를 제거합니다.
+     * publisher의 close를 호출하지 않으므로 반드시 해당 publisher에 close 메서드를 호출해야 합니다.
+     **/
+    public void removeRefOnly(Long busId) {
+        StampedLock lock = lockMap.computeIfAbsent(busId, id -> new StampedLock());
+        long stamp = lock.writeLock();
+        SubmissionPublisher<Point> publisher = publishers.remove(busId);
+        subscribers.remove(busId);
+        lockMap.remove(busId);
         lock.unlockWrite(stamp);
     }
 }
