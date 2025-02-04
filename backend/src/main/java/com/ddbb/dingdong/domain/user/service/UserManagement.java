@@ -14,8 +14,8 @@ public class UserManagement {
     private final AuthenticationManager authenticationManager;
 
     public void login(String email, String password) {
-        User user = userRepository.findByEmail(email).orElseThrow(AuthError.NOT_FOUND::toException);
-        if(!user.getPassword().equals(password)) throw AuthError.NOT_MATCHED_PASSWORD.toException();
+        User user = userRepository.findByEmail(email).orElseThrow(UserErrors.NOT_FOUND::toException);
+        if(!user.getPassword().equals(password)) throw UserErrors.NOT_MATCHED_PASSWORD.toException();
         authenticationManager.setAuthentication(new AuthUser(user.getId()));
     }
 }
