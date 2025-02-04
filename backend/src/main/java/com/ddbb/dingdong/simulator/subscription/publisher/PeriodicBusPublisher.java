@@ -22,17 +22,21 @@ public class PeriodicBusPublisher<T> extends SubmissionPublisher<T> {
         this.periodicTask = scheduler.scheduleAtFixedRate(() -> {
             T item = supplier.get();
             if (item == null) {
-                this.close();
+                this.cleanRef();
                 return;
             }
             submit(item);
         }, initialDelay, period, unit);
     }
 
+    public void cleanRef() {
+        manager.removeRefOnly(busId);
+        this.close();
+    }
+
     public void close() {
         periodicTask.cancel(false);
         scheduler.shutdown();
-        manager.cleanPublisher(busId);
         super.close();
     }
 }
