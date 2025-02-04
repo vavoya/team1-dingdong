@@ -1,7 +1,7 @@
-import {PageHeader, PageMain, PageWrapper} from "@/pages/Reservations/styles.ts";
+import {PageMain, PageWrapper} from "@/pages/Reservations/styles.ts";
 import CardSlider from "@/pages/Reservations/components/CardSlider";
 import BookingHistory from "@/pages/Reservations/components/BookingHistory";
-import ArrowLeft2Icon from "@/components/designSystem/Icons/Reservations/ArrowLeft2Icon.tsx";
+import PopHeader from "@/components/Headers/PopHeader";
 
 
 export default function Page() {
@@ -33,14 +33,7 @@ export default function Page() {
 
     return (
         <PageWrapper>
-            <PageHeader.Wrapper>
-                <PageHeader.ActionButton>
-                    <ArrowLeft2Icon />
-                </PageHeader.ActionButton>
-                <PageHeader.Title as="h1">
-                    예매 내역
-                </PageHeader.Title>
-            </PageHeader.Wrapper>
+            <PopHeader text={"예매 내역"} />
             <PageMain>
                 {/* 여기 슬라이드 구현 */}
                 <CardSlider data={temp} />

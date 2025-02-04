@@ -15,6 +15,7 @@ import ErrorPage from "@/pages/Error/page";
 import SetHomeLocation from "@/pages/SetHomeLocation/page.tsx";
 import BusTrackerPage from "@/pages/BusTracker/page.tsx";
 import ReservationsPage from "@/pages/Reservations/page.tsx";
+import MyPage from "@/pages/MyPage/page.tsx";
 // 컴포넌트
 import Loading from "@/components/Loading";
 
@@ -37,6 +38,8 @@ function App() {
                         <Route path="bus-tracker" element={<BusTrackerPage />}/>
                         {/* 예매 내역 */}
                         <Route path="reservations" element={<ReservationsPage />} />
+                        {/* 마이 페이지 */}
+                        <Route path="my-page" element={<MyPage />} />
                         {/* 결제 페이지 */}
                         <Route path="payment" element={<PaymentLayout />}>
                             {/* 배차 예약 */}
