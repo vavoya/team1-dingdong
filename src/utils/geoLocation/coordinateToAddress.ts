@@ -12,7 +12,7 @@ export const getAddressFromCoords = (
       position.getLat(),
       (result, status) => {
         if (status === kakao.maps.services.Status.OK) {
-          const roadAddress = result[0].road_address?.address_name || null;
+          const roadAddress = result[0].address?.address_name || null;
           resolve(roadAddress);
         } else {
           reject(new Error("주소 변환 실패"));
