@@ -2,7 +2,12 @@ package com.ddbb.dingdong.application.usecase.user;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
+import com.ddbb.dingdong.domain.common.exception.DomainException;
+import com.ddbb.dingdong.domain.user.repository.UserReadOnlyRepository;
+import com.ddbb.dingdong.domain.user.repository.projection.UserStaticOnly;
+import com.ddbb.dingdong.domain.user.service.UserErrors;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,9 +15,18 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class GetUserInfoUseCase implements UseCase<GetUserInfoUseCase.Param, GetUserInfoUseCase.Result> {
+    private final UserReadOnlyRepository userRepository;
+
     @Override
     public Result execute(Param param) {
-        return null;
+        UserStaticOnly staticInfo = userRepository.findUserStaticInfoById(param.getUserId())
+                .orElseThrow(() -> new DomainException(UserErrors.NOT_FOUND));
+
+        return Result.builder()
+                .email(staticInfo.getEmail())
+                .userName(staticInfo.getUserName())
+                .schoolName(staticInfo.getSchoolName())
+                .build();
     }
 
     @Getter
@@ -22,6 +36,7 @@ public class GetUserInfoUseCase implements UseCase<GetUserInfoUseCase.Param, Get
     }
 
     @Getter
+    @Builder
     @AllArgsConstructor
     public static class Result {
         private String userName;
