@@ -85,14 +85,14 @@ export const CardDestinationText = styled(Body2Regular)`
     font-style: normal;
 `
 export const Divider = styled.div`
-    width: 0px;
+    width: 0;
     height: 14px;
     border: solid 0.5px ${colors.gray30};
 `
 export const CardAction = styled.button`
     margin-top: 10px;
     display: flex;
-    padding: 10px 0px;
+    padding: 10px 0;
     justify-content: center;
     align-items: center;
     gap: 4px;
