@@ -2,11 +2,15 @@ import styled from "styled-components";
 import {colors} from "@/styles/colors.ts";
 
 export const Wrapper = styled.header`
+    position: sticky;
+    top: 0;
+    background: ${colors.gray20};
+    
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 60px;
-    margin: 0 20px;
+    padding: 0 20px;
 `
 
 export const NavList = styled.ul`
