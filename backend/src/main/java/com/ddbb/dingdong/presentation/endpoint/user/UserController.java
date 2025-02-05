@@ -1,6 +1,5 @@
 package com.ddbb.dingdong.presentation.endpoint.user;
 
-import com.ddbb.dingdong.application.exception.APIErrorInfos;
 import com.ddbb.dingdong.application.exception.APIException;
 import com.ddbb.dingdong.application.usecase.user.GetUserInfoUseCase;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
@@ -12,7 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import static com.ddbb.dingdong.application.usecase.user.GetUserInfoUseCase.*;
+import static com.ddbb.dingdong.application.usecase.user.GetUserInfoUseCase.Param;
+import static com.ddbb.dingdong.application.usecase.user.GetUserInfoUseCase.Result;
 
 @Controller
 @RequiredArgsConstructor
