@@ -2,4 +2,8 @@ spring:
   profiles:
     active: local
 api:
-  tmap-key:
+  tmap:
+    base-url: https://apis.openapi.sk.com/tmap
+    api-key:
+    endpoint:
+      route-optimization-20: /routes/routeOptimization20
