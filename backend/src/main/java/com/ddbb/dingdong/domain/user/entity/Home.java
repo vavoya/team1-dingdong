@@ -5,27 +5,24 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class House {
+public class Home {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String roadNameAddress;
+    private Double houseLatitude;
 
     @Column(nullable = false)
-    private BigDecimal latitude;
+    private Double houseLongitude;
 
-    @Column(nullable = false)
-    private BigDecimal longitude;
+    private Double stationLatitude;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Double stationLongitude;
+
+    private String stationName;
 }
