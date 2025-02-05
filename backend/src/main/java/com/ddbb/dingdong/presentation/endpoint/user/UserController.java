@@ -16,12 +16,14 @@ import static com.ddbb.dingdong.application.usecase.user.GetUserInfoUseCase.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
     private final GetUserInfoUseCase getUserInfoUseCase;
 
     @GetMapping("/me")
-    public Result getUserInfo(@LoginUser AuthUser authUser) {
+    public Result getUserInfo(
+            @LoginUser AuthUser authUser
+    ) {
         try {
             return getUserInfoUseCase.execute(new Param(authUser.id()));
         } catch (DomainException e) {
