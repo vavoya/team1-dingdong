@@ -27,9 +27,7 @@ public class UserController {
         try {
             return getUserInfoUseCase.execute(new Param(authUser.id()));
         } catch (DomainException e) {
-            throw new APIException(e, HttpStatus.UNAUTHORIZED);
-        } catch (Exception e) {
-            throw new APIException(APIErrorInfos.UNKNOWN, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new APIException(e, HttpStatus.NOT_FOUND);
         }
     }
 }
