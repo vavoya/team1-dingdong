@@ -13,5 +13,5 @@ export const ButtonContainer = styled.button`
 `;
 
 export const Text = styled.div<{ active: boolean }>`
-  color: ${(props) => (props.active ? colors.orange900 : colors.gray30)};
+  color: ${(props) => (props.active ? colors.orange900 : colors.gray70)};
 `;
