@@ -1,4 +1,5 @@
 import { colors } from "@/styles/colors";
+import { fonts } from "@/styles/fonts";
 import styled from "styled-components";
 
 export const ButtonContainer = styled.button<{
@@ -20,4 +21,5 @@ export const ButtonContainer = styled.button<{
   gap: 10px;
   align-self: stretch;
   border-radius: 4px;
+  ${fonts.body1SemiBold};
 `;
