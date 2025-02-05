@@ -1,6 +1,6 @@
 package com.ddbb.dingdong.domain.user.repository.userRepository;
 
-import com.ddbb.dingdong.domain.user.entity.House;
+import com.ddbb.dingdong.domain.user.entity.Home;
 import com.ddbb.dingdong.domain.user.entity.School;
 import com.ddbb.dingdong.domain.user.entity.User;
 import com.ddbb.dingdong.domain.user.repository.UserQueryRepository;
@@ -23,8 +23,8 @@ class GetStaticInfoTest {
     private SHA512PasswordEncoder encoder = new SHA512PasswordEncoder();
     private String password = encoder.encode("123456");
     private School school = new School(null, "seoul", "seoul", new BigDecimal("1.0"), new BigDecimal("1.0"));
-    private House house = new House(null, "address", new BigDecimal("1.0"), new BigDecimal("1.0"), null);
-    private User user = new User(null, "test", "test@test.com", password, LocalDateTime.now(), school, house);
+    private Home home = new Home(null, 1.0, 1.0, 1.0, null,"address");
+    private User user = new User(null, "test", "test@test.com", password, LocalDateTime.now(), school,home);
 
 
     @Test

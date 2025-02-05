@@ -32,6 +32,6 @@ public class User {
     @JoinColumn(name = "school_id")
     private School school;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Home home;
 }
