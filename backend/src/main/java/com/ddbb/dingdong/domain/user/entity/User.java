@@ -33,5 +33,5 @@ public class User {
     private School school;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private House house;
+    private Home home;
 }
