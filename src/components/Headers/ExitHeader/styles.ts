@@ -4,12 +4,17 @@ import {Body1SemiBold} from "@/styles/typography.ts";
 
 
 export const Wrapper = styled.div`
+    position: sticky;
+    top: 0;
+    
     display: flex;
     height: 60px;
     padding: 0 20px;
     justify-content: space-between;
     align-items: center;
     flex-shrink: 0;
+    border-bottom: 1px solid ${colors.gray20};
+    background: ${colors.gray0};
 `
 
 

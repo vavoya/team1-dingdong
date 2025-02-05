@@ -1,7 +1,6 @@
 
 // react
 import {useRef, useState} from "react";
-import {createPortal} from "react-dom";
 // kakaoMap
 import {Map} from "react-kakao-maps-sdk"
 import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader.ts"
@@ -34,47 +33,44 @@ export default function BasicMap() {
     // 중심 이동 좌표가 동일하면 지도 이동이 안됨. 그것을 약간 씩 조절 해주는 값
     const mapJitter = useRef<number>(0.00000001);
     return (
-        createPortal(
-            <PageWrapper>
-                <Map // 지도를 표시할 Container
-                    id="map"
-                    center={location.center}
-                    isPanto={location.isPanto}
-                    style={{
-                        // 지도의 크기
-                        width: "100%",
-                        height: "100%",
-                    }}
-                    level={4} // 지도의 확대 레벨
-                >
-                    {/* 버스 경로 */}
-                    <BusRoute path={[
-                        { lat: 33.452344169439975, lng: 126.56878163224233 },
-                        { lat: 33.452739313807456, lng: 126.5709308145358 },
-                        { lat: 33.45178067090639, lng: 126.572688693875 },
-                    ]}/>
-                    {/* 버스 정류장 오버레이 */}
-                    <BusStopOverlay lat={33.450701} lng={126.570667} />
-                    {/* 버스 위치 오버레이 */}
-                    <BusOverlay lat={33.450701} lng={126.570667} />
-                    {/* 사용자 위치 오버레이 */}
-                    <UserOverlay lat={userLocation.lat} lng={userLocation.lng} />
-                </Map>
-                <BusCardSection>
-                    <LocateMeButton onClick={() => {
-                        if (userLocation.lat !== -1 || userLocation.lng !== -1) {
-                            mapJitter.current *= -1
-                            setLocation({
-                                center: { lat: userLocation.lat + mapJitter.current, lng: userLocation.lng },
-                                isPanto: true,
-                            })
-                        }
-                    }}/>
-                    <BusStateCard  />
-                </BusCardSection>
-            </PageWrapper>,
-            document.getElementById("root")!
-        )
+        <PageWrapper>
+            <Map // 지도를 표시할 Container
+                id="map"
+                center={location.center}
+                isPanto={location.isPanto}
+                style={{
+                    // 지도의 크기
+                    width: "100%",
+                    height: "100%",
+                }}
+                level={4} // 지도의 확대 레벨
+            >
+                {/* 버스 경로 */}
+                <BusRoute path={[
+                    { lat: 33.452344169439975, lng: 126.56878163224233 },
+                    { lat: 33.452739313807456, lng: 126.5709308145358 },
+                    { lat: 33.45178067090639, lng: 126.572688693875 },
+                ]}/>
+                {/* 버스 정류장 오버레이 */}
+                <BusStopOverlay lat={33.450701} lng={126.570667} />
+                {/* 버스 위치 오버레이 */}
+                <BusOverlay lat={33.450701} lng={126.570667} />
+                {/* 사용자 위치 오버레이 */}
+                <UserOverlay lat={userLocation.lat} lng={userLocation.lng} />
+            </Map>
+            <BusCardSection>
+                <LocateMeButton onClick={() => {
+                    if (userLocation.lat !== -1 || userLocation.lng !== -1) {
+                        mapJitter.current *= -1
+                        setLocation({
+                            center: { lat: userLocation.lat + mapJitter.current, lng: userLocation.lng },
+                            isPanto: true,
+                        })
+                    }
+                }}/>
+                <BusStateCard  />
+            </BusCardSection>
+        </PageWrapper>
     )
 }
 
