@@ -19,16 +19,18 @@ public class UserHomeEndpoint {
     private final GetHomeLocationUseCase getHomeLocationUseCase;
 
     @GetMapping("/locations")
-    public ResponseEntity<GetHomeLocationUseCase.Response> getUserHomeLocations(@LoginUser AuthUser user) {
+    public ResponseEntity<GetHomeLocationUseCase.Result> getUserHomeLocations(
+            @LoginUser AuthUser user
+    ) {
         Long userId = user.id();
         GetHomeLocationUseCase.Param param = new GetHomeLocationUseCase.Param(userId);
-        GetHomeLocationUseCase.Response response;
+        GetHomeLocationUseCase.Result result;
         try {
-            response = getHomeLocationUseCase.execute(param);
+            result = getHomeLocationUseCase.execute(param);
         } catch (DomainException ex) {
-            throw new APIException(ex, HttpStatus.BAD_REQUEST);
+            throw new APIException(ex, HttpStatus.NOT_FOUND);
         }
 
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(result);
     }
 }
