@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { colors } from "@/styles/colors";
 import { Detail1Regular, Heading2SemiBold } from "@/styles/typography";
+import { fonts } from "@/styles/fonts";
 
 // export const Wrapper = styled.div``;
 
@@ -45,10 +46,11 @@ export const Weekday = styled(Detail1Regular)`
   text-align: center;
 `;
 
-interface DayProps {
+interface DayButtonProps {
   isToday?: boolean;
   isSelected?: boolean;
   isHighlighted?: boolean;
+  disabled?: boolean;
 }
 
 export const CalendarWrapper = styled.div`
@@ -63,19 +65,22 @@ export const GridContainer = styled.div`
   grid-column-gap: 4.5px;
 `;
 
-export const WeekDay = styled.div`
-  text-align: center;
-  font-size: 0.875rem;
-  padding: 8px 0;
-`;
-
-export const Day = styled.div<DayProps>`
+export const DayButton = styled.button<DayButtonProps>`
+  width: 44px;
+  height: 44px;
   text-align: center;
   padding: 8px 0;
   position: relative;
+  ${fonts.body1Medium};
   cursor: pointer;
+  pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
+
   color: ${(props) =>
-    props.isHighlighted ? colors.orange900 : colors.gray100};
+    props.isHighlighted
+      ? colors.orange900
+      : props.disabled
+      ? colors.gray40
+      : colors.gray100};
   background-color: ${(props) =>
     props.isHighlighted ? colors.orange50 : "transparent"};
 `;
