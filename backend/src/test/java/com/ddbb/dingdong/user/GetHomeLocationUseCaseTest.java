@@ -3,7 +3,7 @@ package com.ddbb.dingdong.user;
 import com.ddbb.dingdong.application.usecase.user.GetHomeLocationUseCase;
 import com.ddbb.dingdong.application.usecase.user.GetHomeLocationUseCase.Param;
 import com.ddbb.dingdong.application.usecase.user.GetHomeLocationUseCase.Result;
-import com.ddbb.dingdong.domain.user.repository.UserRepository;
+import com.ddbb.dingdong.domain.user.repository.UserQueryRepository;
 import com.ddbb.dingdong.domain.user.repository.projection.HomeLocationProjection;
 import com.ddbb.dingdong.domain.user.service.UserErrors;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.*;
 class GetHomeLocationUseCaseTest {
 
     @Mock
-    private UserRepository userRepository;
+    private UserQueryRepository userRepository;
 
     @InjectMocks
     private GetHomeLocationUseCase getHomeLocationUseCase;

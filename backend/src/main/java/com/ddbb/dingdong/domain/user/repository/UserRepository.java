@@ -10,9 +10,4 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
-
-    @Query("SELECT h.houseLatitude AS houseLatitude, h.houseLongitude AS houseLongitude, " +
-            "h.stationName AS stationName, h.stationLatitude AS stationLatitude, h.stationLongitude AS stationLongitude " +
-            "FROM User u JOIN u.home h WHERE u.id = :userId")
-    Optional<HomeLocationProjection> queryHomeLocationByUserId(@Param("userId") Long userId);
 }
