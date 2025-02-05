@@ -1,6 +1,7 @@
 package com.ddbb.dingdong.domain.user.repository;
 
 import com.ddbb.dingdong.domain.user.entity.User;
+import com.ddbb.dingdong.domain.user.repository.projection.HomeLocationProjection;
 import com.ddbb.dingdong.domain.user.repository.projection.UserStaticOnly;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
