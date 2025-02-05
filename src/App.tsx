@@ -16,6 +16,7 @@ import SetHomeLocation from "@/pages/SetHomeLocation/page.tsx";
 import BusTrackerPage from "@/pages/BusTracker/page.tsx";
 import ReservationsPage from "@/pages/Reservations/page.tsx";
 import MyPage from "@/pages/MyPage/page.tsx";
+import TimetableManagement from "@/pages/TimetableManagement/page.tsx";
 // 컴포넌트
 import Loading from "@/components/Loading";
 
@@ -40,6 +41,8 @@ function App() {
                         <Route path="reservations" element={<ReservationsPage />} />
                         {/* 마이 페이지 */}
                         <Route path="my-page" element={<MyPage />} />
+                        {/* 시간표 관리 페이지 */}
+                        <Route path="timetable-management" element={<TimetableManagement />} />
                         {/* 결제 페이지 */}
                         <Route path="payment" element={<PaymentLayout />}>
                             {/* 배차 예약 */}
