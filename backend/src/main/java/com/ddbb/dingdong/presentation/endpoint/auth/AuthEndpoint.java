@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
-public class UserLoginEndpoint {
+public class AuthEndpoint {
     private final LoginUseCase loginUseCase;
 
     @PostMapping("/login")
@@ -28,8 +28,6 @@ public class UserLoginEndpoint {
             loginUseCase.execute(param);
         } catch (DomainException e) {
             throw new APIException(e, HttpStatus.UNAUTHORIZED);
-        } catch (Exception e) {
-            throw new APIException(APIErrorInfos.UNKNOWN, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return ResponseEntity.ok().build();
