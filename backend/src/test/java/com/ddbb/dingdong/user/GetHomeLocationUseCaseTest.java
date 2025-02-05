@@ -2,7 +2,7 @@ package com.ddbb.dingdong.user;
 
 import com.ddbb.dingdong.application.usecase.user.GetHomeLocationUseCase;
 import com.ddbb.dingdong.application.usecase.user.GetHomeLocationUseCase.Param;
-import com.ddbb.dingdong.application.usecase.user.GetHomeLocationUseCase.Response;
+import com.ddbb.dingdong.application.usecase.user.GetHomeLocationUseCase.Result;
 import com.ddbb.dingdong.domain.user.repository.UserRepository;
 import com.ddbb.dingdong.domain.user.repository.projection.HomeLocationProjection;
 import com.ddbb.dingdong.domain.user.service.UserErrors;
@@ -44,16 +44,16 @@ class GetHomeLocationUseCaseTest {
         when(userRepository.queryHomeLocationByUserId(userId)).thenReturn(Optional.of(mockProjection));
 
         // when
-        Response response = getHomeLocationUseCase.execute(new Param(userId));
+        Result result = getHomeLocationUseCase.execute(new Param(userId));
 
         // then
-        assertThat(response).isNotNull();
-        assertThat(response.getHouseInfo()).isNotNull();
-        assertThat(response.getHouseInfo().getLatitude()).isEqualTo(37.388558);
-        assertThat(response.getHouseInfo().getLongitude()).isEqualTo(126.953674);
-        assertThat(response.getStationInfo().getName()).isEqualTo("범계역");
-        assertThat(response.getStationInfo().getLatitude()).isEqualTo(37.388290);
-        assertThat(response.getStationInfo().getLongitude()).isEqualTo(126.952534);
+        assertThat(result).isNotNull();
+        assertThat(result.getHouseInfo()).isNotNull();
+        assertThat(result.getHouseInfo().getLatitude()).isEqualTo(37.388558);
+        assertThat(result.getHouseInfo().getLongitude()).isEqualTo(126.953674);
+        assertThat(result.getStationInfo().getName()).isEqualTo("범계역");
+        assertThat(result.getStationInfo().getLatitude()).isEqualTo(37.388290);
+        assertThat(result.getStationInfo().getLongitude()).isEqualTo(126.952534);
     }
 
     @Test
