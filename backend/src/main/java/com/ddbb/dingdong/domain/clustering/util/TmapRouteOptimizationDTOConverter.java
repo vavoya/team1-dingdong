@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -70,14 +71,21 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
     @Override
     public List<Path> toPaths(List<ResponseRouteOptimizationDTO> responses) {
         List<Path> paths = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
         for (ResponseRouteOptimizationDTO response : responses) {
             List<Point> points = new ArrayList<>();
             List<BusStop> busStops = new ArrayList<>();
+            long totalTime = Long.parseLong(response.getProperties().getTotalTime());
+            LocalDateTime realStartTime = now.minus(Duration.ofSeconds(totalTime));
+            LocalDateTime apiStartTime = LocalDateTime.parse(response.getFeatures().get(0).getProperties().getArriveTime(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+            Duration difference = Duration.between(apiStartTime, realStartTime).abs();
+
             int pointSequence = 0;
             int busStopSequence = 0;
             for (Feature feature : response.getFeatures()) {
                 Feature.Geometry geometry = feature.getGeometry();
                 List<Double> coordinate = geometry.getCoordinates().get(0).doubleArrayValue;
+
                 if (geometry.getType().equals(POINT)) {
                     points.add(new Point(
                             null,
@@ -87,13 +95,18 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
                             null)
                     );
                 } else if (geometry.getType().equals(LINE_STRING)) {
+                    LocalDateTime expectedArrivalTime = LocalDateTime.parse(
+                                    feature.getProperties().getArriveTime(),
+                                    DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+                            .minus(difference);
+
                     busStops.add(new BusStop(
                             null,
                             "I_DONT_KNOW...",
                             busStopSequence++,
                             BigDecimal.valueOf(coordinate.get(1)),
                             BigDecimal.valueOf(coordinate.get(0)),
-                            LocalDateTime.now(), // TODO : 예상 도착 시간 로직 구현해야 함
+                            expectedArrivalTime,
                             null
                     ));
                 }
@@ -108,8 +121,9 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
                     points,
                     busStops
             );
+            paths.add(path);
         }
 
-        return List.of();
+        return paths;
     }
 }
