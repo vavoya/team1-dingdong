@@ -1,44 +1,53 @@
 package com.ddbb.dingdong.domain.clustering.service;
 
+import com.ddbb.dingdong.domain.clustering.config.ClusteringConfig;
 import com.ddbb.dingdong.domain.clustering.entity.Location;
-import com.ddbb.dingdong.domain.clustering.model.RequestRouteOptimizationDTO;
-import com.ddbb.dingdong.domain.clustering.model.ResponseRouteOptimizationDTO;
+import com.ddbb.dingdong.domain.clustering.model.Coordinate;
+import com.ddbb.dingdong.domain.clustering.model.dto.RequestRouteOptimizationDTO;
+import com.ddbb.dingdong.domain.clustering.model.dto.ResponseRouteOptimizationDTO;
+import com.ddbb.dingdong.domain.clustering.util.CoordinateDeserializer;
+import com.ddbb.dingdong.domain.clustering.util.HaversineDistanceFunction;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-import static com.ddbb.dingdong.domain.clustering.model.RequestRouteOptimizationDTO.ViaPoint;
+import static com.ddbb.dingdong.domain.clustering.model.dto.RequestRouteOptimizationDTO.ViaPoint;
 
 @Service
 @Slf4j
 public class BusRouteCreationService {
 
     private static final String TMAP_ROUTE_OPTIMIZATION_BASE_URL = "https://apis.openapi.sk.com/tmap/routes";
-    private static final String TMAP_API_KEY = "nNA3xYEQxu9msU3roPCCX20tZ7RKsLGa1CoFwcq9";
     private static final String TMAP_ROUTE_OPTIMIZATION_ENDPOINT = "/routeOptimization20";
     private static final double SNU_LATITUDE = 37.45988;
     private static final double SNU_LONGITUDE = 126.9519;
     private final WebClient webClient;
+    private final ClusteringConfig clusteringConfig;
 
-    public BusRouteCreationService(WebClient.Builder webClientBuilder) {
+    @Autowired
+    public BusRouteCreationService(WebClient.Builder webClientBuilder, ClusteringConfig clusteringConfig) {
+        this.clusteringConfig = clusteringConfig;
         this.webClient = webClientBuilder
                 .baseUrl(TMAP_ROUTE_OPTIMIZATION_BASE_URL)
                 .defaultHeader("Content-Type", "application/json")
                 .defaultHeader("Accept", "application/json")
-                .defaultHeader("appKey", TMAP_API_KEY)
+                .defaultHeader("appKey", clusteringConfig.getTmapKey())
                 .build();
     }
 
-    public Mono<List<ResponseRouteOptimizationDTO>> routeOptimization20(List<Location> locations) {
-        List<Mono<ResponseRouteOptimizationDTO>> responses;
+    public List<ResponseRouteOptimizationDTO> routeOptimization20(List<Location> locations) {
+        List<ResponseRouteOptimizationDTO> responses;
         List<RequestRouteOptimizationDTO> requests = new ArrayList<>();
 
         Collections.sort(locations);
@@ -54,34 +63,53 @@ public class BusRouteCreationService {
                 end = j;
             }
             i = end;
-            if (end - start >= 20) continue;
+            if (end - start >= 15) continue;
 
             List<ViaPoint> viaPoints = new ArrayList<>();
+            int id = 0;
             for (int j = start; j <= end; j++) {
                 Location currentLocation = locations.get(j);
                 viaPoints.add(
                         new ViaPoint(
+                                Integer.toString(++id),
                                 Double.toString(currentLocation.getLongitude()),
                                 Double.toString(currentLocation.getLatitude())
                         )
                 );
             }
+
+            HaversineDistanceFunction haversine = HaversineDistanceFunction.getInstance();
+
+            Optional<ViaPoint> farthestPoint = viaPoints.stream().max((o1, o2) -> {
+                double[] point1 = {Double.parseDouble(o1.getViaY()), Double.parseDouble(o1.getViaX())};
+                double[] point2 = {Double.parseDouble(o2.getViaY()), Double.parseDouble(o2.getViaX())};
+                double[] endPoint = {SNU_LATITUDE, SNU_LONGITUDE};
+
+                double point1Distance = haversine.d(point1, endPoint);
+                double point2Distance = haversine.d(point2, endPoint);
+
+                return Double.compare(point1Distance, point2Distance);
+            });
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
             RequestRouteOptimizationDTO request = new RequestRouteOptimizationDTO(
-                    viaPoints.get(0).getViaX(),
-                    viaPoints.get(0).getViaY(),
+                    farthestPoint.get().getViaX(),
+                    farthestPoint.get().getViaY(),
                     formatter.format(LocalDateTime.now()),
                     Double.toString(SNU_LONGITUDE),
                     Double.toString(SNU_LATITUDE),
                     viaPoints.subList(1, Math.min(viaPoints.size(), 20))
             );
-
-            log.info(request.toString());
-
             requests.add(request);
         }
 
-        responses = requests.stream()
+        Gson gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeAdapter(new TypeToken<List<Coordinate>>() {}.getType(), new CoordinateDeserializer())
+                .create();
+
+        int clusterLabel = 0; // 테스트로 클러스터 1개만 돌리기 위한 임시 변수
+        List<Mono<String>> stringResponses = requests.subList(clusterLabel, clusterLabel+1).stream()
                 .map(request -> webClient.post()
                         .uri(uriBuilder -> uriBuilder
                                 .path(TMAP_ROUTE_OPTIMIZATION_ENDPOINT)
@@ -90,13 +118,21 @@ public class BusRouteCreationService {
                         )
                         .bodyValue(request)
                         .retrieve()
-                        .bodyToMono(ResponseRouteOptimizationDTO.class)
+                        .bodyToMono(String.class)
                 )
                 .toList();
 
         // 모든 Mono가 완료되면 List로 변환 후 반환
-        return Flux.merge(responses) // 병렬 실행
-                .collectList();  // 모든 응답을 List로 모음
+        responses = Flux.merge(stringResponses) // 병렬 실행
+                .map(json -> gson.fromJson(json, ResponseRouteOptimizationDTO.class))
+                .collectList()
+                .timeout(Duration.ofSeconds(10))
+                .onErrorResume(e -> {
+                    System.err.println("Timeout occurred: " + e.getMessage());
+                    return Mono.just(List.of()); // 빈 리스트 반환
+                })
+                .block();
 
+        return responses;
     }
 }

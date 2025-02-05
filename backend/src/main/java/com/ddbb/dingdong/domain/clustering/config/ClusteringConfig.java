@@ -3,6 +3,7 @@ package com.ddbb.dingdong.domain.clustering.config;
 import com.ddbb.dingdong.domain.clustering.util.HaversineDistanceFunction;
 import de.lmu.ifi.dbs.elki.algorithm.clustering.kmeans.initialization.RandomUniformGeneratedInitialMeans;
 import de.lmu.ifi.dbs.elki.utilities.random.RandomFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,6 +13,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ClusteringConfig {
 
+    @Value("${api.tmap-key}")
+    private String tmapKey;
+
     @Bean
     public HaversineDistanceFunction haversineDistanceFunction() {
         return HaversineDistanceFunction.getInstance();
@@ -20,5 +24,9 @@ public class ClusteringConfig {
     @Bean
     public RandomUniformGeneratedInitialMeans randomUniformGeneratedInitialMeans() {
         return new RandomUniformGeneratedInitialMeans(RandomFactory.DEFAULT);
+    }
+
+    public String getTmapKey() {
+        return tmapKey;
     }
 }
