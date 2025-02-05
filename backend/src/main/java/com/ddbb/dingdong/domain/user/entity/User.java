@@ -30,5 +30,5 @@ public class User {
     private School school;
 
     @OneToOne(mappedBy = "user")
-    private House house;
+    private Home home;
 }
