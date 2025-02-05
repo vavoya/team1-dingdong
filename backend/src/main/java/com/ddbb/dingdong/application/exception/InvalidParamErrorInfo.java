@@ -1,16 +1,16 @@
 package com.ddbb.dingdong.application.exception;
 
-import com.ddbb.dingdong.domain.common.exception.ErrorInfo;
-
-public interface InvalidParamErrorInfo extends ErrorInfo {
+public interface InvalidParamErrorInfo {
+    String getDesc();
     String getField();
 
-    @Override
+    default String getCode() {
+        return ((Enum<?>) this).name();
+    }
     default String getMessage() {
         return "[" + getCode() + "] " + getDesc() + " (" + getField() + ")";
     }
 
-    @Override
     default InvalidParamException toException() {
         return new InvalidParamException(this);
     }
