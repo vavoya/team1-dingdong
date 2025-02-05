@@ -3,7 +3,7 @@ package com.ddbb.dingdong.application.usecase.user;
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
-import com.ddbb.dingdong.domain.user.repository.UserReadOnlyRepository;
+import com.ddbb.dingdong.domain.user.repository.UserQueryRepository;
 import com.ddbb.dingdong.domain.user.repository.projection.UserStaticOnly;
 import com.ddbb.dingdong.domain.user.service.UserErrors;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class GetUserInfoUseCase implements UseCase<GetUserInfoUseCase.Param, GetUserInfoUseCase.Result> {
-    private final UserReadOnlyRepository userRepository;
+    private final UserQueryRepository userRepository;
 
     @Override
     public Result execute(Param param) {

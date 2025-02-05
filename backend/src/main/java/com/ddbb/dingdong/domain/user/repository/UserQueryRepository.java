@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface UserReadOnlyRepository extends JpaRepository<User, Long> {
+public interface UserQueryRepository extends JpaRepository<User, Long> {
     @Query("SELECT u.name as userName, s.name as schoolName, u.email as email  FROM User u JOIN u.school s WHERE u.id = :id")
     Optional<UserStaticOnly> findUserStaticInfoById(Long id);
 }

@@ -3,12 +3,10 @@ package com.ddbb.dingdong.domain.user.repository.userRepository;
 import com.ddbb.dingdong.domain.user.entity.House;
 import com.ddbb.dingdong.domain.user.entity.School;
 import com.ddbb.dingdong.domain.user.entity.User;
-import com.ddbb.dingdong.domain.user.repository.UserReadOnlyRepository;
-import com.ddbb.dingdong.domain.user.repository.UserRepository;
+import com.ddbb.dingdong.domain.user.repository.UserQueryRepository;
 import com.ddbb.dingdong.domain.user.repository.projection.UserStaticOnly;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.SHA512PasswordEncoder;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +19,7 @@ import java.util.Optional;
 @SpringBootTest
 class GetStaticInfoTest {
     @Autowired
-    private UserReadOnlyRepository userReadOnlyRepository;
+    private UserQueryRepository userQueryRepository;
     private SHA512PasswordEncoder encoder = new SHA512PasswordEncoder();
     private String password = encoder.encode("123456");
     private School school = new School(null, "seoul", "seoul", new BigDecimal("1.0"), new BigDecimal("1.0"));
@@ -32,8 +30,8 @@ class GetStaticInfoTest {
     @Test
     @Transactional
     public void success() {
-        User saved = userReadOnlyRepository.save(user);
-        Optional<UserStaticOnly> optional = this.userReadOnlyRepository.findUserStaticInfoById(saved.getId());
+        User saved = userQueryRepository.save(user);
+        Optional<UserStaticOnly> optional = this.userQueryRepository.findUserStaticInfoById(saved.getId());
 
         if (optional.isEmpty()) {
             Assertions.fail();
