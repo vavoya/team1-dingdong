@@ -13,18 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class GetHomeLocationUseCase implements UseCase<GetHomeLocationUseCase.Param, GetHomeLocationUseCase.Response> {
+public class GetHomeLocationUseCase implements UseCase<GetHomeLocationUseCase.Param, GetHomeLocationUseCase.Result> {
     private final UserRepository userRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public Response execute(Param param) {
+    public Result execute(Param param) {
         Long userId = param.getUserId();
         HomeLocationProjection projection = userRepository.queryHomeLocationByUserId(userId).orElseThrow(UserErrors.NOT_FOUND::toException);
 
-        return new Response(
-                new Response.HouseInfo(projection.getHouseLatitude(), projection.getHouseLongitude()),
-                new Response.StationInfo(projection.getStationName(), projection.getStationLatitude(), projection.getStationLongitude())
+        return new Result(
+                new Result.HouseInfo(projection.getHouseLatitude(), projection.getHouseLongitude()),
+                new Result.StationInfo(projection.getStationName(), projection.getStationLatitude(), projection.getStationLongitude())
         );
     }
 
@@ -36,7 +36,7 @@ public class GetHomeLocationUseCase implements UseCase<GetHomeLocationUseCase.Pa
 
     @Getter
     @AllArgsConstructor
-    public static class Response {
+    public static class Result {
         private HouseInfo houseInfo;
         private StationInfo stationInfo;
 
