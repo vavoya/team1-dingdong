@@ -23,6 +23,9 @@ public class Line {
     @Column(nullable = false)
     private Integer totalMinutes;
 
+    @OneToMany(mappedBy = "line")
+    private List<Point> points;
+
     @ManyToOne
     @JoinColumn(name = "path_id")
     private Path path;
