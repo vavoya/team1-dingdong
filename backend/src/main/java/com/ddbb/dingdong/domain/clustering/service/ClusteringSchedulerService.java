@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +20,7 @@ public class ClusteringSchedulerService {
     private final BusRouteCreationService busRouteCreationService;
 
     @Scheduled(cron = "0 0/30 9-17 * * SUN,MON,TUE,WED,SAT")
-    public void scheduleClustering() throws FileNotFoundException {
+    public void scheduleClustering() {
         LocalDateTime now = LocalDateTime.now();
         log.info("Clustering scheduler start, {}시 {}분", now.getHour(), now.getMinute());
 

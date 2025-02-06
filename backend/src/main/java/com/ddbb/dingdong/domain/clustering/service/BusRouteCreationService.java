@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +22,7 @@ public class BusRouteCreationService {
     private final RouteOptimizationApiClient apiClient;
     private final RouteOptimizationDTOConverter routeOptimizationDTOConverter;
 
-    public List<Path> routeOptimization(List<Location> locations) throws FileNotFoundException {
+    public List<Path> routeOptimization(List<Location> locations) {
         List responses;
         List requests = new ArrayList<>();
 
