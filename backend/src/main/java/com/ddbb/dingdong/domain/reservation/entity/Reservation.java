@@ -2,11 +2,13 @@ package com.ddbb.dingdong.domain.reservation.entity;
 
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationStatus;
+import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,23 +24,24 @@ public class Reservation {
     @Column(nullable = false)
     private Direction direction;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private LocalDateTime startDate;
+    private ReservationType type;
+
+    @Column(nullable = false)
+    private LocalDate startDate;
 
     private LocalDateTime departureTime;
 
     private LocalDateTime arrivalTime;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ReservationStatus status;
 
     @Column(nullable = false)
-    private Boolean isDeleted = false;
-
-    @Column(nullable = false)
     private Long userId;
 
-    @OneToOne
-    @JoinColumn(name = "ticket_id")
+    @OneToOne(mappedBy = "reservation")
     private Ticket ticket;
 }
