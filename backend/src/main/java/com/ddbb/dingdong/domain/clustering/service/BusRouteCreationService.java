@@ -23,7 +23,16 @@ public class BusRouteCreationService {
     private final RouteOptimizationDTOConverter routeOptimizationDTOConverter;
 
     public List<Path> routeOptimization(List<Location> locations) {
-        List responses;
+        List requests, responses;
+
+        requests = generateRequests(locations);
+        responses = (List) apiClient.getRouteOptimization(requests);
+        List<Path> paths = routeOptimizationDTOConverter.toPaths(responses);
+
+        return paths;
+    }
+
+    private List<Location> generateRequests(List<Location> locations) {
         List requests = new ArrayList<>();
 
         Collections.sort(locations);
@@ -44,10 +53,6 @@ public class BusRouteCreationService {
             requests.add(routeOptimizationDTOConverter.fromLocations(locations.subList(start, end+1), SNU_LATITUDE, SNU_LONGITUDE));
         }
 
-        responses = (List) apiClient.getRouteOptimization(requests);
-
-        List<Path> paths = routeOptimizationDTOConverter.toPaths(responses);
-
-        return paths;
+        return requests;
     }
 }
