@@ -15,6 +15,9 @@ public class Line {
     private Long id;
 
     @Column(nullable = false)
+    private Integer sequence;
+
+    @Column(nullable = false)
     private Integer distance;
 
     @Column(nullable = false)
