@@ -1,3 +1,7 @@
+import {
+  isDateDisabled,
+  totalDaysInMonth,
+} from "@/utils/calendar/calendarUtils";
 import { useState } from "react";
 export default function useCalendar() {
   const [currentDate, setCurrentDate] = useState(() => {
@@ -10,6 +14,22 @@ export default function useCalendar() {
 
   // 이전 달로 이동
   const goToPreviousMonth = () => {
+    const daysInMonth = totalDaysInMonth(currentDate.year, currentDate.month);
+    let [year, month, day] = [
+      currentDate.year,
+      currentDate.month - 1,
+      daysInMonth,
+    ];
+
+    if (currentDate.month < 0) {
+      year = currentDate.year - 1;
+      month = 11;
+    }
+
+    const date = new Date(year, month, day);
+
+    if (isDateDisabled(date)) return;
+
     setCurrentDate((prev) => {
       // 1월에서 이전 달로 가면 작년 12월로
       if (prev.month === 0) {
@@ -27,6 +47,16 @@ export default function useCalendar() {
   };
 
   const goToNextMonth = () => {
+    let [year, month, day] = [currentDate.year, currentDate.month + 1, 1];
+    if (currentDate.month > 11) {
+      year = currentDate.year + 1;
+      month = 0;
+    }
+
+    const date = new Date(year, month, day);
+
+    if (isDateDisabled(date)) return;
+
     setCurrentDate((prev) => {
       // 12월에서 다음 달로 가면 다음 년도 1월로
       if (prev.month === 11) {

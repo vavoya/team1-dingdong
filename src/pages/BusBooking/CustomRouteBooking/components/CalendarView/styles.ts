@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 import { colors } from "@/styles/colors";
 import { Detail1Regular, Heading2SemiBold } from "@/styles/typography";
 import { fonts } from "@/styles/fonts";
@@ -15,7 +15,8 @@ export const IconWrapper = styled.div`
 `;
 export const CalendarHeader = styled.div`
   display: flex;
-  padding: 11px 20px;
+  padding-bottom: 11px;
+  padding-top: 11px;
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
@@ -34,16 +35,18 @@ export const CurrentMonth = styled(Heading2SemiBold)`
 export const DateHeader = styled.div`
   display: flex;
   height: 20px;
-  padding: 0px 20px;
+
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
+  gap: 4.5px;
   color: ${colors.gray70};
 `;
 
 export const Weekday = styled(Detail1Regular)`
   color: ${colors.gray70};
   text-align: center;
+  width: calc(100% / 7);
 `;
 
 interface DayButtonProps {
@@ -51,24 +54,42 @@ interface DayButtonProps {
   isSelected?: boolean;
   isHighlighted?: boolean;
   disabled?: boolean;
+  $width: number;
 }
 
 export const CalendarWrapper = styled.div`
   width: 100%;
-  padding-bottom: 200px; // 하단 wrapper height 크기만큼
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 200px;
+  overflow: hidden;
 `;
 
-export const GridContainer = styled.div`
+export const GridWrapper = styled.div<{ index: number }>`
+  display: flex;
+  width: 100%;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(${(props) => -props.index * 100}%);
+
+  min-height: 300px;
+`;
+export const GridContainer = styled.div<{ visible: boolean }>`
   display: grid;
+  width: 100%;
   grid-template-columns: repeat(7, 1fr);
   grid-row-gap: 7px;
   grid-column-gap: 4.5px;
+  visibility: ${(props) => (props.visible ? "visible" : "hidden")};
+  min-height: 299px;
 `;
 
 export const DayButton = styled.button<DayButtonProps>`
-  width: 44px;
-  height: 44px;
-  text-align: center;
+  /* width: calc(100% - 40px - 27px / 7); */
+  /* aspect-ratio: 1; */
+  width: ${({ $width }) => `${$width}px`};
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 8px 0;
   position: relative;
   ${fonts.body1Medium};

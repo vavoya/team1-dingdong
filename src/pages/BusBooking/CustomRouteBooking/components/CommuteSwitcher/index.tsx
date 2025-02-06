@@ -24,9 +24,9 @@ export default function CommuteSwitcher() {
           <path
             d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"
             stroke="#FF6F00"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
         <SubtitleText>등교</SubtitleText>
