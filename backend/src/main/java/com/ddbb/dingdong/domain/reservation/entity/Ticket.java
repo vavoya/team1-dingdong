@@ -19,4 +19,8 @@ public class Ticket {
 
     @Column(nullable = false)
     private Long busStopId;
+
+    @OneToOne
+    @JoinColumn(name = "reservation_id")
+    private Reservation reservation;
 }
