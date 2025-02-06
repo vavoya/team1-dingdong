@@ -2,9 +2,9 @@ package com.ddbb.dingdong.application.usecase.reservation;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
+import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationStatus;
 import com.ddbb.dingdong.domain.reservation.repository.ReservationQueryRepository;
 import com.ddbb.dingdong.domain.reservation.repository.projection.UserReservationProjection;
-import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.ReservationCategory;
 import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.SortType;
 import lombok.AllArgsConstructor;
@@ -44,7 +44,7 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
         List<Result.ReservationInfo> reservationInfos = result.stream()
                 .map(r -> {
                     Result.ReservationInfo.OperationInfo operationInfo = null;
-                    if(OperationStatus.RUNNING.name().equals(r.getBusStatus())) {
+                    if(ReservationStatus.ALLOCATED.name().equals(r.getReservationStatus())) {
                         operationInfo = new Result.ReservationInfo.OperationInfo(
                                 r.getBusStatus(),
                                 r.getBusName(),

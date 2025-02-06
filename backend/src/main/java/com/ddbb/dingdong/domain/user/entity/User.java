@@ -28,10 +28,10 @@ public class User {
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST ,fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id")
     private School school;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Home home;
 }
