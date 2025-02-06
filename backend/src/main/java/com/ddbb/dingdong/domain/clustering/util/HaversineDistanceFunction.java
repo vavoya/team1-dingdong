@@ -2,15 +2,13 @@ package com.ddbb.dingdong.domain.clustering.util;
 
 import de.lmu.ifi.dbs.elki.data.NumberVector;
 import de.lmu.ifi.dbs.elki.distance.distancefunction.AbstractNumberVectorDistanceFunction;
-import lombok.Getter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class HaversineDistanceFunction
         extends AbstractNumberVectorDistanceFunction {
 
     private static final double R = 6371.0; // 지구 반경(km)
-
-    @Getter
-    private static final HaversineDistanceFunction instance = new HaversineDistanceFunction();
 
     public double distance(double[] a, double[] b) {
         // a[0] = lat, a[1] = lon, b[0] = lat, b[1] = lon (주솟값 위치는 Service에서 맞춤)

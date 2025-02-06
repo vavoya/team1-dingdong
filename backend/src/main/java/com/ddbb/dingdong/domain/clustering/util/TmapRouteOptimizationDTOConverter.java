@@ -7,6 +7,7 @@ import com.ddbb.dingdong.domain.clustering.model.dto.ResponseRouteOptimizationDT
 import com.ddbb.dingdong.domain.transportation.entity.BusStop;
 import com.ddbb.dingdong.domain.transportation.entity.Path;
 import com.ddbb.dingdong.domain.transportation.entity.Point;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,10 @@ import static com.ddbb.dingdong.domain.clustering.model.dto.ResponseRouteOptimiz
 
 @Component
 @Primary
+@RequiredArgsConstructor
 public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOConverter<RequestRouteOptimizationDTO, ResponseRouteOptimizationDTO> {
+
+    private final HaversineDistanceFunction haversine;
 
     @Override
     public RequestRouteOptimizationDTO fromLocations(List<Location> locations, Double endLatitude, Double endLongitude) {
@@ -40,8 +44,6 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
                     )
             );
         }
-
-        HaversineDistanceFunction haversine = HaversineDistanceFunction.getInstance();
 
         Optional<ViaPoint> farthestPoint = viaPoints.stream().max((o1, o2) -> {
             double[] point1 = {Double.parseDouble(o1.getViaY()), Double.parseDouble(o1.getViaX())};
