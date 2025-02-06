@@ -21,7 +21,6 @@ public class Line {
     private Integer totalMeters;
 
     @Column(nullable = false)
-    private Integer time;
     private Integer totalMinutes;
 
     @ManyToOne
