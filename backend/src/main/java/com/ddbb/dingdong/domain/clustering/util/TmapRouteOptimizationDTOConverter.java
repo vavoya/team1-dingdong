@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -92,8 +91,8 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
                     points.add(new Point(
                             null,
                             pointSequence++,
-                            BigDecimal.valueOf(coordinate.get(1)),
-                            BigDecimal.valueOf(coordinate.get(0)),
+                            coordinate.get(1),
+                            coordinate.get(0),
                             null)
                     );
                 } else if (geometry.getType().equals(LINE_STRING)) {
@@ -106,8 +105,8 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
                             null,
                             "I_DONT_KNOW...",
                             busStopSequence++,
-                            BigDecimal.valueOf(coordinate.get(1)),
-                            BigDecimal.valueOf(coordinate.get(0)),
+                            coordinate.get(1),
+                            coordinate.get(0),
                             expectedArrivalTime,
                             null
                     ));
@@ -117,8 +116,8 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
 
             Path path = new Path(
                     null,
-                    BigDecimal.valueOf(Long.parseLong(response.getProperties().getTotalDistance())),
-                    Long.parseLong(response.getProperties().getTotalTime()),
+                    Double.parseDouble(response.getProperties().getTotalDistance()),
+                    Integer.parseInt(response.getProperties().getTotalTime()),
                     null,
                     points,
                     busStops
