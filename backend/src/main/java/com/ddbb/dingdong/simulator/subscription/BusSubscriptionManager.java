@@ -89,7 +89,7 @@ public class BusSubscriptionManager {
     public void removeRefOnly(Long busId) {
         StampedLock lock = lockMap.computeIfAbsent(busId, id -> new StampedLock());
         long stamp = lock.writeLock();
-        SubmissionPublisher<Point> publisher = publishers.remove(busId);
+        publishers.remove(busId);
         subscribers.remove(busId);
         lockMap.remove(busId);
         lock.unlockWrite(stamp);
