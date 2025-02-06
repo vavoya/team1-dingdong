@@ -9,21 +9,18 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Point {
+public class Line {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private Integer sequence;
+    private Integer distance;
 
     @Column(nullable = false)
-    private Double latitude;
-
-    @Column(nullable = false)
-    private Double longitude;
+    private Integer time;
 
     @ManyToOne
-    @JoinColumn(name = "line_id")
-    private Line line;
+    @JoinColumn(name = "path_id")
+    private Path path;
 }
