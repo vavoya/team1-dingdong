@@ -35,7 +35,6 @@ public class BusSchedule {
     @Column(nullable = false)
     private Long schoolId;
 
-    @OneToOne
-    @JoinColumn(name = "bus_id")
+    @OneToOne(mappedBy = "busSchedule")
     private Bus bus;
 }
