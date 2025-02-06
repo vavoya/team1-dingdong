@@ -44,7 +44,7 @@ public class ReservationController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/requests")
+    @PostMapping("/token")
     public ResponseEntity<RequestReservationUseCase.Result> getReservations(
             @LoginUser AuthUser user,
             @RequestBody ReservationRequestDTO reservationRequestDTO
