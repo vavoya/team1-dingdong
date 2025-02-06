@@ -5,7 +5,8 @@ import com.ddbb.dingdong.domain.user.entity.School;
 import com.ddbb.dingdong.domain.user.entity.User;
 import com.ddbb.dingdong.domain.user.repository.UserQueryRepository;
 import com.ddbb.dingdong.domain.user.repository.projection.UserStaticOnly;
-import com.ddbb.dingdong.infrastructure.auth.encrypt.SHA512PasswordEncoder;
+import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.SHA512Encoder;
+import com.ddbb.dingdong.infrastructure.auth.encrypt.PasswordEncoder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,12 @@ import java.util.Optional;
 class GetStaticInfoTest {
     @Autowired
     private UserQueryRepository userQueryRepository;
-    private SHA512PasswordEncoder encoder = new SHA512PasswordEncoder();
+    private SHA512Encoder sha512Encoder = new SHA512Encoder();
+    private PasswordEncoder encoder = new PasswordEncoder(sha512Encoder);
     private String password = encoder.encode("123456");
     private School school = new School(null, "seoul", "seoul", new BigDecimal("1.0"), new BigDecimal("1.0"));
-    private Home home = new Home(null, 1.0, 1.0, 1.0, null,"address");
+
+    private Home home = new Home(null, 1.0, 1.0, 1.0, null,"address", new User());
     private User user = new User(null, "test", "test@test.com", password, LocalDateTime.now(), school,home);
 
 
