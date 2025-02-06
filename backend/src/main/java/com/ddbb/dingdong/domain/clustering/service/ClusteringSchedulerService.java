@@ -31,6 +31,5 @@ public class ClusteringSchedulerService {
         }
 
         log.info("Clustering scheduler end");
-        Objects.requireNonNull(results).forEach(System.out::println);
     }
 }
