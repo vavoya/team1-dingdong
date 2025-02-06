@@ -18,10 +18,11 @@ public class Line {
     private Integer sequence;
 
     @Column(nullable = false)
-    private Integer distance;
+    private Integer totalMeters;
 
     @Column(nullable = false)
     private Integer time;
+    private Integer totalMinutes;
 
     @ManyToOne
     @JoinColumn(name = "path_id")
