@@ -3,6 +3,7 @@ import {
   totalDaysInMonth,
 } from "@/utils/calendar/calendarUtils";
 import { useState } from "react";
+import { CommuteType } from "../types/commuteType";
 export default function useCalendar() {
   const [currentDate, setCurrentDate] = useState(() => {
     const now = new Date();
@@ -13,7 +14,7 @@ export default function useCalendar() {
   });
 
   // 이전 달로 이동
-  const goToPreviousMonth = () => {
+  const goToPreviousMonth = (commuteType: CommuteType) => {
     const daysInMonth = totalDaysInMonth(currentDate.year, currentDate.month);
     let [year, month, day] = [
       currentDate.year,
@@ -28,7 +29,7 @@ export default function useCalendar() {
 
     const date = new Date(year, month, day);
 
-    if (isDateDisabled(date)) return;
+    if (isDateDisabled(date, commuteType)) return;
 
     setCurrentDate((prev) => {
       // 1월에서 이전 달로 가면 작년 12월로
@@ -46,7 +47,7 @@ export default function useCalendar() {
     });
   };
 
-  const goToNextMonth = () => {
+  const goToNextMonth = (commuteType: CommuteType) => {
     let [year, month, day] = [currentDate.year, currentDate.month + 1, 1];
     if (currentDate.month > 11) {
       year = currentDate.year + 1;
@@ -55,7 +56,7 @@ export default function useCalendar() {
 
     const date = new Date(year, month, day);
 
-    if (isDateDisabled(date)) return;
+    if (isDateDisabled(date, commuteType)) return;
 
     setCurrentDate((prev) => {
       // 12월에서 다음 달로 가면 다음 년도 1월로

@@ -7,10 +7,14 @@ import AIRecommendationButton from "@/components/Button/AIRecommendationButton";
 import useCalendar from "@/pages/BusBooking/hooks/useCalendar";
 import { getDaysInMonth, isDateDisabled } from "@/utils/calendar/calendarUtils";
 import * as constant from "@/constants/calendarConstants";
+import Polygon from "@/components/designSystem/Icons/PolygonIcon";
+import { CommuteType } from "@/pages/BusBooking/types/commuteType";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
-
-export default function Calendar() {
+interface CalendarViewProps {
+  commuteType: CommuteType;
+}
+export default function CalendarView({ commuteType }: CalendarViewProps) {
   // 현재 보고 있는 년도와 월을 상태로 관리
 
   // 오늘 시각으로부터 48시간 뒤~ 2개월 동안만 뷰가 나오도록.
@@ -55,15 +59,24 @@ export default function Calendar() {
   }, []);
 
   const [currentMonth, setCurrentMonth] = useState(0);
+  const [toolTipOn, setToolTipOn] = useState(true);
+
   return (
     <S.CalendarWrapper ref={parentRef}>
+      {toolTipOn && (
+        <S.ToopTip>
+          내 시간표에 맞는 도착 시간을 자동선택해줘요
+          <Polygon />
+        </S.ToopTip>
+      )}
+
       <S.CalendarHeader>
         <S.MonthNavigator>
           <S.IconWrapper
             onClick={() => {
               if (currentMonth === 0) return;
               setCurrentMonth(currentMonth - 1);
-              goToPreviousMonth();
+              goToPreviousMonth(commuteType);
             }}>
             <ChevronLeftIcon size={24} fill={colors.gray50} />
           </S.IconWrapper>
@@ -72,7 +85,7 @@ export default function Calendar() {
           <S.IconWrapper
             onClick={() => {
               if (currentMonth === 2) return;
-              goToNextMonth();
+              goToNextMonth(commuteType);
               setCurrentMonth(currentMonth + 1);
             }}>
             <ChevronRightIcon size={24} fill={colors.gray50} />
@@ -97,7 +110,7 @@ export default function Calendar() {
                   currentDate.month,
                   +day
                 );
-                const disabledDate = isDateDisabled(date);
+                const disabledDate = isDateDisabled(date, commuteType);
                 return (
                   <S.DayButton
                     $width={buttonWidth}

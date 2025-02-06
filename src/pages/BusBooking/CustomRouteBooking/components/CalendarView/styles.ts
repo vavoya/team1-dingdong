@@ -3,8 +3,6 @@ import { colors } from "@/styles/colors";
 import { Detail1Regular, Heading2SemiBold } from "@/styles/typography";
 import { fonts } from "@/styles/fonts";
 
-// export const Wrapper = styled.div``;
-
 export const IconWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -63,6 +61,7 @@ export const CalendarWrapper = styled.div`
   padding-right: 20px;
   padding-bottom: 200px;
   overflow: hidden;
+  position: relative;
 `;
 
 export const GridWrapper = styled.div<{ index: number }>`
@@ -85,7 +84,7 @@ export const GridContainer = styled.div<{ visible: boolean }>`
 
 export const DayButton = styled.button<DayButtonProps>`
   /* width: calc(100% - 40px - 27px / 7); */
-  /* aspect-ratio: 1; */
+  aspect-ratio: 1/1;
   width: ${({ $width }) => `${$width}px`};
   display: flex;
   justify-content: center;
@@ -104,4 +103,29 @@ export const DayButton = styled.button<DayButtonProps>`
       : colors.gray100};
   background-color: ${(props) =>
     props.isHighlighted ? colors.orange50 : "transparent"};
+`;
+
+// tool tip
+export const ToopTip = styled.div`
+  color: ${colors.gray0};
+  text-align: right;
+  ${fonts.detail1Regular};
+  display: flex;
+  padding: 6px 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: ${colors.gray100};
+  border-radius: 4px;
+
+  right: 5px;
+  top: 55px;
+
+  position: absolute;
+  height: max-content;
+  svg {
+    position: absolute;
+    top: -8px;
+    right: 54px;
+  }
 `;

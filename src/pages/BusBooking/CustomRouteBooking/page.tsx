@@ -16,6 +16,7 @@ import {
   TotalEditableViewButton,
 } from "./styles";
 import ConfirmButton from "@/components/designSystem/Button/ConfirmButton";
+import { CommuteType } from "../types/commuteType";
 
 export default function CustomRouteBooking() {
   // 예매 나가기 모달 상태관리
@@ -23,15 +24,19 @@ export default function CustomRouteBooking() {
   const exitButtonHandler = () => {
     setExitConfimModalOpen(true);
   };
+  const [commuteType, setCommuteType] = useState<CommuteType>("등교");
 
   return (
     <>
       <ExitHeader text="버스예매" onClick={exitButtonHandler} />
       {/* 출퇴근 스위치역할 뷰.  */}
-      <CommuteSwitcher />
+      <CommuteSwitcher
+        commuteType={commuteType}
+        setCommuteType={setCommuteType}
+      />
 
       <Title>일자를 선택해 시각을 설정해주세요</Title>
-      <CalendarView />
+      <CalendarView commuteType={commuteType} />
 
       <BottomContainer>
         <InfoTextBox>
