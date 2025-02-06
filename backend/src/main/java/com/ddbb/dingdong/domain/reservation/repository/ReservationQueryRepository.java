@@ -22,9 +22,9 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
                bs.expectedArrivalTime AS busStopArrivalTime,
                p.totalMinutes AS totalMinutes
         FROM Reservation r
-        LEFT JOIN Ticket t ON r.ticket.id = t.id
+        LEFT JOIN Ticket t ON r.id = t.reservation.id
         LEFT JOIN BusStop bs ON t.busStopId = bs.id
-        LEFT JOIN BusSchedule bs_arrival ON bs_arrival.id = t.busScheduleId AND bs_arrival.status = 'RUNNING'
+        LEFT JOIN BusSchedule bs_arrival ON bs_arrival.id = t.busScheduleId
         LEFT JOIN Bus b ON bs_arrival.bus.id = b.id
         LEFT JOIN Path p ON p.busSchedule.id = bs_arrival.id
         LEFT JOIN User u ON r.userId = :userId
