@@ -38,7 +38,9 @@ export default function TimeViewBottomModal({
   return (
     <BottomOverlayModal
       isOpen={isEditablTimeViewModalOpen}
-      onClose={() => setIsEditablTimeViewModalOpen(false)}>
+      onClose={() => {
+        setIsEditablTimeViewModalOpen(false);
+      }}>
       <S.ModalHeader>
         선택한 일정 <S.SelectedCount>5</S.SelectedCount>
       </S.ModalHeader>

@@ -8,6 +8,7 @@ import InfoIcon from "@/components/designSystem/Icons/InfoIcon";
 import { colors } from "@/styles/colors";
 import DayRepeatBoxIcon from "@/components/designSystem/Icons/DayRepeatBoxIcon";
 import DayRepeatCheckIcon from "@/components/designSystem/Icons/DayRepeatCheckIcon";
+import SelectTime from "@/components/TimePickerWheel";
 
 interface SelectTimeBottomModalProps {
   commuteType: CommuteType;
@@ -24,7 +25,9 @@ export default function SelectTimeBottomModal({
   return (
     <BottomOverlayModal
       isOpen={isTimeSelectModalOpen}
-      onClose={() => setIsTimeSelectModalOpen(false)}>
+      onClose={() => {
+        setIsTimeSelectModalOpen(false);
+      }}>
       <S.ModalHeader>
         {commuteType === "등교"
           ? "도착 시각을 선택해주세요"
