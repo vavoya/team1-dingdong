@@ -20,6 +20,6 @@ public abstract class ApiKeyManager {
 
     public synchronized void switchToNextApiKey() {
         index.incrementAndGet();
-        log.info("API Key 변경: {}", index.get());
+        log.info("API Key 변경: {}", index.get() % apiKeys.size());
     }
 }
