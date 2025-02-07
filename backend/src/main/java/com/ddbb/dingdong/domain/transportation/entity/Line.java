@@ -23,7 +23,7 @@ public class Line {
     private Integer totalMeters;
 
     @Column(nullable = false)
-    private Integer totalMinutes;
+    private Integer totalSeconds;
 
     @OneToMany(mappedBy = "line")
     private List<Point> points;
