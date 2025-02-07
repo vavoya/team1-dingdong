@@ -1,11 +1,9 @@
 package com.ddbb.dingdong.application.exception;
 
-import com.ddbb.dingdong.domain.common.exception.DomainException;
-
-public class InvalidParamException extends DomainException {
+public class InvalidParamException extends RuntimeException {
     public InvalidParamErrorInfo error;
 
     public InvalidParamException(InvalidParamErrorInfo error) {
-        super(error);
+        this.error = error;
     }
 }

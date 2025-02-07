@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
+
 import java.util.List;
 
 @Entity
@@ -17,17 +17,17 @@ public class Path {
     private Long id;
 
     @Column(nullable = false)
-    private BigDecimal totalDistance;
+    private Double totalDistance;
 
     @Column(nullable = false)
-    private Long totalTime;
+    private Integer totalMinutes;
 
     @OneToOne
     @JoinColumn(name = "bus_schedule_id")
     private BusSchedule busSchedule;
 
     @OneToMany(mappedBy = "path")
-    private List<Point> points;
+    private List<Line> lines;
 
     @OneToMany(mappedBy = "path")
     private List<BusStop> busStop;
