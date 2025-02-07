@@ -17,3 +17,9 @@ server:
         domain: ${CLIENT_ADDRESS}
         same-site: strict
         path: /
+
+client:
+  schema: ${CLIENT_SCHEMA}
+  ip: ${CLIENT_ADDRESS}
+  port: ${CLIENT_PORT}
+
