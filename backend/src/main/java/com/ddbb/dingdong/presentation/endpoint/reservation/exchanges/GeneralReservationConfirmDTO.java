@@ -12,10 +12,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
-public class ReservationRequestDTO {
+public class GeneralReservationConfirmDTO {
+    private String token;
     private String direction;
-    private List<ReservationInfo> dates;
+    private List<ReservationRequestDTO.ReservationInfo> dates;
 
     @Getter
     @NoArgsConstructor
@@ -24,5 +24,4 @@ public class ReservationRequestDTO {
         @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime date;
-    }
-}
+    }}
