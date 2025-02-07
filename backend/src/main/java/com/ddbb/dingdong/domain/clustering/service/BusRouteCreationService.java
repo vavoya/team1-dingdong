@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -22,37 +20,21 @@ public class BusRouteCreationService {
     private final RouteOptimizationApiClient apiClient;
     private final RouteOptimizationDTOConverter routeOptimizationDTOConverter;
 
-    public List<Path> routeOptimization(List<Location> locations) {
-        List requests, responses;
+    public Path routeOptimization(List<Location> locations) {
+        Object request, response;
 
-        requests = generateRequests(locations);
-        responses = (List) apiClient.getRouteOptimization(requests);
-        List<Path> paths = routeOptimizationDTOConverter.toPaths(responses);
+        request = generateRequests(locations);
+        response = apiClient.getRouteOptimization(request);
+        Path path = routeOptimizationDTOConverter.toPath(response);
 
-        return paths;
+        return path;
     }
 
-    private List<Location> generateRequests(List<Location> locations) {
-        List requests = new ArrayList<>();
+    private Object generateRequests(List<Location> locations) {
+        Object request;
 
-        Collections.sort(locations);
+        request = routeOptimizationDTOConverter.fromLocations(locations, SNU_LATITUDE, SNU_LONGITUDE);
 
-        for (int i = 0; i < locations.size(); i++) {
-            int nowLabel = locations.get(i).getClusterLabel();
-            if (nowLabel == -1) continue;
-            int start = i;
-            int end = i;
-            for (int j = i + 1; j < locations.size(); j++) {
-                int nextLabel = locations.get(j).getClusterLabel();
-                if (nowLabel != nextLabel) break;
-                end = j;
-            }
-            i = end;
-            if (end - start >= 15) continue;
-
-            requests.add(routeOptimizationDTOConverter.fromLocations(locations.subList(start, end+1), SNU_LATITUDE, SNU_LONGITUDE));
-        }
-
-        return requests;
+        return request;
     }
 }

@@ -4,6 +4,6 @@ spring:
 api:
   tmap:
     base-url: https://apis.openapi.sk.com/tmap
-    api-key:
+    api-keys:
     endpoint:
       route-optimization-20: /routes/routeOptimization20

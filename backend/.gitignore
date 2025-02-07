@@ -39,4 +39,5 @@ application-prod.yml
 .vscode/
 
 src/main/resources/static/map.html
+src/main/resources/response.json
 .DS_Store

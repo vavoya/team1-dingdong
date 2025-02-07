@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface RouteOptimizationDTOConverter<T, R> {
     T fromLocations(List<Location> locations, Double endLatitude, Double endLongitude);
-    List<Path> toPaths(List<R> responses);
+    Path toPath(R response);
 }

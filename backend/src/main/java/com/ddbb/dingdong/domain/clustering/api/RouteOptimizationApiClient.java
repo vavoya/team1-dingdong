@@ -4,5 +4,5 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface RouteOptimizationApiClient<T, R> {
-    R getRouteOptimization(T requests);
+    R getRouteOptimization(T request);
 }
