@@ -6,6 +6,7 @@ import com.ddbb.dingdong.application.usecase.reservation.error.ReservationInvali
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.TokenManager;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -32,8 +33,8 @@ public class RequestReservationUseCase implements UseCase<RequestReservationUseC
             String data = objectMapper.writeValueAsString(param);
             String encryptedReservationInfo = tokenManager.generateToken(data);
             return new Result(encryptedReservationInfo);
-        } catch (Exception e) {
-            throw ReservationInvalidParamErrors.INVALID_RESERVATION_FORMAT.toException();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 
