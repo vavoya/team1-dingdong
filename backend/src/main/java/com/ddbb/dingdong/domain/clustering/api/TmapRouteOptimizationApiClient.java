@@ -9,21 +9,27 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Primary
 @RequiredArgsConstructor
+@Slf4j
 public class TmapRouteOptimizationApiClient
-        implements RouteOptimizationApiClient<List<RequestRouteOptimizationDTO>, List<ResponseRouteOptimizationDTO>> {
+        implements RouteOptimizationApiClient<RequestRouteOptimizationDTO, ResponseRouteOptimizationDTO> {
 
     @Value("${api.tmap.base-url}")
     private String baseUrl = "";
@@ -31,57 +37,70 @@ public class TmapRouteOptimizationApiClient
     @Value("${api.tmap.endpoint.route-optimization-20}")
     private String routeOptimizationEndpoint;
 
-    @Value("${api.tmap.api-key}")
-    private String apiKey;
+    private HttpClient httpClient;
 
-    private final WebClient.Builder webClientBuilder;
-    private WebClient webClient;
+    private final TmapApiKeyManager tmapApiKeyManager;
 
     @PostConstruct
     public void init() {
-        webClient = webClientBuilder
-                .baseUrl(baseUrl)
-                .defaultHeader("Content-Type", "application/json")
-                .defaultHeader("Accept", "application/json")
-                .defaultHeader("appKey", apiKey)
+        httpClient = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
                 .build();
     }
 
     @Override
-    public List<ResponseRouteOptimizationDTO> getRouteOptimization(List<RequestRouteOptimizationDTO> requests) {
-        List<ResponseRouteOptimizationDTO> responses;
+    public ResponseRouteOptimizationDTO getRouteOptimization(RequestRouteOptimizationDTO request) {
+        LocalDateTime start = LocalDateTime.now();
+        log.info("Optimize Start: {}시 {}분 {}초", start.getHour(), start.getMinute(), start.getSecond());
 
-        int clusterLabel = 0; // 테스트로 클러스터 1개만 돌리기 위한 임시 변수
-        List<Mono<String>> stringResponses = requests.subList(clusterLabel, clusterLabel + 1).stream()
-                .map(request -> webClient.post()
-                        .uri(uriBuilder -> uriBuilder
-                                .path(routeOptimizationEndpoint)
-                                .queryParam("version", "1")
-                                .build()
-                        )
-                        .bodyValue(request)
-                        .retrieve()
-                        .bodyToMono(String.class)
-                )
-                .toList();
+        ResponseRouteOptimizationDTO response = fetchApi(request).orElse(null);
 
-        Gson gson = new GsonBuilder()
+        LocalDateTime end = LocalDateTime.now();
+        String status;
+        if (response == null) {
+            status = "FAILED";
+        } else {
+            status = "SUCCESS";
+        }
+        log.info("Optimize End: {}시 {}분 {}초, 소요 시간: {}초, 응답 성공 여부: {}", end.getHour(), end.getMinute(), end.getSecond(), end.getSecond()-start.getSecond(), status);
+        return response;
+    }
+
+    private Optional<ResponseRouteOptimizationDTO> fetchApi(RequestRouteOptimizationDTO request) {
+        Gson requestGson = new GsonBuilder().setPrettyPrinting().create();
+        Gson responseGson = new GsonBuilder()
                 .setPrettyPrinting()
                 .registerTypeAdapter(new TypeToken<List<Coordinate>>() {
                 }.getType(), new CoordinateDeserializer())
                 .create();
+        try {
+            String apiKey = tmapApiKeyManager.getCurrentApiKey();
 
-        // 모든 Mono가 완료되면 List로 변환 후 반환
-        responses = Flux.merge(stringResponses) // 병렬 실행
-                .map(json -> gson.fromJson(json, ResponseRouteOptimizationDTO.class))
-                .collectList()
-                .timeout(Duration.ofSeconds(10))
-                .onErrorResume(e -> {
-                    System.err.println("Timeout occurred: " + e.getMessage());
-                    return Mono.just(List.of()); // 빈 리스트 반환
-                })
-                .block();
+            // 요청은 최대 3번 실행
+            for (int i = 0; i < 3; i++) {
+                HttpRequest httpRequest = HttpRequest.newBuilder()
+                        .uri(URI.create(baseUrl + routeOptimizationEndpoint))
+                        .header("Content-Type", "application/json")
+                        .header("Accept", "application/json")
+                        .header("appKey", apiKey)
+                        .POST(HttpRequest.BodyPublishers.ofString(requestGson.toJson(request)))
+                        .build();
 
-        return responses;
-    }
+                HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() == 200) {
+                    return Optional.ofNullable(responseGson.fromJson(response.body(), ResponseRouteOptimizationDTO.class));
+                } else {
+                    log.error("Error Status Code: {}, Error Message: {}", response.statusCode(), response.body());
+                    tmapApiKeyManager.switchToNextApiKey();
+                    apiKey = tmapApiKeyManager.getCurrentApiKey();
+                }
+            }
+
+            return Optional.empty();
+
+        } catch (IOException | InterruptedException e) {
+            return Optional.empty();
+        }
+    };
 }

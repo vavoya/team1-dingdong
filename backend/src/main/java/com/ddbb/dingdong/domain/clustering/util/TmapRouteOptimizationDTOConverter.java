@@ -73,76 +73,70 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
     }
 
     @Override
-    public List<Path> toPaths(List<ResponseRouteOptimizationDTO> responses) {
-        List<Path> paths = new ArrayList<>();
+    public Path toPath(ResponseRouteOptimizationDTO response) {
         LocalDateTime now = LocalDateTime.now();
-        for (ResponseRouteOptimizationDTO response : responses) {
-            List<Point> points;
-            List<Line> lines = new ArrayList<>();
-            List<BusStop> busStops = new ArrayList<>();
-            long totalTime = Long.parseLong(response.getProperties().getTotalTime());
-            LocalDateTime realStartTime = now.minus(Duration.ofSeconds(totalTime));
-            LocalDateTime apiStartTime = LocalDateTime.parse(response.getFeatures().get(0).getProperties().getArriveTime(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-            Duration difference = Duration.between(apiStartTime, realStartTime).abs();
 
-            int lineSequence = 0;
-            int busStopSequence = 0;
-            for (Feature feature : response.getFeatures()) {
-                Feature.Geometry geometry = feature.getGeometry();
-                List<Coordinate> coordinates = geometry.getCoordinates();
+        List<Point> points;
+        List<Line> lines = new ArrayList<>();
+        List<BusStop> busStops = new ArrayList<>();
 
-                if (geometry.getType().equals(LINE_STRING)) {
-                    points = new ArrayList<>();
-                    int pointSequence = 0;
-                    for (Coordinate coordinate : coordinates) {
-                        List<Double> coordinateArray = coordinate.doubleArrayValue;
-                        points.add(new Point(
-                                null,
-                                pointSequence++,
-                                coordinateArray.get(1),
-                                coordinateArray.get(0),
-                                null
-                        ));
-                    }
-                    lines.add(new Line(
+        long totalTime = Long.parseLong(response.getProperties().getTotalTime());
+        LocalDateTime realStartTime = now.minus(Duration.ofSeconds(totalTime));
+        LocalDateTime apiStartTime = LocalDateTime.parse(response.getFeatures().get(0).getProperties().getArriveTime(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        Duration difference = Duration.between(apiStartTime, realStartTime).abs();
+
+        int lineSequence = 0;
+        int busStopSequence = 0;
+        for (Feature feature : response.getFeatures()) {
+            Feature.Geometry geometry = feature.getGeometry();
+            List<Coordinate> coordinates = geometry.getCoordinates();
+
+            if (geometry.getType().equals(LINE_STRING)) {
+                points = new ArrayList<>();
+                int pointSequence = 0;
+                for (Coordinate coordinate : coordinates) {
+                    List<Double> coordinateArray = coordinate.doubleArrayValue;
+                    points.add(new Point(
                             null,
-                            lineSequence++,
-                            Integer.parseInt(feature.getProperties().getDistance()),
-                            Integer.parseInt(feature.getProperties().getTime()),
-                            points,
+                            pointSequence++,
+                            coordinateArray.get(1),
+                            coordinateArray.get(0),
                             null
                     ));
-
-                    LocalDateTime expectedArrivalTime = LocalDateTime.parse(
-                                    feature.getProperties().getArriveTime(),
-                                    DateTimeFormatter.ofPattern(DATE_FORMAT))
-                            .minus(difference);
-
-                    busStops.add(new BusStop(
-                            null,
-                            "I_DONT_KNOW...",
-                            busStopSequence++,
-                            coordinates.get(0).doubleArrayValue.get(1),
-                            coordinates.get(0).doubleArrayValue.get(0),
-                            expectedArrivalTime,
-                            null
-                    ));
-
                 }
+                lines.add(new Line(
+                        null,
+                        lineSequence++,
+                        Integer.parseInt(feature.getProperties().getDistance()),
+                        Integer.parseInt(feature.getProperties().getTime()),
+                        points,
+                        null
+                ));
 
+                LocalDateTime expectedArrivalTime = LocalDateTime.parse(
+                                feature.getProperties().getArriveTime(),
+                                DateTimeFormatter.ofPattern(DATE_FORMAT))
+                        .minus(difference);
+
+                busStops.add(new BusStop(
+                        null,
+                        "I_DONT_KNOW...",
+                        busStopSequence++,
+                        coordinates.get(0).doubleArrayValue.get(1),
+                        coordinates.get(0).doubleArrayValue.get(0),
+                        expectedArrivalTime,
+                        null
+                ));
             }
-
-            Path path = new Path(
-                    null,
-                    Double.parseDouble(response.getProperties().getTotalDistance()),
-                    Integer.parseInt(response.getProperties().getTotalTime()),
-                    null,
-                    lines,
-                    busStops
-            );
-            paths.add(path);
         }
 
-        return paths;
+        return new Path(
+                null,
+                Double.parseDouble(response.getProperties().getTotalDistance()),
+                Integer.parseInt(response.getProperties().getTotalTime()),
+                null,
+                lines,
+                busStops
+        );
     }
 }
