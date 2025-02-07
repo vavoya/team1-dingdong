@@ -1,5 +1,6 @@
-package com.ddbb.dingdong.domain.payment;
+package com.ddbb.dingdong.domain.payment.entity;
 
+import com.ddbb.dingdong.domain.payment.service.PaymentErrors;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,4 +25,13 @@ public class Wallet {
 
     @Column(nullable = false)
     private LocalDateTime lastUpdatedAt;
+
+    public int pay(int totalPrice) {
+        if(this.balance < totalPrice) {
+            throw PaymentErrors.INSUFFICIENT_BALANCE.toException();
+        }
+        this.balance -= totalPrice;
+        lastUpdatedAt = LocalDateTime.now();
+        return this.balance;
+    }
 }
