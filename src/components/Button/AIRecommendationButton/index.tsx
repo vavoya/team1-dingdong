@@ -12,18 +12,18 @@ export default function AIRecommendationButton({
   active = false,
 }: AIRecommendationButtonProps) {
   return (
-    <ButtonContainer onClick={onClick}>
+    <ButtonContainer onClick={onClick} type="button">
       {active ? (
         <>
           <CheckCircleIcon />
-          <Text active={active}>
+          <Text $active={active}>
             {AI_RECOMMENDATION_TEXT.getRecommendation}
           </Text>
         </>
       ) : (
         <>
           <SparklesIcon />
-          <Text active={active}>
+          <Text $active={active}>
             {AI_RECOMMENDATION_TEXT.requestRecommendation}
           </Text>
         </>

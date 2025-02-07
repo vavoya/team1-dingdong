@@ -11,7 +11,7 @@ export default function ConfirmButton({
   active = true,
 }: ConfirmButtonProps) {
   return (
-    <ButtonContainer disabled={!active} active={active} onClick={onClick}>
+    <ButtonContainer disabled={!active} $active={active} onClick={onClick}>
       {text}
     </ButtonContainer>
   );

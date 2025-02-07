@@ -3,16 +3,16 @@ import { fonts } from "@/styles/fonts";
 import styled from "styled-components";
 
 export const ButtonContainer = styled.button<{
-  active: boolean;
+  $active: boolean;
 }>`
   background-color: ${(props) =>
-    props.active ? colors.orange900 : colors.gray40};
+    props.$active ? colors.orange900 : colors.gray40};
 
   &:hover {
     background-color: ${colors.orangeHover};
   }
   color: ${colors.white};
-  width: 100%;
+  flex: 1;
   display: flex;
   height: 50px;
   padding: 10px;
