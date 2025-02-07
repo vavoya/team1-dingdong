@@ -56,6 +56,12 @@ const GlobalStyle = createGlobalStyle`
     font-display: swap;
     src: url('/fonts/Happiness-Sans-Regular.woff2') format('woff2');
 }
+@font-face {
+    font-family: 'PressStart2P';
+    font-weight: 400;
+    font-display: swap;
+    src: url('/fonts/PressStart2P-Regular.ttf')
+}
 
   html, body {
     font-family:'Pretendard', sans-serif;

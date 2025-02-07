@@ -48,6 +48,10 @@ export const TableWrapper = styled.div`
     border: 1px solid ${colors.gray30};
 `
 
+export const TableHeader = styled.div`
+    width: 100%;
+    text-align: left;
+`
 
 export const TableHeaderText = styled(Body1Medium)`
     color: ${colors.gray70};
@@ -60,8 +64,8 @@ export const TableCell = styled.div`
     justify-content: space-between;
     align-items: center;
     align-self: stretch;
-    
-    
+
+
     border-radius: 4px;
     border: 2px solid ${colors.gray30};
     background: ${colors.gray0};
