@@ -1,13 +1,12 @@
 package com.ddbb.dingdong.bus;
 
-import com.ddbb.dingdong.simulator.subscription.BusSubscriptionManager;
-import com.ddbb.dingdong.simulator.subscription.UserSubscription;
-import com.ddbb.dingdong.simulator.subscription.publisher.BusPublisherFactory;
-import com.ddbb.dingdong.simulator.subscription.source.BusSimulator;
-import com.ddbb.dingdong.simulator.segment.RouteSegmentProvider;
-import com.ddbb.dingdong.simulator.segment.impl.StubRouteSegmentProvider;
-import com.ddbb.dingdong.simulator.BusSimulatorFactory;
-import com.ddbb.dingdong.simulator.subscription.subscriber.StubConsoleSubscriber;
+import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.BusSubscriptionManager;
+import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.UserSubscription;
+import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.publisher.BusPublisherFactory;
+import com.ddbb.dingdong.infrastructure.bus.simulator.segment.RouteSegmentProvider;
+import com.ddbb.dingdong.infrastructure.bus.simulator.segment.impl.StubRouteSegmentProvider;
+import com.ddbb.dingdong.infrastructure.bus.simulator.BusSimulatorFactory;
+import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.subscriber.StubConsoleSubscriber;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.geo.Point;
 

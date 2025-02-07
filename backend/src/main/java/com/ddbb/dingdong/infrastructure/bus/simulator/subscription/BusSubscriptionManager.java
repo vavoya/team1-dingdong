@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.simulator.subscription;
+package com.ddbb.dingdong.infrastructure.bus.simulator.subscription;
 
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
