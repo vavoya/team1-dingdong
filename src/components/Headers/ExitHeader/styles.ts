@@ -19,10 +19,6 @@ export const Wrapper = styled.div`
 
 export const Title = styled(Body1SemiBold)`
   color: ${colors.gray100};
-
-  /* Body 1/Semibold */
-  font-family: Pretendard, serif;
-  font-style: normal;
 `;
 
 export const ActionButton = styled.button`
