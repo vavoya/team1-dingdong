@@ -1,10 +1,12 @@
 package com.ddbb.dingdong.domain.clustering.util;
 
 import com.ddbb.dingdong.domain.clustering.entity.Location;
+import com.ddbb.dingdong.domain.clustering.model.Coordinate;
 import com.ddbb.dingdong.domain.clustering.model.dto.RequestRouteOptimizationDTO;
 import com.ddbb.dingdong.domain.clustering.model.dto.RequestRouteOptimizationDTO.ViaPoint;
 import com.ddbb.dingdong.domain.clustering.model.dto.ResponseRouteOptimizationDTO;
 import com.ddbb.dingdong.domain.transportation.entity.BusStop;
+import com.ddbb.dingdong.domain.transportation.entity.Line;
 import com.ddbb.dingdong.domain.transportation.entity.Path;
 import com.ddbb.dingdong.domain.transportation.entity.Point;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +22,13 @@ import java.util.Optional;
 
 import static com.ddbb.dingdong.domain.clustering.model.dto.ResponseRouteOptimizationDTO.Feature;
 import static com.ddbb.dingdong.domain.clustering.model.dto.ResponseRouteOptimizationDTO.Feature.Geometry.GeometryType.LINE_STRING;
-import static com.ddbb.dingdong.domain.clustering.model.dto.ResponseRouteOptimizationDTO.Feature.Geometry.GeometryType.POINT;
 
 @Component
 @Primary
 @RequiredArgsConstructor
 public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOConverter<RequestRouteOptimizationDTO, ResponseRouteOptimizationDTO> {
+
+    private static final String DATE_FORMAT = "yyyyMMddHHmmss";
 
     private final HaversineDistanceFunction haversine;
 
@@ -74,42 +77,57 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
         List<Path> paths = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
         for (ResponseRouteOptimizationDTO response : responses) {
-            List<Point> points = new ArrayList<>();
+            List<Point> points;
+            List<Line> lines = new ArrayList<>();
             List<BusStop> busStops = new ArrayList<>();
             long totalTime = Long.parseLong(response.getProperties().getTotalTime());
             LocalDateTime realStartTime = now.minus(Duration.ofSeconds(totalTime));
             LocalDateTime apiStartTime = LocalDateTime.parse(response.getFeatures().get(0).getProperties().getArriveTime(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
             Duration difference = Duration.between(apiStartTime, realStartTime).abs();
 
-            int pointSequence = 0;
+            int lineSequence = 0;
             int busStopSequence = 0;
             for (Feature feature : response.getFeatures()) {
                 Feature.Geometry geometry = feature.getGeometry();
-                List<Double> coordinate = geometry.getCoordinates().get(0).doubleArrayValue;
+                List<Coordinate> coordinates = geometry.getCoordinates();
 
-                if (geometry.getType().equals(POINT)) {
-                    points.add(new Point(
+                if (geometry.getType().equals(LINE_STRING)) {
+                    points = new ArrayList<>();
+                    int pointSequence = 0;
+                    for (Coordinate coordinate : coordinates) {
+                        List<Double> coordinateArray = coordinate.doubleArrayValue;
+                        points.add(new Point(
+                                null,
+                                pointSequence++,
+                                coordinateArray.get(1),
+                                coordinateArray.get(0),
+                                null
+                        ));
+                    }
+                    lines.add(new Line(
                             null,
-                            pointSequence++,
-                            coordinate.get(1),
-                            coordinate.get(0),
-                            null)
-                    );
-                } else if (geometry.getType().equals(LINE_STRING)) {
+                            lineSequence++,
+                            Integer.parseInt(feature.getProperties().getDistance()),
+                            Integer.parseInt(feature.getProperties().getTime()),
+                            points,
+                            null
+                    ));
+
                     LocalDateTime expectedArrivalTime = LocalDateTime.parse(
                                     feature.getProperties().getArriveTime(),
-                                    DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+                                    DateTimeFormatter.ofPattern(DATE_FORMAT))
                             .minus(difference);
 
                     busStops.add(new BusStop(
                             null,
                             "I_DONT_KNOW...",
                             busStopSequence++,
-                            coordinate.get(1),
-                            coordinate.get(0),
+                            coordinates.get(0).doubleArrayValue.get(1),
+                            coordinates.get(0).doubleArrayValue.get(0),
                             expectedArrivalTime,
                             null
                     ));
+
                 }
 
             }
@@ -119,7 +137,7 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
                     Double.parseDouble(response.getProperties().getTotalDistance()),
                     Integer.parseInt(response.getProperties().getTotalTime()),
                     null,
-                    points,
+                    lines,
                     busStops
             );
             paths.add(path);
