@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.domain.payment.vo;
+package com.ddbb.dingdong.domain.payment.entity.vo;
 
 public enum DingdongMoneyUsageType {
     PAYMENT,

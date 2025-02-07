@@ -1,6 +1,6 @@
-package com.ddbb.dingdong.domain.payment;
+package com.ddbb.dingdong.domain.payment.entity;
 
-import com.ddbb.dingdong.domain.payment.vo.DingdongMoneyUsageType;
+import com.ddbb.dingdong.domain.payment.entity.vo.DingdongMoneyUsageType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
