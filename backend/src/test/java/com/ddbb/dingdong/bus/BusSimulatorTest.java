@@ -33,7 +33,7 @@ class BusSimulatorTest {
     @Test()
     void test() throws InterruptedException {
         ExecutorService executor = Executors.newFixedThreadPool(13);
-        SubmissionPublisher<Point> publisher = publisherFactory.createSimulator(0L, factory.create(LocalDateTime.now()));
+        SubmissionPublisher<Point> publisher = publisherFactory.createSimulator(0L, factory.create(0L));
         CountDownLatch countDownLatch = new CountDownLatch(1);
         for (int i = 0; i < 3; i++) {
             int finalI = i;

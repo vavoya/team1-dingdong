@@ -1,7 +1,6 @@
 package com.ddbb.dingdong.infrastructure.bus.simulator.segment.impl;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class StubRouteSegmentProvider implements RouteSegmentProvider {
 
     @Override
-    public List<RouteSegment> getRouteSegments(LocalDateTime startTime) {
+    public List<RouteSegment> getRouteSegments(Long busId) {
         List<RouteSegment> routeSegments = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
 
