@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ReservationRequestDTO {
     private String direction;
-    private List<ReservationInfo> reservationInfos;
+    private List<ReservationInfo> dates;
 
     @Getter
     @NoArgsConstructor
