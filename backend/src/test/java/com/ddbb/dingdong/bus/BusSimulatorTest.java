@@ -4,13 +4,12 @@ import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.BusSubscripti
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.UserSubscription;
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.publisher.BusPublisherFactory;
 import com.ddbb.dingdong.infrastructure.bus.simulator.segment.RouteSegmentProvider;
-import com.ddbb.dingdong.infrastructure.bus.simulator.segment.impl.StubRouteSegmentProvider;
+import com.ddbb.dingdong.infrastructure.bus.simulator.segment.impl.TMapStubRouteSegmentProvider;
 import com.ddbb.dingdong.infrastructure.bus.simulator.BusSimulatorFactory;
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.subscriber.StubConsoleSubscriber;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.geo.Point;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,7 +24,7 @@ class BusSimulatorTest {
     public BusSimulatorTest() {
         this.manager = new BusSubscriptionManager();
         this.publisherFactory = new BusPublisherFactory(manager);
-        this.segmentProvider = new StubRouteSegmentProvider();
+        this.segmentProvider = new TMapStubRouteSegmentProvider();
         this.factory = new BusSimulatorFactory(segmentProvider);
 
     }

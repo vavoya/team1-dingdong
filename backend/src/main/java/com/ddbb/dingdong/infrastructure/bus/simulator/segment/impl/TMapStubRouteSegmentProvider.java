@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Slf4j
 @Component
-public class StubRouteSegmentProvider implements RouteSegmentProvider {
+public class TMapStubRouteSegmentProvider implements RouteSegmentProvider {
 
     @Override
     public List<RouteSegment> getRouteSegments(Long busId) {
