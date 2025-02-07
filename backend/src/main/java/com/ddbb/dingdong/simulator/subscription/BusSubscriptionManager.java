@@ -20,9 +20,7 @@ public class BusSubscriptionManager {
         StampedLock lock = lockMap.computeIfAbsent(busId, id -> new StampedLock());
         long stamp = lock.writeLock();
         Set<UserSubscription> set = subscribers.computeIfAbsent(busId, id -> new TreeSet<>());
-        if (!set.contains(subscription)) {
-            set.add(subscription);
-        }
+        set.add(subscription);
 
         publishers.computeIfPresent(busId, (key, publisher) -> {
            publisher.subscribe(subscription.getSubscriber());
