@@ -2,7 +2,7 @@ import {
     InfoLine, InfoLineDivider, InfoText, InfoTextBold,
     InfoTitle,
     InfoTitleBox,
-    TItle,
+    Title,
     Wrapper
 } from "@/pages/Payment/components/PricingInfo/styles.ts";
 
@@ -10,7 +10,7 @@ import {
 export default function PricingInfo() {
     return (
         <Wrapper>
-            <TItle>요금 정보</TItle>
+            <Title>요금 정보</Title>
             <InfoLine>
                 <InfoTitleBox>
                     <InfoTitle>금액</InfoTitle>

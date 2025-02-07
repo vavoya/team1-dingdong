@@ -9,7 +9,7 @@ export const Wrapper = styled.section`
     padding: 24px 20px;
 `
 
-export const TItle = styled(Heading2Bold)`
+export const Title = styled(Heading2Bold)`
     color: ${colors.gray100};
     margin-bottom: 20px;
 `

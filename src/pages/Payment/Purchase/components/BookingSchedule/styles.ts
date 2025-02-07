@@ -53,7 +53,7 @@ export const CardBodyItem = styled.div`
 `
 
 export const CardBodyItemText = styled.span`
-    color: #222235;
+    color: ${colors.gray100};
     text-align: center;
     font-size: 14px;
     font-style: normal;
