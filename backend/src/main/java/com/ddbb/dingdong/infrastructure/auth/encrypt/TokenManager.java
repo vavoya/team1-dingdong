@@ -27,28 +27,25 @@ public class TokenManager {
         }
     }
 
-    public boolean validateToken(String token, String data) {
+    public void validateToken(String token, String data)  {
+        String decryptedData;
+
         try {
-            String decryptedData = aesEncoder.decrypt(token);
-            String[] parts = decryptedData.split("\\$");
-
-            if (parts.length != 2) return false;
-
-            String originalHashedParam = parts[0];
-            LocalDateTime expiredAt = LocalDateTime.parse(parts[1], FORMATTER);
-
-            if (LocalDateTime.now().isAfter(expiredAt)) {
-                return false;
-            }
-            String newHashedParam = sha512Encoder.hash(data);
-            if (!newHashedParam.equals(originalHashedParam)) {
-                return false;
-            }
-
-            return true;
+             decryptedData = aesEncoder.decrypt(token);
         } catch (Exception e) {
-            return false;
+            throw new RuntimeException("Error validating token", e);
         }
+
+        String[] parts = decryptedData.split("\\$");
+        if (parts.length != 2) throw TokenErrors.INVALID.toException();
+
+        String originalHashedParam = parts[0];
+        LocalDateTime expiredAt = LocalDateTime.parse(parts[1], FORMATTER);
+
+        if (LocalDateTime.now().isAfter(expiredAt)) throw TokenErrors.EXPIRED.toException();
+
+        String newHashedParam = sha512Encoder.hash(data);
+        if (!newHashedParam.equals(originalHashedParam)) throw TokenErrors.INCORRECT_SIGNATURE.toException();
     }
 
 }
