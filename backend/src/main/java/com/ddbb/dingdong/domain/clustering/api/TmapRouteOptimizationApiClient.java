@@ -73,34 +73,36 @@ public class TmapRouteOptimizationApiClient
                 .registerTypeAdapter(new TypeToken<List<Coordinate>>() {
                 }.getType(), new CoordinateDeserializer())
                 .create();
-        try {
+
             String apiKey = tmapApiKeyManager.getCurrentApiKey();
 
             // 요청은 최대 3번 실행
-            for (int i = 0; i < 3; i++) {
-                HttpRequest httpRequest = HttpRequest.newBuilder()
-                        .uri(URI.create(baseUrl + routeOptimizationEndpoint))
-                        .header("Content-Type", "application/json")
-                        .header("Accept", "application/json")
-                        .header("appKey", apiKey)
-                        .POST(HttpRequest.BodyPublishers.ofString(requestGson.toJson(request)))
-                        .build();
+            for (int i = 0; i < 5; i++) {
+                try {
+                    HttpRequest httpRequest = HttpRequest.newBuilder()
+                            .uri(URI.create(baseUrl + routeOptimizationEndpoint))
+                            .header("Content-Type", "application/json")
+                            .header("Accept", "application/json")
+                            .header("appKey", apiKey)
+                            .POST(HttpRequest.BodyPublishers.ofString(requestGson.toJson(request)))
+                            .build();
 
-                HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+                    HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
-                if (response.statusCode() == 200) {
-                    return Optional.ofNullable(responseGson.fromJson(response.body(), ResponseRouteOptimizationDTO.class));
-                } else {
-                    log.error("Error Status Code: {}, Error Message: {}", response.statusCode(), response.body());
+                    if (response.statusCode() == 200) {
+                        return Optional.ofNullable(responseGson.fromJson(response.body(), ResponseRouteOptimizationDTO.class));
+                    } else {
+                        log.error("Error Status Code: {}, Error Message: {}", response.statusCode(), response.body());
+                        tmapApiKeyManager.switchToNextApiKey();
+                        apiKey = tmapApiKeyManager.getCurrentApiKey();
+                    }
+                } catch (IOException | InterruptedException e) {
+                    log.error("Error: {}", e.getMessage());
                     tmapApiKeyManager.switchToNextApiKey();
                     apiKey = tmapApiKeyManager.getCurrentApiKey();
                 }
             }
 
             return Optional.empty();
-
-        } catch (IOException | InterruptedException e) {
-            return Optional.empty();
-        }
     };
 }
