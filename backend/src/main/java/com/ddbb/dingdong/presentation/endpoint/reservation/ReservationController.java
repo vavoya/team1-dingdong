@@ -1,16 +1,16 @@
 package com.ddbb.dingdong.presentation.endpoint.reservation;
 
 import com.ddbb.dingdong.application.exception.APIException;
+import com.ddbb.dingdong.application.usecase.reservation.CancelReservationUseCase;
 import com.ddbb.dingdong.application.usecase.reservation.GetReservationsUseCase;
 import com.ddbb.dingdong.application.usecase.reservation.MakeGeneralReservationUseCase;
 import com.ddbb.dingdong.application.usecase.reservation.RequestReservationUseCase;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.infrastructure.auth.AuthUser;
 import com.ddbb.dingdong.infrastructure.auth.annotation.LoginUser;
-import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.GeneralReservationConfirmDTO;
-import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.ReservationCategory;
-import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.ReservationRequestDTO;
-import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.SortType;
+import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.*;
+import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.enums.ReservationCategory;
+import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.enums.SortType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +25,7 @@ public class ReservationController {
     private final GetReservationsUseCase getReservationsUseCase;
     private final RequestReservationUseCase requestReservationUseCase;
     private final MakeGeneralReservationUseCase makeGeneralReservationUseCase;
+    private final CancelReservationUseCase cancelReservationUseCase;
 
     @GetMapping
     public ResponseEntity<GetReservationsUseCase.Result> getReservations(
@@ -45,6 +46,27 @@ public class ReservationController {
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> cancelReservation(
+            @LoginUser AuthUser user,
+            @RequestBody ReservationCancelDTO reservationCancelDTO
+    ) {
+        Long userId = user.id();
+        Long reservationId = reservationCancelDTO.getReservationId();
+        CancelReservationUseCase.Param param = new CancelReservationUseCase.Param(
+                userId,
+                reservationId
+        );
+
+        try {
+            cancelReservationUseCase.execute(param);
+        } catch (DomainException ex) {
+            throw new APIException(ex, HttpStatus.BAD_REQUEST);
+        }
+
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/token")
