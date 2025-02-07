@@ -5,16 +5,18 @@ import {
     PageDescription, PageInfoSection, PageInfoTextBox,
     PageMain,
     PageTitle, SaveButton, SaveButtonText,
-    TableCell, TableCellText,
+    TableCell, TableCellText, TableHeader,
     TableHeaderText, TableWrapper
 } from "@/pages/TimetableManagement/styles.ts";
 // 컴포넌트
 import PopHeader from "@/components/Headers/PopHeader";
-import CreateTable from "@/pages/TimetableManagement/components/CreateTable";
 import DefaultImgIcon from "@/components/designSystem/Icons/TimeTableManagement/DefaultImgIcon.tsx";
 import PlusIcon from "@/components/designSystem/Icons/TimeTableManagement/PlusIcon.tsx";
 import InfoIcon from "@/components/designSystem/Icons/TimeTableManagement/InfoIcon.tsx";
 import DeleteIcon from "@/components/designSystem/Icons/TimeTableManagement/DeleteIcon.tsx";
+import EasyTable, {ColumnInferface, RowInterace} from "@/pages/TimetableManagement/components/EasyTable";
+import {colors} from "@/styles/colors.ts";
+import {Fragment} from "react";
 
 
 export default function Page() {
@@ -27,6 +29,11 @@ export default function Page() {
         '토',
         '일'
     ]
+    const COLUMN_NAME_LIST = [
+        '',
+        '등교',
+        '하교'
+    ]
 
     const temp = [
         ['12:00', '12:00'],
@@ -37,6 +44,38 @@ export default function Page() {
         ['', ''],
         ['', ''],
     ]
+
+    const column: ColumnInferface = {
+        count: 3,
+        width: [
+            '20px',
+            'calc((100% - 20px) / 2)',
+            'calc((100% - 20px) / 2)'
+        ],
+        headNode: [
+            ...COLUMN_NAME_LIST.map((columnName) => (
+                <TableHeader>
+                    <TableHeaderText color={colors.gray70}>
+                        {columnName}
+                    </TableHeaderText>
+                </TableHeader>
+            ))
+        ],
+        gap: '16px'
+    }
+    const row: RowInterace = {
+        count: DAYS_OF_WEEK.length + 1,
+        headNode: [
+            ...DAYS_OF_WEEK.map((rowName) => (
+                <TableHeader>
+                    <TableHeaderText color={colors.gray70}>
+                        {rowName}
+                    </TableHeaderText>
+                </TableHeader>
+            ))
+        ],
+        gap: '6px;'
+    }
 
     return (
         <div>
@@ -55,27 +94,9 @@ export default function Page() {
                     나의 강의가 있는 요일과 시간에 맞추어 최적의 예매 옵션을 추천드려요.
                 </PageDescription>
                 <TableWrapper>
-                    <CreateTable
-                        gap={{column: '16px', row: '6px'}}
-                        title={{
-                            column: [
-                                <TableHeaderText>
-                                    등교
-                                </TableHeaderText>,
-                                <TableHeaderText>
-                                    하교
-                                </TableHeaderText>
-                            ],
-                            row: [...DAYS_OF_WEEK.map(day => <TableHeaderText>{day}</TableHeaderText>)]
-                        }}
-                        columnWidth={[
-                            '20px',
-                            'calc((100% - 20px) / 2)',
-                            'calc((100% - 20px) / 2)'
-                        ]}
-                    >
-                        {renderTableBody({data: temp})}
-                    </CreateTable>
+                    <EasyTable column={column} row={row}>
+                        {renderTableRow({data: temp})}
+                    </EasyTable>
                 </TableWrapper>
                 <ImgRegistrationBox>
                     {/* 서버 이미지 없으면 */}
@@ -105,32 +126,27 @@ export default function Page() {
 
 
 
-
-// helper function
-function renderTableBody({data}: {data: string[][]}) {
-
-    return data
-        .map((row, index) => (
-            <tr key={index}>
-                {renderTableRow({row})}
-            </tr>
-        ))
-}
-
-function renderTableRow({row}: {row: string[]}) {
-    return row
-        .map((time, index) => {
-            return (
-                <TableCell key={index}>
-                    <TableCellText>
-                        {time === '' ? '-' : time}
-                    </TableCellText>
-                    <button>
-                        <DeleteIcon/>
-                    </button>
-                </TableCell>
-            )
-        })
+function renderTableRow({data}: {data: string[][]}) {
+    return data.map((row, index) => (
+        <Fragment key={index}>
+            <TableCell>
+                <TableCellText>
+                    {row[0] === '' ? '-' : row[0]}
+                </TableCellText>
+                <button>
+                    <DeleteIcon />
+                </button>
+            </TableCell>
+            <TableCell>
+                <TableCellText>
+                    {row[1] === '' ? '-' : row[1]}
+                </TableCellText>
+                <button>
+                    <DeleteIcon />
+                </button>
+            </TableCell>
+        </Fragment>
+    ))
 }
 
 
