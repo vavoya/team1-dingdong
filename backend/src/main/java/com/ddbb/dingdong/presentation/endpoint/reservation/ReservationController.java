@@ -84,7 +84,6 @@ public class ReservationController {
                         generalReservationConfirmDTO.getDates().stream().map(
                                 reservationInfo -> new MakeGeneralReservationUseCase.Param.ReservationInfo.ReservationDate(reservationInfo.getDate())
                         ).toList()
-
                 )
         );
         try {
