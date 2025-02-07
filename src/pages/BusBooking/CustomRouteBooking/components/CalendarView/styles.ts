@@ -50,7 +50,7 @@ export const Weekday = styled(Detail1Regular)`
 interface DayButtonProps {
   isToday?: boolean;
   isSelected?: boolean;
-  isHighlighted?: boolean;
+  $isHighlighted?: boolean;
   disabled?: boolean;
   $width: number;
 }
@@ -64,21 +64,21 @@ export const CalendarWrapper = styled.div`
   position: relative;
 `;
 
-export const GridWrapper = styled.div<{ index: number }>`
+export const GridWrapper = styled.div<{ $monthIndex: number }>`
   display: flex;
   width: 100%;
   transition: transform 0.3s ease-in-out;
-  transform: translateX(${(props) => -props.index * 100}%);
+  transform: translateX(${(props) => -props.$monthIndex * 100}%);
 
   min-height: 300px;
 `;
-export const GridContainer = styled.div<{ visible: boolean }>`
+export const GridContainer = styled.div<{ $visible: boolean }>`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(7, 1fr);
   grid-row-gap: 7px;
   grid-column-gap: 4.5px;
-  visibility: ${(props) => (props.visible ? "visible" : "hidden")};
+  visibility: ${(props) => (props.$visible ? "visible" : "hidden")};
   min-height: 299px;
 `;
 
@@ -96,13 +96,13 @@ export const DayButton = styled.button<DayButtonProps>`
   pointer-events: ${(props) => (props.disabled ? "none" : "auto")};
 
   color: ${(props) =>
-    props.isHighlighted
+    props.$isHighlighted
       ? colors.orange900
       : props.disabled
       ? colors.gray40
       : colors.gray100};
   background-color: ${(props) =>
-    props.isHighlighted ? colors.orange50 : "transparent"};
+    props.$isHighlighted ? colors.orange50 : "transparent"};
 `;
 
 // tool tip

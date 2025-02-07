@@ -47,14 +47,12 @@ export const ModalContainer = styled.div<{ isOpen: boolean }>`
   width: 100%;
   background-color: ${colors.gray0};
 
-  padding: 24px 20px 20px 20px;
-
   border-radius: 24px 24px 0px 0px;
 
   box-shadow: 0px -4px 8px 0px rgba(34, 34, 53, 0.04);
 
   animation: ${(props) => (props.isOpen ? slideUp : slideDown)} 0.3s ease-out;
-
+  max-height: 752px;
   @media (min-width: 441px) {
     width: 375px; /* 화면 너비가 440px을 넘으면 375px로 고정 */
   }

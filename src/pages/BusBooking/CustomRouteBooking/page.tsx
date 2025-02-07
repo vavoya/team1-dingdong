@@ -15,8 +15,10 @@ import {
   Title,
   TotalEditableViewButton,
 } from "./styles";
-import ConfirmButton from "@/components/designSystem/Button/ConfirmButton";
-import { CommuteType } from "../types/commuteType";
+import SolidButton from "@/components/designSystem/Button/SolidButton";
+import { CommuteType, OverlayBottomModalType } from "../types/commuteType";
+
+import TimeViewBottomModal from "./components/TimeViewBottomModal";
 
 export default function CustomRouteBooking() {
   // 예매 나가기 모달 상태관리
@@ -25,7 +27,10 @@ export default function CustomRouteBooking() {
     setExitConfimModalOpen(true);
   };
   const [commuteType, setCommuteType] = useState<CommuteType>("등교");
+  const [overlayBottomModalType, setOverlayBottomModalType] =
+    useState<OverlayBottomModalType>("editable");
 
+  const [timeViewModalOpen, setTimeViewModalOpen] = useState(false);
   return (
     <>
       <ExitHeader text="버스예매" onClick={exitButtonHandler} />
@@ -46,14 +51,31 @@ export default function CustomRouteBooking() {
 
         <TotalEditableViewButton>
           <ButtonTitle>선택한 일정</ButtonTitle>
-          <CountViewBox>
+          <CountViewBox
+            onClick={() => {
+              setTimeViewModalOpen(true);
+              setOverlayBottomModalType("editable");
+            }}>
             <ScheduleCount>-</ScheduleCount>
             <ChevronRightIcon />
           </CountViewBox>
         </TotalEditableViewButton>
 
+        <TimeViewBottomModal
+          isEditablTimeViewModalOpen={timeViewModalOpen}
+          setIsEditablTimeViewModalOpen={setTimeViewModalOpen}
+          commuteType={commuteType}
+          modalType={overlayBottomModalType}
+        />
+
         <ConfirmButtonWrapper>
-          <ConfirmButton text="선택 일정 최종 확인하기" />
+          <SolidButton
+            onClick={() => {
+              setOverlayBottomModalType("lastStep");
+              setTimeViewModalOpen(true);
+            }}
+            text="선택 일정 최종 확인하기"
+          />
         </ConfirmButtonWrapper>
       </BottomContainer>
     </>

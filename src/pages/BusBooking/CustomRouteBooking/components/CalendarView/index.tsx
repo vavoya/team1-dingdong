@@ -9,6 +9,7 @@ import { getDaysInMonth, isDateDisabled } from "@/utils/calendar/calendarUtils";
 import * as constant from "@/constants/calendarConstants";
 import Polygon from "@/components/designSystem/Icons/PolygonIcon";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
+import SelectTimeBottomModal from "../SelectTimeBottomModal";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 interface CalendarViewProps {
@@ -22,10 +23,13 @@ export default function CalendarView({ commuteType }: CalendarViewProps) {
   const { currentDate, goToNextMonth, goToPreviousMonth } = useCalendar();
 
   const [AIBtnToggle, setAIBtnToggle] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(0);
+  const [toolTipOn, setToolTipOn] = useState(true);
+  const [isTimeSelectModalOpen, setIsTimeSelectModalOpen] = useState(false);
 
-  const AIBtnHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const AIBtnHandler = () => {
     setAIBtnToggle((prev) => !prev);
+    setToolTipOn(false);
   };
 
   // 월 이름 포맷팅
@@ -58,11 +62,14 @@ export default function CalendarView({ commuteType }: CalendarViewProps) {
     setButtonWidth(dayButtonWidth);
   }, []);
 
-  const [currentMonth, setCurrentMonth] = useState(0);
-  const [toolTipOn, setToolTipOn] = useState(true);
-
   return (
     <S.CalendarWrapper ref={parentRef}>
+      <SelectTimeBottomModal
+        isTimeSelectModalOpen={isTimeSelectModalOpen}
+        setIsTimeSelectModalOpen={setIsTimeSelectModalOpen}
+        commuteType={commuteType}
+      />
+
       {toolTipOn && (
         <S.ToopTip>
           내 시간표에 맞는 도착 시간을 자동선택해줘요
@@ -100,9 +107,9 @@ export default function CalendarView({ commuteType }: CalendarViewProps) {
         ))}
       </S.DateHeader>
 
-      <S.GridWrapper index={currentMonth}>
+      <S.GridWrapper $monthIndex={currentMonth}>
         {months.current.map((array: (string | number)[], index) => (
-          <S.GridContainer key={index} visible={currentMonth === index}>
+          <S.GridContainer key={index} $visible={currentMonth === index}>
             {array.map((day: number | string, dayIndex) => {
               if (typeof day === "number") {
                 const date = new Date(
@@ -113,10 +120,11 @@ export default function CalendarView({ commuteType }: CalendarViewProps) {
                 const disabledDate = isDateDisabled(date, commuteType);
                 return (
                   <S.DayButton
+                    onClick={() => setIsTimeSelectModalOpen(true)}
                     $width={buttonWidth}
                     disabled={disabledDate}
                     key={`${day}-${dayIndex}`}
-                    isHighlighted={day === 26}>
+                    $isHighlighted={day === 26}>
                     {day}
                   </S.DayButton>
                 );
@@ -125,7 +133,7 @@ export default function CalendarView({ commuteType }: CalendarViewProps) {
                   <S.DayButton
                     $width={buttonWidth}
                     key={`${day}-${dayIndex}`}
-                    isHighlighted={false}>
+                    $isHighlighted={false}>
                     {day}
                   </S.DayButton>
                 );

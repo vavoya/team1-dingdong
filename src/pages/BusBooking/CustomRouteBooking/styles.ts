@@ -53,4 +53,5 @@ export const BottomContainer = styled.div`
 
 export const ConfirmButtonWrapper = styled.div`
   padding: 20px;
+  display: flex;
 `;
