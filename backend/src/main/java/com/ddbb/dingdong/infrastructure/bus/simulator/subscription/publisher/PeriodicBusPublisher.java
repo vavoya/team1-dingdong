@@ -1,6 +1,6 @@
-package com.ddbb.dingdong.simulator.subscription.publisher;
+package com.ddbb.dingdong.infrastructure.bus.simulator.subscription.publisher;
 
-import com.ddbb.dingdong.simulator.subscription.BusSubscriptionManager;
+import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.BusSubscriptionManager;
 
 import java.util.concurrent.*;
 import java.util.function.Supplier;

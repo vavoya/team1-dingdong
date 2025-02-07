@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.simulator;
+package com.ddbb.dingdong.infrastructure.bus.simulator;
 
 import org.springframework.data.geo.Point;
 
