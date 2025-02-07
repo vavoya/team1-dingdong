@@ -20,10 +20,10 @@ public class Point {
     private Integer sequence;
 
     @Column(nullable = false)
-    private BigDecimal latitude;
+    private Double latitude;
 
     @Column(nullable = false)
-    private BigDecimal longitude;
+    private Double longitude;
 
     @ManyToOne
     @JoinColumn(name = "path_id")

@@ -24,10 +24,10 @@ public class BusStop {
     private Integer sequence;
 
     @Column(nullable = false)
-    private BigDecimal latitude;
+    private Double latitude;
 
     @Column(nullable = false)
-    private BigDecimal longitude;
+    private Double longitude;
 
     @Column(nullable = false)
     private LocalDateTime expectedArrivalTime;

@@ -17,10 +17,10 @@ public class Path {
     private Long id;
 
     @Column(nullable = false)
-    private BigDecimal totalDistance;
+    private Double totalDistance;
 
     @Column(nullable = false)
-    private Long totalTime;
+    private Integer totalMinutes;
 
     @OneToOne
     @JoinColumn(name = "bus_schedule_id")
