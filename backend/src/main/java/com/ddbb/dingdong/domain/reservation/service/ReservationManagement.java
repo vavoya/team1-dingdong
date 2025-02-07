@@ -1,12 +1,14 @@
 package com.ddbb.dingdong.domain.reservation.service;
 
 import com.ddbb.dingdong.domain.reservation.entity.Reservation;
+import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationType;
 import com.ddbb.dingdong.domain.reservation.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +26,8 @@ public class ReservationManagement {
         }
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reservationDate = reservation.getArrivalTime();
-        LocalDateTime deadLine = reservationDate.minusHours(48);
+        LocalDateTime reservationDate = reservation.getDirection().equals(Direction.TO_SCHOOL) ? reservation.getArrivalTime() : reservation.getDepartureTime();
+        LocalDateTime deadLine = reservationDate.minusHours(48).minusMinutes(5);
         LocalDateTime maxDate = reservationDate.plusMonths(2);
 
         if(now.isAfter(deadLine)){
@@ -36,6 +38,15 @@ public class ReservationManagement {
         }
         if(reservationDate.getMinute() != 0 && reservationDate.getMinute() != 30) {
             throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
+        }
+        if(reservation.getDirection().equals(Direction.TO_SCHOOL)) {
+            if (reservationDate.toLocalTime().isBefore(LocalTime.of(8,0)) || reservationDate.toLocalTime().isAfter(LocalTime.of(18,0))) {
+                throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
+            }
+        } else {
+            if (reservationDate.toLocalTime().isBefore(LocalTime.of(11,0)) || reservationDate.toLocalTime().isAfter(LocalTime.of(21,0))) {
+                throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
+            }
         }
     }
 }
