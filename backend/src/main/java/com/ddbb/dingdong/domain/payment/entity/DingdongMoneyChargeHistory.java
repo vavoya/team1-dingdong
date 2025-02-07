@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.domain.payment;
+package com.ddbb.dingdong.domain.payment.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
