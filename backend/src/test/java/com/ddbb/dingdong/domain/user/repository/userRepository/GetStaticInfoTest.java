@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -24,7 +23,7 @@ class GetStaticInfoTest {
     private SHA512Encoder sha512Encoder = new SHA512Encoder();
     private PasswordEncoder encoder = new PasswordEncoder(sha512Encoder);
     private String password = encoder.encode("123456");
-    private School school = new School(null, "seoul", "seoul", new BigDecimal("1.0"), new BigDecimal("1.0"));
+    private School school = new School(null, "seoul", "seoul", 1.0, 1.0);
 
     private Home home = new Home(null, 1.0, 1.0, 1.0, null,"address", new User());
     private User user = new User(null, "test", "test@test.com", password, LocalDateTime.now(), school,home);
