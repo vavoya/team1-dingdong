@@ -1,6 +1,6 @@
 import BottomOverlayModal from "@/pages/BusBooking/Components/BottomOverlayModal";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import * as S from "./styles";
 import CancelButton from "@/components/designSystem/Button/OutlineButton";
 import SolidButton from "@/components/designSystem/Button/SolidButton";
@@ -8,7 +8,8 @@ import InfoIcon from "@/components/designSystem/Icons/InfoIcon";
 import { colors } from "@/styles/colors";
 import DayRepeatBoxIcon from "@/components/designSystem/Icons/DayRepeatBoxIcon";
 import DayRepeatCheckIcon from "@/components/designSystem/Icons/DayRepeatCheckIcon";
-import SelectTime from "@/components/TimePickerWheel";
+
+import TimeWheel, { TimeWheelHandle } from "@/components/TimePickerWheel";
 
 interface SelectTimeBottomModalProps {
   commuteType: CommuteType;
@@ -22,6 +23,18 @@ export default function SelectTimeBottomModal({
   setIsTimeSelectModalOpen,
 }: SelectTimeBottomModalProps) {
   const [repeatIconToggle, setRepeatIconToggle] = useState(false);
+
+  const timeWheelRef = useRef<TimeWheelHandle>(null);
+
+  const handleConfirm = () => {
+    if (timeWheelRef.current) {
+      const selectedTime = timeWheelRef.current.getSelectedTime();
+      console.log(
+        `${selectedTime.amPm} ${selectedTime.hour}:${selectedTime.minute}`
+      );
+    }
+  };
+
   return (
     <BottomOverlayModal
       isOpen={isTimeSelectModalOpen}
@@ -49,6 +62,8 @@ export default function SelectTimeBottomModal({
       </S.SelectTimeInfo>
       <S.TimePickerWheel></S.TimePickerWheel>
 
+      <TimeWheel ref={timeWheelRef} />
+
       <S.DateRepeatSelectBox>
         <S.DateRepeatText>이 시각 요일 반복</S.DateRepeatText>
         <S.CheckBox onClick={() => setRepeatIconToggle((prev) => !prev)}>
@@ -74,7 +89,10 @@ export default function SelectTimeBottomModal({
         />
         <SolidButton
           text="선택하기"
-          onClick={() => setIsTimeSelectModalOpen(false)}
+          onClick={() => {
+            setIsTimeSelectModalOpen(false);
+            handleConfirm();
+          }}
         />
       </S.ButtonBox>
     </BottomOverlayModal>
