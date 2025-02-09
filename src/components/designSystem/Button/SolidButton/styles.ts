@@ -1,8 +1,9 @@
 import { colors } from "@/styles/colors";
 import { fonts } from "@/styles/fonts";
+import { Body1SemiBold } from "@/styles/typography";
 import styled from "styled-components";
 
-export const ButtonContainer = styled.button<{
+export const ButtonContainer = styled(Body1SemiBold).attrs({ as: "button" })<{
   $active: boolean;
 }>`
   background-color: ${(props) =>
