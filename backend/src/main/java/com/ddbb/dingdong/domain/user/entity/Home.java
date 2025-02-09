@@ -29,4 +29,8 @@ public class Home {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void associateUser(User user) {
+        this.user = user;
+    }
 }

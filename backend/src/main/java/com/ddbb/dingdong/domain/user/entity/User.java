@@ -34,4 +34,9 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Home home;
+
+    public void associateHome(Home home) {
+        this.home = home;
+        home.associateUser(this);
+    }
 }
