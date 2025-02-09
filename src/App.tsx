@@ -18,6 +18,8 @@ import ReservationsPage from "@/pages/Reservations/page.tsx";
 // 컴포넌트
 import Loading from "@/components/Loading";
 import CustomRouteBooking from "./pages/BusBooking/CustomRouteBooking/page.tsx";
+import FixedRouteBooking from "./pages/BusBooking/FixedRouteBooking/page.tsx";
+import FixedRouteBookingSelectBus from "./pages/BusBooking/FixedRouteBookingSelectBus/page.tsx";
 
 function App() {
   return (
@@ -35,6 +37,14 @@ function App() {
             <Route path="set-home-location" element={<SetHomeLocation />} />
             {/* 버스 예매하기  */}
             <Route path="custom-bus-booking" element={<CustomRouteBooking />} />
+            {/* 함께 타기 예매하기  */}
+            <Route path="fixed-bus-booking" element={<FixedRouteBooking />}>
+              <Route
+                path="select-bus"
+                element={<FixedRouteBookingSelectBus />}
+              />
+            </Route>
+
             {/* 실시간 버스 위치 */}
             <Route path="bus-tracker" element={<BusTrackerPage />} />
             {/* 예매 내역 */}

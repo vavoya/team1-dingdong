@@ -69,7 +69,28 @@ export const getDaysInMonth = (year: number, month: number) => {
   return days;
 };
 // 예매 가능한 기간에 해당하는지와 등교버스 하교버스 운영 시간이 지나도 비활성화여부를 체크.
-export const isDateDisabled = (date: Date, commuteType: CommuteType) => {
+export const isDateDisabled = (
+  date: Date,
+  commuteType: CommuteType,
+  calendarType = "customBooking"
+) => {
+  if (calendarType !== "customBooking") {
+    const now = new Date();
+    const compareDate = new Date(date);
+    compareDate.setHours(
+      now.getHours(),
+      now.getMinutes(),
+      now.getSeconds(),
+      now.getMilliseconds()
+    );
+
+    const TWO_DAYS = 48 * 60 * 60;
+    const minDate = new Date(now.getTime());
+    const maxDate = new Date(now.getTime() + TWO_DAYS * 1000);
+
+    return compareDate < minDate || compareDate > maxDate;
+  }
+
   const now = new Date();
   const compareDate = new Date(date);
   compareDate.setHours(
