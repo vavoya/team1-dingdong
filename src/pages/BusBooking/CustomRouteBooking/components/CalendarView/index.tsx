@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as S from "./styles";
 import ChevronLeftIcon from "@/components/designSystem/Icons/ChevronLeftIcon";
 import { colors } from "@/styles/colors";
@@ -85,18 +85,22 @@ export default function CalendarView({
     if (AIBtnToggles[currentMonthIndex]) {
       console.log("제거");
       dispatch(
-        timeScheduleActions.clearAIRecommendations(
-          currentDate.year,
-          currentDate.month + 1
-        )
+        timeScheduleActions.clearAIRecommendations({
+          year: selectedDate.year,
+          month: selectedDate.month,
+        })
       );
     } else {
       dispatch(
-        timeScheduleActions.setAIRecommendations(
-          currentDate.year,
-          currentDate.month + 1,
-          ["2025-02-12T09:00:00", "2025-02-13T10:30:00", "2025-02-14T14:00:00"]
-        )
+        timeScheduleActions.setAIRecommendations({
+          ...currentDate,
+          month: currentDate.month + 1,
+          recommendations: [
+            "2025-02-12T09:00:00",
+            "2025-02-13T10:30:00",
+            "2025-02-14T14:00:00",
+          ],
+        })
       );
     }
     setAIBtnToggles((prev) => [
@@ -108,12 +112,13 @@ export default function CalendarView({
 
   const isDateHighlighted = (year: number, month: number, day: number) => {
     // 실제 선택된 시간이 있는지 확인
-    const hasScheduledTime = timeScheduleSelectors.hasScheduledTime(
-      selectedTimeSchedule,
-      year,
-      month + 1,
-      day
-    );
+
+    const hasScheduledTime = timeScheduleSelectors.hasScheduledTime({
+      timeSchedule: selectedTimeSchedule,
+      year: currentDate.year,
+      month: currentDate.month + 1,
+      day: day,
+    });
 
     // 임시 선택 상태 확인
     const isTempSelected =
@@ -155,7 +160,9 @@ export default function CalendarView({
             <ChevronLeftIcon size={24} fill={colors.gray50} />
           </S.IconWrapper>
 
-          <S.CurrentMonth>{formatMonthName(currentDate.month)}</S.CurrentMonth>
+          <S.CurrentMonth>
+            {formatMonthName(currentDate.month + 1)}
+          </S.CurrentMonth>
           <S.IconWrapper
             onClick={() => {
               if (currentMonthIndex === 2) return;
@@ -194,7 +201,7 @@ export default function CalendarView({
                       setIsTimeSelectModalOpen(true);
                       setSelectedDate({
                         year: currentDate.year,
-                        month: currentDate.month,
+                        month: currentDate.month + 1,
                         day,
                       });
                     }}
@@ -203,7 +210,7 @@ export default function CalendarView({
                     key={`${day}-${dayIndex}`}
                     $isHighlighted={isDateHighlighted(
                       currentDate.year,
-                      currentDate.month,
+                      currentDate.month + 1,
                       day
                     )}>
                     {day}

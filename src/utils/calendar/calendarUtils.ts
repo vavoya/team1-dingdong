@@ -2,7 +2,7 @@ import { WEEKDAYS } from "@/constants/calendarConstants";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
 
 export const formatMonthName = (month: number) => {
-  return `${month + 1}월`;
+  return `${month}월`;
 };
 
 export const formatDate = ({
@@ -17,7 +17,7 @@ export const formatDate = ({
   const date = new Date(year, month, day); // JS에서 month는 0부터.
   const dayOfWeek = WEEKDAYS[date.getDay()];
 
-  return `${month + 1}월 ${day}일 ${dayOfWeek}`;
+  return `${month}월 ${day}일 ${dayOfWeek}`;
 };
 // 오후 2시 30분 => {hour:14, minute:30}
 export const parseTime = ({
@@ -39,6 +39,12 @@ export const parseTime = ({
   }
 
   return { hour: parsedHour, minute: parsedMinute };
+};
+// 26일 외 xx개.
+export const getSelectedDaysCount = (allSchedules: string[]): string => {
+  const earliestDate = new Date(allSchedules[0]); // 가장 빠른 날짜
+
+  return `${earliestDate.getDate()}일 외 ${allSchedules.length - 1}개`; // Day 값 반환
 };
 
 export const getDaysInMonth = (year: number, month: number) => {

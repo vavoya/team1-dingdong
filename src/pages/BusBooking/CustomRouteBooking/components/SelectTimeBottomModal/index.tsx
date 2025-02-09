@@ -1,6 +1,6 @@
 import BottomOverlayModal from "@/pages/BusBooking/Components/BottomOverlayModal";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as S from "./styles";
 import CancelButton from "@/components/designSystem/Button/OutlineButton";
 import SolidButton from "@/components/designSystem/Button/SolidButton";
@@ -16,12 +16,14 @@ import {
 } from "@/pages/BusBooking/store/types";
 import { formatDate, parseTime } from "@/utils/calendar/calendarUtils";
 import { timeScheduleActions } from "@/pages/BusBooking/store/actions";
+import {
+  GOING_TO_HOME_BUS_START_TIME,
+  GOING_TO_SCHOOL_BUS_START_TIME,
+} from "@/constants/timeWheelView";
+import { timeScheduleSelectors } from "@/pages/BusBooking/store/selectors";
+import { allSameTimeOnSameWeekday } from "@/utils/calendar/selectTimeBottomModalUtils";
+import { selectedDateType } from "../../types/selectedDateType";
 
-interface selectedDateType {
-  month: number;
-  year: number;
-  day: number;
-}
 interface SelectTimeBottomModalProps {
   selectedDate: selectedDateType; // 모달에서 현재 선택된 시간
   selectedTimeSchedule: TimeSchedule; // 총 반영된 선택된 시간
@@ -39,7 +41,9 @@ export default function SelectTimeBottomModal({
   isTimeSelectModalOpen,
   setIsTimeSelectModalOpen,
 }: SelectTimeBottomModalProps) {
-  const [repeatIconToggle, setRepeatIconToggle] = useState(false);
+  const [repeatIconToggle, setRepeatIconToggle] = useState<null | boolean>(
+    null
+  );
 
   const timeWheelRef = useRef<TimeWheelHandle>(null);
 
@@ -50,22 +54,18 @@ export default function SelectTimeBottomModal({
         `${selectedTime.amPm} ${selectedTime.hour}:${selectedTime.minute}`
       );
       dispatch(
-        timeScheduleActions.setSingleTime(
-          selectedDate.year,
-          selectedDate.month + 1,
-          selectedDate.day,
-          parseTime(selectedTime)
-        )
+        timeScheduleActions.setSingleTime({
+          ...selectedDate,
+          time: parseTime(selectedTime),
+        })
       );
       if (repeatIconToggle) {
         dispatch(
-          timeScheduleActions.setRepeatingDays(
-            selectedDate.year,
-            selectedDate.month + 1,
-            selectedDate.day,
-            parseTime(selectedTime),
-            commuteType
-          )
+          timeScheduleActions.setRepeatingDays({
+            ...selectedDate,
+            time: parseTime(selectedTime),
+            commuteType,
+          })
         );
       }
     }
@@ -73,14 +73,67 @@ export default function SelectTimeBottomModal({
 
   const handleCancel = () => {
     dispatch(
-      timeScheduleActions.removeSingleTime(
-        selectedDate.year,
-        selectedDate.month + 1,
-        selectedDate.day
-      )
+      timeScheduleActions.removeSingleTime({
+        ...selectedDate,
+        month: selectedDate.month,
+      })
     );
   };
 
+  const getInitTime = useMemo(() => {
+    if (
+      timeScheduleSelectors.hasScheduledTime({
+        timeSchedule: selectedTimeSchedule,
+        ...selectedDate,
+      })
+    ) {
+      const { hour, minute } = timeScheduleSelectors.getTimeForDate({
+        timeSchedule: selectedTimeSchedule,
+        ...selectedDate,
+      });
+
+      return { initHour: hour, initMinute: minute };
+    }
+
+    return commuteType === "등교"
+      ? { initHour: GOING_TO_SCHOOL_BUS_START_TIME, initMinute: 0 }
+      : { initHour: GOING_TO_HOME_BUS_START_TIME, initMinute: 0 };
+  }, [selectedTimeSchedule, selectedDate, commuteType]); // 의존성 배열에 필요한 값들 추가
+
+  console.log(selectedTimeSchedule, "지금까지의 데이터");
+
+  const isRepeatedDay = () => {
+    let isRepeated = false;
+    if (
+      timeScheduleSelectors.hasScheduledTime({
+        timeSchedule: selectedTimeSchedule,
+        ...selectedDate,
+      })
+    ) {
+      const { hour, minute } = timeScheduleSelectors.getTimeForDate({
+        timeSchedule: selectedTimeSchedule,
+        ...selectedDate,
+      });
+      isRepeated = allSameTimeOnSameWeekday({
+        timeSchedule: selectedTimeSchedule,
+        ...selectedDate,
+        hour,
+        minute,
+      });
+    }
+
+    return isRepeated;
+  };
+  // hasdate이면 get해와서 표시.
+
+  // 모달이 열릴 때, 토글 상태 다시 반영.
+  useEffect(() => {
+    if (isTimeSelectModalOpen && repeatIconToggle !== null) {
+      const returnValue = isRepeatedDay();
+      console.log(returnValue, "qksghk");
+      setRepeatIconToggle(returnValue);
+    }
+  }, [isTimeSelectModalOpen]);
   return (
     <BottomOverlayModal
       isOpen={isTimeSelectModalOpen}
@@ -102,17 +155,41 @@ export default function SelectTimeBottomModal({
       <S.SelectTimeInfo>
         <S.DateText>{formatDate(selectedDate)}</S.DateText>
         <S.SelectTimeBox>
-          <S.DayTime>오전</S.DayTime>
-          <S.TimeText>11: 00</S.TimeText>
+          {timeScheduleSelectors.hasScheduledTime({
+            timeSchedule: selectedTimeSchedule,
+            ...selectedDate,
+          }) ? (
+            <>
+              {/* hour, minute을 가지고 오전인지 오후인지 반환 &  */}
+              <S.DayTime>
+                {getInitTime.initHour > 12 ? "오후" : "오전"}
+              </S.DayTime>
+              <S.TimeText>
+                {getInitTime.initHour > 12
+                  ? `${getInitTime.initHour - 12}:${getInitTime.initMinute
+                      .toString()
+                      .padStart(2, "0")}`
+                  : `${getInitTime.initHour}:${getInitTime.initMinute
+                      .toString()
+                      .padStart(2, "0")}`}
+              </S.TimeText>
+            </>
+          ) : (
+            <>-</>
+          )}
         </S.SelectTimeBox>
       </S.SelectTimeInfo>
       <S.TimePickerWheel></S.TimePickerWheel>
 
-      <TimeWheel ref={timeWheelRef} />
+      <TimeWheel ref={timeWheelRef} initTime={getInitTime} />
 
       <S.DateRepeatSelectBox>
         <S.DateRepeatText>이 시각 요일 반복</S.DateRepeatText>
-        <S.CheckBox onClick={() => setRepeatIconToggle((prev) => !prev)}>
+
+        <S.CheckBox
+          onClick={() => {
+            setRepeatIconToggle((prev) => !prev);
+          }}>
           <DayRepeatBoxIcon
             fill={repeatIconToggle ? colors.orange900 : colors.gray40}
           />

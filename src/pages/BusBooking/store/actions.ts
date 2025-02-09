@@ -1,39 +1,58 @@
 import { CommuteType } from "../types/commuteType";
 import { Time } from "./types";
 
+interface TimePayload {
+  year: number;
+  month: number;
+  day: number;
+  time: Time;
+}
+
+interface RecommendationPayload {
+  year: number;
+  month: number;
+  recommendations: string[];
+}
+
+interface RepeatingDaysPayload extends TimePayload {
+  commuteType: CommuteType;
+}
+
 export const timeScheduleActions = {
-  setSingleTime: (year: number, month: number, day: number, time: Time) => ({
+  setSingleTime: ({ year, month, day, time }: TimePayload) => ({
     type: "SET_SINGLE_TIME" as const,
     payload: { year, month, day, time },
   }),
 
-  removeSingleTime: (year: number, month: number, day: number) => ({
+  removeSingleTime: ({ year, month, day }: Omit<TimePayload, "time">) => ({
     type: "REMOVE_SINGLE_TIME" as const,
     payload: { year, month, day },
   }),
 
-  setAIRecommendations: (
-    year: number,
-    month: number,
-    recommendations: string[] // ISO 형식의 날짜 배열
-  ) => ({
+  setAIRecommendations: ({
+    year,
+    month,
+    recommendations,
+  }: RecommendationPayload) => ({
     type: "SET_AI_RECOMMENDATIONS" as const,
     payload: { year, month, recommendations },
   }),
 
-  clearAIRecommendations: (year: number, month: number) => ({
+  clearAIRecommendations: ({
+    year,
+    month,
+  }: Omit<RecommendationPayload, "recommendations">) => ({
     type: "CLEAR_AI_RECOMMENDATIONS" as const,
     payload: { year, month },
   }),
-  // 다른 액션들
 
-  setRepeatingDays: (
-    year: number,
-    month: number,
-    day: number,
-    time: Time,
-    commuteType: CommuteType
-  ) => ({
+  setRepeatingDays: ({
+    year,
+    month,
+    day,
+    time,
+    commuteType,
+  }: RepeatingDaysPayload) => ({
     type: "SET_REPEATING_DAYS" as const,
     payload: { year, month, day, time, commuteType },
   }),

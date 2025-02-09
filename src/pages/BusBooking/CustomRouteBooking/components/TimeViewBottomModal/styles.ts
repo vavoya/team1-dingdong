@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { colors } from "@/styles/colors"; // 색상 파일을 임포트해야 합니다.
-import { Body2Regular } from "@/styles/typography";
 import { fonts } from "@/styles/fonts";
 
 export const ModalHeader = styled.div`

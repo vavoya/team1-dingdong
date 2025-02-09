@@ -1,6 +1,7 @@
 import { CommuteType } from "../types/commuteType";
 
 // src/store/types.ts
+
 export interface Time {
   hour: number;
   minute: number;

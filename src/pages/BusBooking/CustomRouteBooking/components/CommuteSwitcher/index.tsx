@@ -10,7 +10,6 @@ import {
   TitleText,
   Wrapper,
 } from "./styles";
-import { useState } from "react";
 import SchoolIcon from "@/components/designSystem/Icons/SchoolIcon";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
 import {
@@ -27,7 +26,6 @@ interface CommuteSwitcherProps {
 }
 
 export default function CommuteSwitcher({
-  selectedTimeSchedule,
   dispatch,
   commuteType,
   setCommuteType,

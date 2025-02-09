@@ -1,5 +1,5 @@
 import ExitHeader from "@/components/Headers/ExitHeader";
-import { useReducer, useState } from "react";
+import { useMemo, useReducer, useState } from "react";
 import CommuteSwitcher from "./components/CommuteSwitcher";
 import InfoIcon from "@/components/designSystem/Icons/InfoIcon";
 import ChevronRightIcon from "@/components/designSystem/Icons/ChevronRightIcon";
@@ -20,22 +20,39 @@ import { CommuteType, OverlayBottomModalType } from "../types/commuteType";
 
 import TimeViewBottomModal from "./components/TimeViewBottomModal";
 import { timeScheduleReducer } from "../store/reducer";
+import { getSelectedDaysCount } from "@/utils/calendar/calendarUtils";
+import { timeScheduleSelectors } from "../store/selectors";
+import SelectTimeBottomModal from "./components/SelectTimeBottomModal";
+import { convertIsoToDateObject } from "@/utils/calendar/timeViewBottomModalUtil";
 
 export default function CustomRouteBooking() {
   // 예매 나가기 모달 상태관리
 
   const [selectedTimeSchedule, dispatch] = useReducer(timeScheduleReducer, {});
 
-  const [exitConfimModalOpen, setExitConfimModalOpen] = useState(false);
-
   const exitButtonHandler = () => {
-    setExitConfimModalOpen(true);
+    // 모달 오픈. ( 예매를 취소 하시겠어요 ?)
   };
   const [commuteType, setCommuteType] = useState<CommuteType>("등교");
   const [overlayBottomModalType, setOverlayBottomModalType] =
     useState<OverlayBottomModalType>("editable");
 
   const [timeViewModalOpen, setTimeViewModalOpen] = useState(false);
+
+  // useMemo로 캐시된 selectedTimeSchedule 값을 가져옴
+  const cachedSelectedTimeSchedules = useMemo<string[]>(
+    () => timeScheduleSelectors.getAllTimeScheduleToArray(selectedTimeSchedule),
+    [selectedTimeSchedule] // selectedTimeSchedule 값이 변경될 때만 재계산
+  );
+  console.log(cachedSelectedTimeSchedules, "배열로");
+
+  const [selectedDate, setSelectedDate] = useState<{
+    year: number;
+    month: number;
+    day: number;
+  }>(convertIsoToDateObject(cachedSelectedTimeSchedules[0]));
+
+  const [isTimeSelectModalOpen, setIsTimeSelectModalOpen] = useState(false);
   return (
     <>
       <ExitHeader text="버스예매" onClick={exitButtonHandler} />
@@ -66,16 +83,33 @@ export default function CustomRouteBooking() {
               setTimeViewModalOpen(true);
               setOverlayBottomModalType("editable");
             }}>
-            <ScheduleCount>-</ScheduleCount>
+            {/* 전체 일정을 들고오기. 그 중 빠른 일자를 앞으로. 없으면- */}
+            <ScheduleCount>
+              {cachedSelectedTimeSchedules.length > 0
+                ? getSelectedDaysCount(cachedSelectedTimeSchedules)
+                : "-"}
+            </ScheduleCount>
             <ChevronRightIcon />
           </CountViewBox>
         </TotalEditableViewButton>
 
         <TimeViewBottomModal
+          setSelectedDate={setSelectedDate}
+          setIsTimeSelectModalOpen={setIsTimeSelectModalOpen}
+          selectedTimeSchduleArray={cachedSelectedTimeSchedules}
           isEditablTimeViewModalOpen={timeViewModalOpen}
           setIsEditablTimeViewModalOpen={setTimeViewModalOpen}
           commuteType={commuteType}
           modalType={overlayBottomModalType}
+        />
+
+        <SelectTimeBottomModal
+          selectedTimeSchedule={selectedTimeSchedule}
+          dispatch={dispatch}
+          selectedDate={{ ...selectedDate }}
+          isTimeSelectModalOpen={isTimeSelectModalOpen}
+          setIsTimeSelectModalOpen={setIsTimeSelectModalOpen}
+          commuteType={commuteType}
         />
 
         <ConfirmButtonWrapper>
@@ -91,3 +125,5 @@ export default function CustomRouteBooking() {
     </>
   );
 }
+// 시간 선택 모달은 달력에서 한 번,
+// page.tsx에서 한 번.

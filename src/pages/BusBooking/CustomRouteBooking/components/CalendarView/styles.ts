@@ -1,4 +1,4 @@
-import styled, { css, keyframes } from "styled-components";
+import styled from "styled-components";
 import { colors } from "@/styles/colors";
 import { Detail1Regular, Heading2SemiBold } from "@/styles/typography";
 import { fonts } from "@/styles/fonts";
