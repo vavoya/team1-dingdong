@@ -13,6 +13,7 @@ import {
   ShowSelectedSchedule,
   Subtitle,
 } from "./styles";
+import { convertInfoToText } from "@/utils/calendar/fixedBusBookingUtils";
 
 export interface SelectedTimeType {
   year: number;
@@ -36,9 +37,6 @@ export type timeType = {
 export default function FixedRouteBooking() {
   // 예매 나가기 모달 상태관리
 
-  const [selectedTime, setSelectedTime] = useState<SelectedTimeType | null>(
-    null
-  );
   const [selectedHourMinute, setSelectedHourMinute] = useState<timeType | null>(
     null
   );
@@ -93,29 +91,10 @@ export default function FixedRouteBooking() {
 
   useEffect(() => {
     if (selectedDate && selectedHourMinute) {
-      setShowInfo(convertInfoToText());
+      setShowInfo(convertInfoToText(selectedDate, selectedHourMinute));
     }
   }, [selectedDate, selectedHourMinute]);
 
-  const convertInfoToText = () => {
-    const { year, month, day } = selectedDate!;
-    const { hour, minute } = selectedHourMinute!;
-
-    // 날짜 객체 생성
-    const date = new Date(year, month - 1, day, hour, minute);
-
-    // 요일 변환 (0: 일요일, 1: 월요일, ..., 6: 토요일)
-    const dayOfWeekArray = ["일", "월", "화", "수", "목", "금", "토"];
-    const dayOfWeek = dayOfWeekArray[date.getDay()];
-
-    // 두 자리 숫자로 변환 (01, 02 등)
-    const formattedMonth = String(month).padStart(2, "0");
-    const formattedDay = String(day).padStart(2, "0");
-    const formattedHour = String(hour).padStart(2, "0");
-    const formattedMinute = String(minute).padStart(2, "0");
-
-    return `${formattedMonth}.${formattedDay} (${dayOfWeek}) ${formattedHour}:${formattedMinute}`;
-  };
   return (
     <>
       <ExitHeader text="함께타기" onClick={exitButtonHandler} />
