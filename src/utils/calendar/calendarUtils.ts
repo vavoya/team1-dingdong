@@ -119,29 +119,3 @@ export const isDateDisabled = (date: Date, commuteType: CommuteType) => {
 export const totalDaysInMonth = (year: number, month: number) => {
   return new Date(year, month + 1, 0).getDate();
 };
-
-// 시간 선택시 가능한 시간인지 반환.
-export const isBookingTimeAvailable = (date: Date) => {
-  const now = new Date();
-  // 현재와 같은 시각으로 48시간 후 부터 이므로, 현재 시각과 맞추기.
-  // 일반 Date는 오전 12시로 맞춰져있어서, 최소 가능한 일자가 비활성화 되는 문제가 생길 수 있음.
-  date.setHours(
-    now.getHours(),
-    now.getMinutes(),
-    now.getSeconds(),
-    now.getMilliseconds()
-  );
-  const TWO_DAYS_AND_FIVE_MINUTES_TO_SECONDS = 48 * 60 * 60 + 5 * 60; // 48시간 + 5분 후 부터 가능. 이를 초로 환산.
-  const TWO_DAYS_TO_SECONDS = 48 * 60 * 60;
-
-  const minDate = new Date(
-    now.getTime() + TWO_DAYS_AND_FIVE_MINUTES_TO_SECONDS * 1000 // 밀리초로 계산
-  );
-  const maxDate = new Date(
-    now.getTime() + TWO_DAYS_TO_SECONDS * 1000 // 밀리초로 계산
-  );
-
-  maxDate.setMonth(minDate.getMonth() + 2); // 2개월 후
-
-  return minDate <= date && date <= maxDate;
-};

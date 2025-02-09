@@ -16,13 +16,19 @@ interface TimeWheelDataType {
 }
 interface TimeWheelProps {
   initTime?: TimeWheelDataType; // 초기 설정 시간. ex) 14:00 형식
+  onTimeChange?: (amPm: string, hour: string, minute: string) => void;
 }
 export interface TimeWheelHandle {
   getSelectedTime: () => { amPm: string; hour: string; minute: string };
+  resetScrollPosition: (
+    newAmPm: number,
+    newHour: number,
+    newMinute: number
+  ) => void;
 }
 
 export default forwardRef(function TimeWheel(
-  { initTime = { initHour: 8, initMinute: 0 } }: TimeWheelProps,
+  { initTime = { initHour: 8, initMinute: 0 }, onTimeChange }: TimeWheelProps,
   ref: React.ForwardedRef<TimeWheelHandle>
 ) {
   const initScrollTop = useRef(convertTimeToScrollPosition(initTime));
@@ -30,6 +36,11 @@ export default forwardRef(function TimeWheel(
   const [selectedHour, setSelectedHour] = useState("");
   const [selectedMinute, setSelectedMinute] = useState("");
   const [selectedAmPm, setSelectedAmPm] = useState("");
+
+  // 특정 위치로 재설정하기 위한 상태
+  const amPmContainerRef = useRef<HTMLDivElement | null>(null);
+  const hourContainerRef = useRef<HTMLDivElement | null>(null);
+  const minuteContainerRef = useRef<HTMLDivElement | null>(null);
 
   const hours = [...Array(13)].map((_, i) => i.toString().padStart(2, "0"));
   const minutes = ["00", "30"];
@@ -51,7 +62,30 @@ export default forwardRef(function TimeWheel(
       hour: selectedHour,
       minute: selectedMinute,
     }),
+    resetScrollPosition,
   }));
+  console.log(selectedHour, selectedMinute, selectedAmPm, "시간시간");
+
+  // 특정 시각으로 스크롤을 재설정하는 함수.
+
+  const resetScrollPosition = (
+    newAmPm: number,
+    newHour: number,
+    newMinute: number
+  ) => {
+    if (amPmContainerRef.current) {
+      amPmContainerRef.current.scrollTop = newAmPm * TIME_WHEEL_ITEM_BOX_HEIGHT;
+    }
+
+    if (hourContainerRef.current) {
+      hourContainerRef.current.scrollTop = newHour * TIME_WHEEL_ITEM_BOX_HEIGHT;
+    }
+
+    if (minuteContainerRef.current) {
+      minuteContainerRef.current.scrollTop =
+        newMinute * TIME_WHEEL_ITEM_BOX_HEIGHT;
+    }
+  };
 
   const handleAmPmScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
@@ -68,6 +102,10 @@ export default forwardRef(function TimeWheel(
     // 무한 스크롤 적용 조건 (항목이 3개 이상일 때)
     const index = Math.round(container.scrollTop / TIME_WHEEL_ITEM_BOX_HEIGHT);
     setSelectedAmPm(amPm[index] || "00");
+
+    if (onTimeChange) {
+      onTimeChange(selectedAmPm, selectedHour, selectedMinute);
+    }
   };
 
   const handleHourScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -100,6 +138,10 @@ export default forwardRef(function TimeWheel(
       hours.length;
 
     setSelectedHour(hours[index]);
+
+    if (onTimeChange) {
+      onTimeChange(selectedAmPm, selectedHour, selectedMinute);
+    }
   };
 
   const handleMinuteScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -115,6 +157,10 @@ export default forwardRef(function TimeWheel(
 
     const index = Math.round(container.scrollTop / 46);
     setSelectedMinute(minutes[index]);
+
+    if (onTimeChange) {
+      onTimeChange(selectedAmPm, selectedHour, selectedMinute);
+    }
   };
 
   useEffect(() => {
@@ -127,16 +173,19 @@ export default forwardRef(function TimeWheel(
         <TimePicker
           itemWidth={100}
           time={amPm}
+          ref={amPmContainerRef}
           handleTimeScroll={handleAmPmScroll}
           selectedTime={selectedAmPm}
         />
         <TimePicker
           time={extendedHours}
+          ref={hourContainerRef}
           handleTimeScroll={handleHourScroll}
           selectedTime={selectedHour}
         />
         <TimePicker
           time={minutes}
+          ref={minuteContainerRef}
           handleTimeScroll={handleMinuteScroll}
           selectedTime={selectedMinute}
         />

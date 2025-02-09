@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { Container, ScrollContainer, SelectionBox, TimeItem } from "./styles";
 
 interface TimePickerProps {
@@ -7,16 +8,15 @@ interface TimePickerProps {
   itemWidth?: number;
 }
 
-export default function TimePicker({
-  time,
-  handleTimeScroll,
-  selectedTime,
-  itemWidth = 50,
-}: TimePickerProps) {
+// forwardRef 사용하여 ref 전달 가능하도록 수정
+export default forwardRef<HTMLDivElement, TimePickerProps>(function TimePicker(
+  { time, handleTimeScroll, selectedTime, itemWidth = 50 },
+  ref
+) {
   return (
     <Container $itemWidth={itemWidth}>
       <SelectionBox $itemWidth={itemWidth} />
-      <ScrollContainer onScroll={handleTimeScroll}>
+      <ScrollContainer ref={ref} onScroll={handleTimeScroll}>
         {time.map((t, index) => (
           <TimeItem key={`t-${index}-${t}`} isSelected={selectedTime === t}>
             {t}
@@ -25,4 +25,4 @@ export default function TimePicker({
       </ScrollContainer>
     </Container>
   );
-}
+});

@@ -23,6 +23,11 @@ import {
 import { timeScheduleSelectors } from "@/pages/BusBooking/store/selectors";
 import { allSameTimeOnSameWeekday } from "@/utils/calendar/selectTimeBottomModalUtils";
 import { selectedDateType } from "../../types/selectedDateType";
+import {
+  handleTimeAvailability,
+  parseAndCreateTime,
+  updateScrollPosition,
+} from "@/utils/calendar/timeWheelUtils";
 
 interface SelectTimeBottomModalProps {
   selectedDate: selectedDateType; // 모달에서 현재 선택된 시간
@@ -47,12 +52,34 @@ export default function SelectTimeBottomModal({
 
   const timeWheelRef = useRef<TimeWheelHandle>(null);
 
+  const handleTimeChange = (amPm: string, hour: string, minute: string) => {
+    console.log(`현재 시간: ${amPm} ${hour}:${minute}`);
+
+    const newTime = parseAndCreateTime(selectedDate, amPm, hour, minute);
+    console.log(selectedDate, newTime.getHours(), newTime.getMinutes());
+
+    // 1초 후에 실행되도록 setTimeout 사용
+    setTimeout(() => {
+      const timeAvailability = handleTimeAvailability(newTime, commuteType);
+
+      if (timeAvailability) {
+        updateScrollPosition(
+          timeAvailability.reset,
+          timeAvailability.morningOrNoon!,
+          timeAvailability.hour,
+          timeWheelRef
+        );
+      }
+    }, 1000); // 1000ms (1초) 후에 실행
+  };
+
   const handleConfirm = () => {
     if (timeWheelRef.current) {
       const selectedTime = timeWheelRef.current.getSelectedTime();
       console.log(
         `${selectedTime.amPm} ${selectedTime.hour}:${selectedTime.minute}`
       );
+
       dispatch(
         timeScheduleActions.setSingleTime({
           ...selectedDate,
@@ -181,7 +208,11 @@ export default function SelectTimeBottomModal({
       </S.SelectTimeInfo>
       <S.TimePickerWheel></S.TimePickerWheel>
 
-      <TimeWheel ref={timeWheelRef} initTime={getInitTime} />
+      <TimeWheel
+        ref={timeWheelRef}
+        initTime={getInitTime}
+        onTimeChange={handleTimeChange}
+      />
 
       <S.DateRepeatSelectBox>
         <S.DateRepeatText>이 시각 요일 반복</S.DateRepeatText>
