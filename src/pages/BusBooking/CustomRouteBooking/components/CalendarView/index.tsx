@@ -20,6 +20,8 @@ import {
   TimeScheduleAction,
 } from "@/pages/BusBooking/store/types";
 import { timeScheduleSelectors } from "@/pages/BusBooking/store/selectors";
+import { useGetHomeLocation } from "@/hooks/setHomeLocation/useHomeLocation";
+import { useGetAIRecommendation } from "@/hooks/BusBooking/useCustomBooking";
 
 interface CalendarViewProps {
   selectedTimeSchedule: TimeSchedule; // 총 반영된 선택된 시간
@@ -32,7 +34,8 @@ export default function CalendarView({
   dispatch,
 }: CalendarViewProps) {
   // AI 버튼 관리
-  const [AIBtnToggles, setAIBtnToggles] = useState([false, false, false]);
+
+  const [AIBtnToggles, setAIBtnToggles] = useState([false, false, false]); // 3개의 month에서 각각 다루는 AI 적용 버튼 토글.
 
   // 현재 화면 캘린저
   const { currentDate, goToNextMonth, goToPreviousMonth } = useCalendar();
@@ -49,6 +52,11 @@ export default function CalendarView({
     month: number;
     day: number;
   }>({ year: currentDate.year, month: currentDate.month, day: 0 });
+
+  // const AIRecommendationArray = useGetAIRecommendation(
+  //   currentDate.year,
+  //   currentDate.month + 1
+  // );
 
   const months = useRef([
     getDaysInMonth(currentDate.year, currentDate.month),
@@ -81,7 +89,7 @@ export default function CalendarView({
 
   const handleAIRecommendation = () => {
     // AI 추천 로직 (API 호출 등)
-    setToolTipOn(false);
+    const recommendations = setToolTipOn(false);
     if (AIBtnToggles[currentMonthIndex]) {
       console.log("제거");
       dispatch(
@@ -96,9 +104,9 @@ export default function CalendarView({
           ...currentDate,
           month: currentDate.month + 1,
           recommendations: [
-            "2025-02-12T09:00:00",
-            "2025-02-13T10:30:00",
-            "2025-02-14T14:00:00",
+            "2025-02-20T09:00:00", // 한국 시간형식의 ISO.
+            "2025-02-21T10:30:00",
+            "2025-02-22T14:00:00",
           ],
         })
       );
