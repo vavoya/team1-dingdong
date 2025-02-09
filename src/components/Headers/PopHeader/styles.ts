@@ -3,6 +3,9 @@ import { colors } from "@/styles/colors.ts";
 import { Body1SemiBold } from "@/styles/typography.ts";
 
 export const Wrapper = styled.div`
+  position: sticky;
+  top: 0;
+
   display: flex;
   height: 60px;
   padding: 0 20px;

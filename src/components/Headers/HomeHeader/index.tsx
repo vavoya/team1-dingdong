@@ -1,5 +1,5 @@
-import BellSvg from "@/pages/Home/component/BellSvg";
-import UserSvg from "@/pages/Home/component/UserSvg";
+import BellIcon from "@/components/designSystem/Icons/Home/BellIcon";
+import UserIcon from "@/components/designSystem/Icons/Home/UserIcon";
 import {NavButton, NavList, Title, Wrapper} from "@/components/Headers/HomeHeader/styles.ts";
 
 
@@ -15,12 +15,12 @@ export default function HomeHeader() {
             <NavList>
                 <li>
                     <NavButton>
-                        <BellSvg />
+                        <BellIcon />
                     </NavButton>
                 </li>
                 <li>
                     <NavButton>
-                        <UserSvg />
+                        <UserIcon />
                     </NavButton>
                 </li>
             </NavList>
