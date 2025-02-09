@@ -1,5 +1,4 @@
 import { colors } from "@/styles/colors";
-import styled from "styled-components";
 interface DayRepeatBoxIconProps {
   size?: number;
   fill?: string;

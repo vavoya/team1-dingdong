@@ -1,7 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { Section, TimePickerContainer } from "./styles";
 import TimePicker from "./TimePicker";
-import { TIME_WHEEL_ITEM_BOX_HEIGHT } from "@/constants/timeWheelLayout";
+import { TIME_WHEEL_ITEM_BOX_HEIGHT } from "@/constants/timeWheelView";
 interface TimeWheelProps {
   initialHour?: number; // 초기 설정 시간. 8시 부터.
 }
@@ -61,6 +61,7 @@ export default forwardRef(function TimeWheel(
     }
 
     if (isStartHourSet.current) {
+      // 초기는 임시적으로 8시.
       container.scrollTop = initialHour * TIME_WHEEL_ITEM_BOX_HEIGHT;
       isStartHourSet.current = false;
     }
