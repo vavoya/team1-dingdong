@@ -1,10 +1,7 @@
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { Section, TimePickerContainer } from "./styles";
 import TimePicker from "./TimePicker";
-import {
-  TIME_WHEEL_INIT_HOUR,
-  TIME_WHEEL_ITEM_BOX_HEIGHT,
-} from "@/constants/timeWheelLayout";
+import { TIME_WHEEL_ITEM_BOX_HEIGHT } from "@/constants/timeWheelLayout";
 interface TimeWheelProps {
   initialHour?: number; // 초기 설정 시간. 8시 부터.
 }
@@ -13,14 +10,14 @@ export interface TimeWheelHandle {
 }
 
 export default forwardRef(function TimeWheel(
-  { initialHour = TIME_WHEEL_INIT_HOUR }: TimeWheelProps,
+  { initialHour = 8 }: TimeWheelProps,
   ref: React.ForwardedRef<TimeWheelHandle>
 ) {
   const [selectedHour, setSelectedHour] = useState("");
   const [selectedMinute, setSelectedMinute] = useState("");
   const [selectedAmPm, setSelectedAmPm] = useState("");
 
-  const hours = [...Array(12)].map((_, i) => i.toString().padStart(2, "0"));
+  const hours = [...Array(13)].map((_, i) => i.toString().padStart(2, "0"));
   const minutes = ["00", "30"];
   const amPm = ["오전", "오후"];
 
