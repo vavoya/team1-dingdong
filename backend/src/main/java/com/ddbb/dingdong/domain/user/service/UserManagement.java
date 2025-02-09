@@ -20,4 +20,8 @@ public class UserManagement {
         if(!passwordEncoder.matches(password, user.getPassword())) throw UserErrors.NOT_MATCHED_PASSWORD.toException();
         authenticationManager.setAuthentication(new AuthUser(user.getId()));
     }
+
+    public User load(Long userId) {
+        return userRepository.findById(userId).orElseThrow(UserErrors.NOT_FOUND::toException);
+    }
 }

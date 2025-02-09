@@ -17,7 +17,6 @@ public class BusStop {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String roadNameAddress;
 
     @Column(nullable = false)
@@ -31,6 +30,8 @@ public class BusStop {
 
     @Column(nullable = false)
     private LocalDateTime expectedArrivalTime;
+
+    private Long locationId;
 
     @ManyToOne
     @JoinColumn(name = "path_id")

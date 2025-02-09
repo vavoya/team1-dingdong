@@ -25,7 +25,7 @@ public class Line {
     @Column(nullable = false)
     private Integer totalSeconds;
 
-    @OneToMany(mappedBy = "line")
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL)
     private List<Point> points;
 
     @ManyToOne

@@ -53,7 +53,7 @@ public class Reservation {
         this.status = ReservationStatus.CANCELED;
     }
 
-    public void allocateBus(Ticket ticket) {
+    public void allocate(Ticket ticket) {
         if(ticket == null || ticket.getBusScheduleId() == null || ticket.getBusStopId() == null) {
             throw ReservationErrors.INVALID_BUS_TICKET.toException();
         }

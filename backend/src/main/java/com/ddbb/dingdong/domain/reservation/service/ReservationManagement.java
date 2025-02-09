@@ -1,6 +1,7 @@
 package com.ddbb.dingdong.domain.reservation.service;
 
 import com.ddbb.dingdong.domain.reservation.entity.Reservation;
+import com.ddbb.dingdong.domain.reservation.entity.Ticket;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationType;
 import com.ddbb.dingdong.domain.reservation.repository.ReservationRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +19,20 @@ public class ReservationManagement {
 
     public void reserveGeneral(Reservation reservation) {
         validateDateOfGeneralReservation(reservation);
+        reservationRepository.save(reservation);
+    }
+
+    public List<Reservation> findByClusterLabel(Long clusterLabel) {
+        List<Reservation> cluster = reservationRepository.findAllByClusterLabel(clusterLabel);
+        if(cluster.isEmpty()) {
+            throw ReservationErrors.NOT_FOUND.toException();
+        }
+
+        return cluster;
+    }
+
+    public void allocateTicket(Reservation reservation, Ticket ticket) {
+        reservation.allocate(ticket);
         reservationRepository.save(reservation);
     }
 

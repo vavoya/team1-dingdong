@@ -14,12 +14,18 @@ server:
   servlet:
     session:
       cookie:
-        domain: ${CLIENT_ADDRESS}
+        domain: localhost
         same-site: strict
         path: /
 
 client:
-  schema: ${CLIENT_SCHEMA}
-  ip: ${CLIENT_ADDRESS}
-  port: ${CLIENT_PORT}
+  schema: http
+  ip: localhost
+  port: 5173
 
+api:
+  tmap:
+    apikeys:
+      - T126OQYUY39p2KUNHbPXu4YSrF545F3e8BZb92y1
+      - nNA3xYEQxu9msU3roPCCX20tZ7RKsLGa1CoFwcq9
+      - ZPaOi1XYpSaGxutZBwbzw53zKlG8gq9ca8AnqoAB
