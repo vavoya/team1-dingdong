@@ -13,22 +13,32 @@ import {
 import { useState } from "react";
 import SchoolIcon from "@/components/designSystem/Icons/SchoolIcon";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
+import {
+  TimeSchedule,
+  TimeScheduleAction,
+} from "@/pages/BusBooking/store/types";
+import { timeScheduleActions } from "@/pages/BusBooking/store/actions";
 
 interface CommuteSwitcherProps {
   commuteType: CommuteType;
   setCommuteType: React.Dispatch<React.SetStateAction<CommuteType>>; // 핀을 움직여서, 바텀 시트를 보여준다.
+  selectedTimeSchedule: TimeSchedule; // 총 반영된 선택된 시간
+  dispatch: React.Dispatch<TimeScheduleAction>; // 선택시, 업데이트에 사용할 dispatch
 }
 
 export default function CommuteSwitcher({
+  selectedTimeSchedule,
+  dispatch,
   commuteType,
   setCommuteType,
 }: CommuteSwitcherProps) {
+  const switcherHandler = () => {
+    setCommuteType(commuteType === "등교" ? "하교" : "등교");
+    dispatch(timeScheduleActions.clearAll());
+  };
   return (
     <Wrapper>
-      <Subtitle
-        onClick={() =>
-          setCommuteType(commuteType === "등교" ? "하교" : "등교")
-        }>
+      <Subtitle onClick={switcherHandler}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="24"

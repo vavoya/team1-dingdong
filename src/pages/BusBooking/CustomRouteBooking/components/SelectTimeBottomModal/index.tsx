@@ -10,14 +10,31 @@ import DayRepeatBoxIcon from "@/components/designSystem/Icons/DayRepeatBoxIcon";
 import DayRepeatCheckIcon from "@/components/designSystem/Icons/DayRepeatCheckIcon";
 
 import TimeWheel, { TimeWheelHandle } from "@/components/TimePickerWheel";
+import {
+  TimeSchedule,
+  TimeScheduleAction,
+} from "@/pages/BusBooking/store/types";
+import { formatDate, parseTime } from "@/utils/calendar/calendarUtils";
+import { timeScheduleActions } from "@/pages/BusBooking/store/actions";
 
+interface selectedDateType {
+  month: number;
+  year: number;
+  day: number;
+}
 interface SelectTimeBottomModalProps {
+  selectedDate: selectedDateType; // 모달에서 현재 선택된 시간
+  selectedTimeSchedule: TimeSchedule; // 총 반영된 선택된 시간
+  dispatch: React.Dispatch<TimeScheduleAction>; // 선택시, 업데이트에 사용할 dispatch
   commuteType: CommuteType;
   isTimeSelectModalOpen: boolean;
   setIsTimeSelectModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function SelectTimeBottomModal({
+  selectedTimeSchedule,
+  dispatch,
+  selectedDate,
   commuteType,
   isTimeSelectModalOpen,
   setIsTimeSelectModalOpen,
@@ -32,7 +49,36 @@ export default function SelectTimeBottomModal({
       console.log(
         `${selectedTime.amPm} ${selectedTime.hour}:${selectedTime.minute}`
       );
+      dispatch(
+        timeScheduleActions.setSingleTime(
+          selectedDate.year,
+          selectedDate.month + 1,
+          selectedDate.day,
+          parseTime(selectedTime)
+        )
+      );
+      if (repeatIconToggle) {
+        dispatch(
+          timeScheduleActions.setRepeatingDays(
+            selectedDate.year,
+            selectedDate.month + 1,
+            selectedDate.day,
+            parseTime(selectedTime),
+            commuteType
+          )
+        );
+      }
     }
+  };
+
+  const handleCancel = () => {
+    dispatch(
+      timeScheduleActions.removeSingleTime(
+        selectedDate.year,
+        selectedDate.month + 1,
+        selectedDate.day
+      )
+    );
   };
 
   return (
@@ -54,7 +100,7 @@ export default function SelectTimeBottomModal({
       </S.SubHeader>
 
       <S.SelectTimeInfo>
-        <S.DateText>2월 26일 수요일</S.DateText>
+        <S.DateText>{formatDate(selectedDate)}</S.DateText>
         <S.SelectTimeBox>
           <S.DayTime>오전</S.DayTime>
           <S.TimeText>11: 00</S.TimeText>
@@ -85,7 +131,10 @@ export default function SelectTimeBottomModal({
       <S.ButtonBox>
         <CancelButton
           text="날짜 선택 해제"
-          onClick={() => setIsTimeSelectModalOpen(false)}
+          onClick={() => {
+            setIsTimeSelectModalOpen(false);
+            handleCancel();
+          }}
         />
         <SolidButton
           text="선택하기"

@@ -1,6 +1,47 @@
+import { WEEKDAYS } from "@/constants/calendarConstants";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
 
-export function getDaysInMonth(year: number, month: number) {
+export const formatMonthName = (month: number) => {
+  return `${month + 1}월`;
+};
+
+export const formatDate = ({
+  year,
+  month,
+  day,
+}: {
+  year: number;
+  month: number;
+  day: number;
+}): string => {
+  const date = new Date(year, month, day); // JS에서 month는 0부터.
+  const dayOfWeek = WEEKDAYS[date.getDay()];
+
+  return `${month + 1}월 ${day}일 ${dayOfWeek}`;
+};
+// 오후 2시 30분 => {hour:14, minute:30}
+export const parseTime = ({
+  amPm,
+  hour,
+  minute,
+}: {
+  amPm: string;
+  hour: string;
+  minute: string;
+}) => {
+  let parsedHour = parseInt(hour, 10);
+  const parsedMinute = parseInt(minute, 10);
+
+  if (amPm === "오후" && parsedHour !== 12) {
+    parsedHour += 12;
+  } else if (amPm === "오전" && parsedHour === 12) {
+    parsedHour = 0; // AM 12시는 0으로 변환
+  }
+
+  return { hour: parsedHour, minute: parsedMinute };
+};
+
+export const getDaysInMonth = (year: number, month: number) => {
   // 1월에서 이전 달로 가면 작년 12월로
   if (month < 0) {
     month = 11;
@@ -20,9 +61,9 @@ export function getDaysInMonth(year: number, month: number) {
   new Array(42 - days.length).fill("").forEach((v) => days.push(v)); // 균일한 grid 크기를 위해 42개의 일 수를 계산.
 
   return days;
-}
+};
 // 예매 가능한 기간에 해당하는지와 등교버스 하교버스 운영 시간이 지나도 비활성화여부를 체크.
-export function isDateDisabled(date: Date, commuteType: CommuteType) {
+export const isDateDisabled = (date: Date, commuteType: CommuteType) => {
   const now = new Date();
   const compareDate = new Date(date);
   compareDate.setHours(
@@ -66,7 +107,7 @@ export function isDateDisabled(date: Date, commuteType: CommuteType) {
   }
 
   return compareDate < minDate || compareDate > maxDate;
-}
+};
 
 // month은 실제 보다 -1 이므로 +1
 export const totalDaysInMonth = (year: number, month: number) => {
@@ -74,7 +115,7 @@ export const totalDaysInMonth = (year: number, month: number) => {
 };
 
 // 시간 선택시 가능한 시간인지 반환.
-export function isBookingTimeAvailable(date: Date) {
+export const isBookingTimeAvailable = (date: Date) => {
   const now = new Date();
   // 현재와 같은 시각으로 48시간 후 부터 이므로, 현재 시각과 맞추기.
   // 일반 Date는 오전 12시로 맞춰져있어서, 최소 가능한 일자가 비활성화 되는 문제가 생길 수 있음.
@@ -97,4 +138,4 @@ export function isBookingTimeAvailable(date: Date) {
   maxDate.setMonth(minDate.getMonth() + 2); // 2개월 후
 
   return minDate <= date && date <= maxDate;
-}
+};
