@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class PutHomeLocationUseCase implements UseCase<PutHomeLocationUseCase.Pa
     private final HomeQueryRepository homeQueryRepository;
 
     @Override
+    @Transactional
     public Result execute(Param param) {
         param.validate();
         Long userId = param.getUserId();
