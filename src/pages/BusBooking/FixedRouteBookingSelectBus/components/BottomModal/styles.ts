@@ -1,4 +1,5 @@
 import { colors } from "@/styles/colors";
+import { fonts } from "@/styles/fonts";
 import {
   Body1Medium,
   Body1SemiBold,
@@ -21,14 +22,10 @@ const slideUp = keyframes`
 
 // 밑 모달
 export const BottomModal = styled.div<{ showBottomSheet: boolean }>`
-  position: fixed; // absolute 대신 fixed 사용
-  width: inherit;
   background-color: ${colors.white};
-  bottom: 0;
-  z-index: 1;
 
   display: ${(props) => (props.showBottomSheet ? "flex" : "none")};
-  padding: 28px 20px 20px 20px;
+  padding: 20px 20px 20px 20px;
   flex-direction: column;
   align-items: flex-start;
   border-radius: 24px 24px 0px 0px;
@@ -48,7 +45,7 @@ export const BusCardTitle = styled.div`
 
 export const Title = styled(Body1SemiBold).attrs({ as: "div" })`
   color: ${colors.gray100};
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 `;
 
 export const BusCardWrapper = styled.div`
@@ -95,6 +92,7 @@ export const DepartOrArrival = styled(Body1Medium)`
 
 export const LocationText = styled(Body1Medium)`
   color: ${colors.gray100};
+  text-align: left;
 `;
 
 export const BusInfo = styled.div`

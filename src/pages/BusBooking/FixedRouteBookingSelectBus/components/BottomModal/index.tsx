@@ -21,58 +21,44 @@ import {
 import OutlineButton from "@/components/designSystem/Button/OutlineButton";
 import { useNavigate } from "react-router-dom";
 import BusIcon from "@/components/designSystem/Icons/Home/BusIcon";
+import { useGetBusRouteCoordinates } from "@/hooks/BusBooking/useFixedBooking";
+import LocateMeButton from "@/pages/BusTracker/components/LocateMeButton";
+import useCurrentLocation from "@/hooks/useCurrentLoaction/useCurrentLocation";
+import { useRef, useState } from "react";
+type RouteInfo = {
+  busId: number;
+  time: string;
+  departure: string;
+  location: string;
+  busNumber: string;
+  remainSeat: string;
+  totalPeople: string;
+};
 
 interface BusSelectBottomModalProps {
+  busInfoArray: RouteInfo[];
   selectedBusCardId: number;
   setSelectedBusCardId: React.Dispatch<React.SetStateAction<number>>;
-  showBottomSheet: boolean;
 }
 export default function BusSelectBottomModal({
+  busInfoArray,
   selectedBusCardId,
   setSelectedBusCardId,
-  showBottomSheet,
 }: BusSelectBottomModalProps) {
   const navigate = useNavigate();
 
-  const busSelectionArray = [
-    {
-      time: "12:00",
-      departure: "출발",
-      location: "학동역 탑승",
-      busNumber: "버스01",
-      remainSeat: "5",
-      totalPeople: "25",
-      //   각 경로 정보가 존재함.
-    },
-    {
-      time: "12:10",
-      departure: "출발",
-      location: "신사역 탑승",
-      busNumber: "버스01",
-      remainSeat: "5",
-      totalPeople: "25",
-    },
-    {
-      time: "12:10",
-      departure: "출발",
-      location: "신사역 탑승",
-      busNumber: "버스01",
-      remainSeat: "5",
-      totalPeople: "25",
-    },
-  ];
   return (
-    <BottomModal showBottomSheet={showBottomSheet}>
+    <BottomModal showBottomSheet={true}>
       <BusCardTitle>
         <Title>탑승할 버스를 선택해주세요</Title>
       </BusCardTitle>
 
       <BusCardWrapper>
-        {busSelectionArray.map((data, i) => (
+        {busInfoArray.map((data) => (
           <BusSelectionCard
             key={data.departure}
-            onClick={() => setSelectedBusCardId(i)}
-            $isSelected={selectedBusCardId === i}>
+            onClick={() => setSelectedBusCardId(data.busId)}
+            $isSelected={selectedBusCardId === data.busId}>
             <Time>
               <TimeValue>{data.time}</TimeValue>
               <DepartOrArrival>{data.departure}</DepartOrArrival>

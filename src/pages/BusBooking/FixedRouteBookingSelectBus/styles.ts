@@ -44,3 +44,17 @@ export const ArrowRightIcon = styled.div`
 export const BusTicketInfo = styled(Body2Medium)`
   color: ${colors.gray70};
 `;
+export const LocationBtnWrapper = styled.div<{ $screenHeight: number }>`
+  position: absolute;
+  right: 10px;
+  top: ${(props) => `${props.$screenHeight - 292 - 50}px`};
+`;
+
+export const BusSelectSection = styled.div`
+  position: absolute;
+  z-index: 1;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  text-align: right;
+`;

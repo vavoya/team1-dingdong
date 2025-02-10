@@ -12,17 +12,26 @@ import {
 } from "./styles";
 import SchoolIcon from "@/components/designSystem/Icons/SchoolIcon";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
+import { SelectedDateType, timeType } from "../../page";
 
 interface CommuteSwitcherProps {
+  setSelectedHourMinute: React.Dispatch<React.SetStateAction<timeType | null>>;
+  setSelectedDate: React.Dispatch<
+    React.SetStateAction<SelectedDateType | null>
+  >;
   commuteType: CommuteType;
   setCommuteType: React.Dispatch<React.SetStateAction<CommuteType>>; // 핀을 움직여서, 바텀 시트를 보여준다.
 }
 
 export default function FixedBookingCommuteSwitcher({
+  setSelectedHourMinute,
+  setSelectedDate,
   commuteType,
   setCommuteType,
 }: CommuteSwitcherProps) {
   const switcherHandler = () => {
+    setSelectedHourMinute(null);
+    setSelectedDate(null);
     setCommuteType(commuteType === "등교" ? "하교" : "등교");
   };
   return (

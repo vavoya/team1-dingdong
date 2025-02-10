@@ -14,6 +14,8 @@ import {
   Subtitle,
 } from "./styles";
 import { convertInfoToText } from "@/utils/calendar/fixedBusBookingUtils";
+import { useNavigate } from "react-router-dom";
+// import { useGetAvailableBusInfo } from "@/hooks/BusBooking/useFixedBooking";
 
 export interface SelectedTimeType {
   year: number;
@@ -36,6 +38,7 @@ export type timeType = {
 
 export default function FixedRouteBooking() {
   // 예매 나가기 모달 상태관리
+  const navigate = useNavigate();
 
   const [selectedHourMinute, setSelectedHourMinute] = useState<timeType | null>(
     null
@@ -95,11 +98,61 @@ export default function FixedRouteBooking() {
     }
   }, [selectedDate, selectedHourMinute]);
 
+  const nextButtonHandler = async () => {
+    if (selectedDate) {
+      //   const data = useGetAvailableBusInfo(
+      //     commuteType,
+      //     selectedDate.year,
+      //     selectedDate.month,
+      //     selectedDate.day
+      //   );
+      const busInfoArray = [
+        {
+          busId: 1,
+          time: "12:00",
+          departure: "출발",
+          location: "학동역 탑승",
+          busNumber: "버스01",
+          remainSeat: "5",
+          totalPeople: "25",
+          //   각 경로 정보가 존재함.
+        },
+        {
+          busId: 2,
+          time: "12:10",
+          departure: "출발",
+          location: "신사역 탑승",
+          busNumber: "버스01",
+          remainSeat: "5",
+          totalPeople: "25",
+        },
+        {
+          busId: 3,
+          time: "12:10",
+          departure: "출발",
+          location: "신사역 탑승",
+          busNumber: "버스01",
+          remainSeat: "5",
+          totalPeople: "25",
+        },
+      ];
+      navigate("/fixed-bus-select-bus", {
+        state: {
+          busInfoArray,
+          commuteType,
+          selectedDate,
+          selectedHourMinute,
+        },
+      });
+    }
+  };
   return (
     <>
       <ExitHeader text="함께타기" onClick={exitButtonHandler} />
       {/* 출퇴근 스위치역할 뷰.  */}
       <FixedBookingCommuteSwitcher
+        setSelectedHourMinute={setSelectedHourMinute}
+        setSelectedDate={setSelectedDate}
         commuteType={commuteType}
         setCommuteType={setCommuteType}
       />
@@ -120,8 +173,11 @@ export default function FixedRouteBooking() {
         <Subtitle>도착 시각</Subtitle>
         <Info>{showInfo}</Info>
       </ShowSelectedSchedule>
-      <NextButtonContainer>
-        <SolidButton text="다음" />
+      <NextButtonContainer onClick={nextButtonHandler}>
+        <SolidButton
+          text="다음"
+          active={selectedDate !== null && selectedHourMinute !== null}
+        />
       </NextButtonContainer>
     </>
   );
