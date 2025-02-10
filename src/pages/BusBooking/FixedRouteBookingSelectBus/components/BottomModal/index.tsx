@@ -21,10 +21,7 @@ import {
 import OutlineButton from "@/components/designSystem/Button/OutlineButton";
 import { useNavigate } from "react-router-dom";
 import BusIcon from "@/components/designSystem/Icons/Home/BusIcon";
-import { useGetBusRouteCoordinates } from "@/hooks/BusBooking/useFixedBooking";
-import LocateMeButton from "@/pages/BusTracker/components/LocateMeButton";
-import useCurrentLocation from "@/hooks/useCurrentLoaction/useCurrentLocation";
-import { useRef, useState } from "react";
+// import { useGetBusRouteCoordinates } from "@/hooks/BusBooking/useFixedBooking";
 type RouteInfo = {
   busId: number;
   time: string;

@@ -10,7 +10,6 @@ import {
   BusTicketInfo,
   Departure,
   HeaderText,
-  LocationBtnWrapper,
   RouteMarkHeader,
 } from "./styles";
 import { useLocation } from "react-router-dom";

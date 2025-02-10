@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { SelectionWrapper, TimeSelectButton } from "./styles";
 import { timeType } from "../../page";
 

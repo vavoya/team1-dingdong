@@ -1,5 +1,4 @@
 import { colors } from "@/styles/colors";
-import { fonts } from "@/styles/fonts";
 import {
   Body1Medium,
   Body1SemiBold,

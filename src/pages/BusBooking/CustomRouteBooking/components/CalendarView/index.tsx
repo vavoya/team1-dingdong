@@ -20,8 +20,8 @@ import {
   TimeScheduleAction,
 } from "@/pages/BusBooking/store/types";
 import { timeScheduleSelectors } from "@/pages/BusBooking/store/selectors";
-import { useGetHomeLocation } from "@/hooks/setHomeLocation/useHomeLocation";
-import { useGetAIRecommendation } from "@/hooks/BusBooking/useCustomBooking";
+// import { useGetHomeLocation } from "@/hooks/setHomeLocation/useHomeLocation";
+// import { useGetAIRecommendation } from "@/hooks/BusBooking/useCustomBooking";
 
 interface CalendarViewProps {
   selectedTimeSchedule: TimeSchedule; // 총 반영된 선택된 시간
