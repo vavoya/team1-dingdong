@@ -39,13 +39,14 @@ function App() {
             <Route path="set-home-location" element={<SetHomeLocation />} />
             {/* 버스 예매하기  */}
             <Route path="custom-bus-booking" element={<CustomRouteBooking />} />
+            {/* 함께 타기 버스 선택하기 */}
+            <Route
+              path="fixed-bus-select-bus"
+              element={<FixedRouteBookingSelectBus />}
+            />
             {/* 함께 타기 예매하기  */}
-            <Route path="fixed-bus-booking" element={<FixedRouteBooking />}>
-              <Route
-                path="select-bus"
-                element={<FixedRouteBookingSelectBus />}
-              />
-            </Route>
+            <Route path="fixed-bus-booking" element={<FixedRouteBooking />} />
+
             <Route path="bus-tracker" element={<BusTrackerPage />} />
             {/* 예매 내역 */}
             <Route path="reservations" element={<ReservationsPage />} />
