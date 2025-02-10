@@ -23,7 +23,7 @@ public class ApplicationInitializer {
     public void init() {
         if (userRepository.findByEmail("test@test.com").isEmpty()) {
             String password = passwordEncoder.encode("abcd1234!@");
-            Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790,"에티버스",null);
+            Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790,"에티버스");
             School school = new School(null, "seoul", "address", 1.0, 1.0);
             User user = new User(null, "test", "test@test.com", password, LocalDateTime.now(), school, null);
             user.associateHome(home);
