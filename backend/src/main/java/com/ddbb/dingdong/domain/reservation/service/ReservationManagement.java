@@ -20,6 +20,17 @@ public class ReservationManagement {
         reservationRepository.save(reservation);
     }
 
+    public void cancel(Long userId, Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(ReservationErrors.NOT_FOUND::toException);
+
+        if(!reservation.getUserId().equals(userId)) {
+            throw ReservationErrors.INVALID_ACCESS.toException();
+        }
+
+        reservation.cancel();
+    }
+
     private void validateDateOfGeneralReservation(Reservation reservation) {
         if(!ReservationType.GENERAL.equals(reservation.getType())){
             throw ReservationErrors.INVALID_RESERVATION_TYPE.toException();
@@ -49,4 +60,5 @@ public class ReservationManagement {
             }
         }
     }
+
 }
