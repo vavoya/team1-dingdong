@@ -38,20 +38,17 @@ public class AuthController {
 
     @PostMapping("/check-email")
     public ResponseEntity<Void> checkEmail(
-            @RequestBody String email
+            @RequestBody CheckEmailDto email
     ) {
         CheckEmailUseCase.Param param = new CheckEmailUseCase.Param(email);
         try {
             checkEmailUseCase.execute(param);
         } catch (DomainException e) {
-            if (e.error.equals(EMAIL_REQUIRED)) {
-                throw new APIException(e, HttpStatus.BAD_REQUEST);
-            } else if (e.error.equals(EMAIL_ALREADY_EXISTS)) {
+            if (e.error.equals(EMAIL_ALREADY_EXISTS)) {
                 throw new APIException(e, HttpStatus.CONFLICT);
-            } else if (e.error.equals(INVALID_EMAIL_FORMAT)) {
+            } else {
                 throw new APIException(e, HttpStatus.BAD_REQUEST);
             }
-            throw new APIException(e, HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok().build();
     }
