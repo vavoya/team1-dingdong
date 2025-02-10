@@ -35,6 +35,7 @@ public class BusSchedule {
     @Column(nullable = false)
     private Long schoolId;
 
-    @OneToOne(mappedBy = "busSchedule")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bus_id")
     private Bus bus;
 }

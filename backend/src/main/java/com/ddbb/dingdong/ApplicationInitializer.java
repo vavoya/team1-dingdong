@@ -4,7 +4,7 @@ import com.ddbb.dingdong.domain.user.entity.Home;
 import com.ddbb.dingdong.domain.user.entity.School;
 import com.ddbb.dingdong.domain.user.entity.User;
 import com.ddbb.dingdong.domain.user.repository.UserRepository;
-import com.ddbb.dingdong.infrastructure.auth.encrypt.SHA512PasswordEncoder;
+import com.ddbb.dingdong.infrastructure.auth.encrypt.PasswordEncoder;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class ApplicationInitializer {
     private final UserRepository userRepository;
-    private final SHA512PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
     public void init() {
