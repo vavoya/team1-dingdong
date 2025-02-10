@@ -25,7 +25,6 @@ public class BusController {
             @RequestParam("direction") Direction direction,
             @LoginUser AuthUser authUser
     ) {
-        System.out.printf("%s %d", direction, authUser.id());
         try {
             GetBusSchedulesUseCase.Param param = new GetBusSchedulesUseCase.Param(authUser.id(), direction);
             return ResponseEntity.ok(getBusSchedulesUseCase.execute(param));
