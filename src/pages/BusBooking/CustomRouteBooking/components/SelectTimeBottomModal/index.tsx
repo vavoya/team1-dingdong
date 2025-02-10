@@ -1,6 +1,6 @@
 import BottomOverlayModal from "@/pages/BusBooking/Components/BottomOverlayModal";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as S from "./styles";
 import CancelButton from "@/components/designSystem/Button/OutlineButton";
 import SolidButton from "@/components/designSystem/Button/SolidButton";
@@ -52,26 +52,48 @@ export default function SelectTimeBottomModal({
 
   const timeWheelRef = useRef<TimeWheelHandle>(null);
 
-  const handleTimeChange = (amPm: string, hour: string, minute: string) => {
-    console.log(`현재 시간: ${amPm} ${hour}:${minute}`);
+  // 디바운스 훅 생성
+  function useDebounce<T>(callback: (...args: T[]) => void, delay: number) {
+    const timeoutRef = useRef<number>();
 
-    const newTime = parseAndCreateTime(selectedDate, amPm, hour, minute);
-    console.log(selectedDate, newTime.getHours(), newTime.getMinutes());
+    return useCallback(
+      (...args: T[]) => {
+        // 이전 타이머가 있다면 클리어
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
 
-    // 1초 후에 실행되도록 setTimeout 사용
-    setTimeout(() => {
+        // 새로운 타이머 설정
+        timeoutRef.current = setTimeout(() => {
+          callback(...args);
+        }, delay);
+      },
+      [callback, delay]
+    );
+  }
+
+  const handleTimeChange = useDebounce(
+    // 이벤트 발생한지 2초 간 움직임이 없다면 reset
+    (amPm: string, hour: string, minute: string) => {
+      console.log(`현재 시간: ${amPm} ${hour}:${minute}`);
+
+      const newTime = parseAndCreateTime(selectedDate, amPm, hour, minute);
+      console.log(newTime, "새로운 새로운", newTime.getHours());
+      console.log(selectedDate, newTime.getHours(), newTime.getMinutes());
+
       const timeAvailability = handleTimeAvailability(newTime, commuteType);
 
       if (timeAvailability) {
         updateScrollPosition(
           timeAvailability.reset,
           timeAvailability.morningOrNoon!,
-          timeAvailability.hour,
+          timeAvailability.hour, // 스크롤 셋팅시 index방식이라 + 1
           timeWheelRef
         );
       }
-    }, 1000); // 1000ms (1초) 후에 실행
-  };
+    },
+    2000
+  );
 
   const handleConfirm = () => {
     if (timeWheelRef.current) {
@@ -119,7 +141,7 @@ export default function SelectTimeBottomModal({
         ...selectedDate,
       });
 
-      return { initHour: hour, initMinute: minute };
+      return { initHour: hour, initMinute: minute }; // 저장된 값.
     }
 
     return commuteType === "등교"
