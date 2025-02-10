@@ -1,12 +1,12 @@
 import { ButtonContainer } from "./styles";
-interface ButtonProps {
+interface OutlineButtonProps {
   text?: string;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export default function Button({
+export default function OutlineButton({
   text = "취소",
   onClick = () => {},
-}: ButtonProps) {
+}: OutlineButtonProps) {
   return <ButtonContainer onClick={onClick}>{text}</ButtonContainer>;
 }

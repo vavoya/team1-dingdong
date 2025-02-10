@@ -17,7 +17,7 @@ export default function VectorIcon({
       height={height}
       viewBox="0 0 6 10"
       fill="none">
-      <path d="M1 1L5 5L1 9" stroke={stroke} stroke-linecap="round" />
+      <path d="M1 1L5 5L1 9" stroke={stroke} strokeLinecap="round" />
     </svg>
   );
 }

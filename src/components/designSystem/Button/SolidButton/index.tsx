@@ -1,17 +1,17 @@
 import { ButtonContainer } from "./styles";
-interface ConfirmButtonProps {
+interface SolidButtonProps {
   text: string;
   active?: boolean;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export default function ConfirmButton({
+export default function SolidButton({
   text = "확인",
   onClick = () => {},
   active = true,
-}: ConfirmButtonProps) {
+}: SolidButtonProps) {
   return (
-    <ButtonContainer disabled={!active} active={active} onClick={onClick}>
+    <ButtonContainer disabled={!active} $active={active} onClick={onClick}>
       {text}
     </ButtonContainer>
   );

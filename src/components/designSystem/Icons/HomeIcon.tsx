@@ -1,4 +1,4 @@
-interface ArrowLeftIconProps {
+interface HomeIconProps {
   size?: number;
   fill?: string;
 }
@@ -6,7 +6,7 @@ interface ArrowLeftIconProps {
 export default function HomeIcon({
   size = 18,
   fill = "#59596E",
-}: ArrowLeftIconProps) {
+}: HomeIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

@@ -2,7 +2,7 @@ import { colors } from "@/styles/colors";
 interface PinIconProps {
   stroke?: string;
 }
-export default function stroke({ stroke = colors.gray100 }: PinIconProps) {
+export default function PinIcon({ stroke = colors.gray100 }: PinIconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

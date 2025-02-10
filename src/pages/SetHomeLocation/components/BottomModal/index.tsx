@@ -1,4 +1,4 @@
-import ConfirmButton from "@/components/designSystem/Button/ConfirmButton";
+import SolidButton from "@/components/designSystem/Button/SolidButton";
 import {
   Address,
   InputBox,
@@ -71,7 +71,7 @@ export default function SetLocationBottomModal({
           <Warning>한 자 이상 입력, 특수문자나 이모티콘은 불가합니다.</Warning>
         )}
       </Address>
-      <ConfirmButton
+      <SolidButton
         onClick={setLocationSubmit}
         active={isSetLocationDone}
         text="설정하기"

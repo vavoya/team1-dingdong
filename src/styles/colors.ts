@@ -1,4 +1,5 @@
 export const colors = {
+  orange50: "#FFF8E1",
   orange100: "#FFECB3",
   orange200: "#FFE082",
   orange300: "#FFD54F",

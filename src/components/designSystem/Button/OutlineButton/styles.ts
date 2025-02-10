@@ -1,7 +1,8 @@
 import { colors } from "@/styles/colors";
+import { Body1SemiBold } from "@/styles/typography";
 import styled from "styled-components";
 // 버튼을 감싸는 container style
-export const ButtonContainer = styled.button`
+export const ButtonContainer = styled(Body1SemiBold).attrs({ as: "button" })`
   display: flex;
   height: 50px;
   padding: 10px;
