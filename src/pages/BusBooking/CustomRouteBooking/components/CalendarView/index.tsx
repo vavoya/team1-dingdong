@@ -51,7 +51,7 @@ export default function CalendarView({
     year: number;
     month: number;
     day: number;
-  }>({ year: currentDate.year, month: currentDate.month, day: 0 });
+  }>({ year: currentDate.year, month: currentDate.month + 1, day: 0 });
 
   // const AIRecommendationArray = useGetAIRecommendation(
   //   currentDate.year,
@@ -89,9 +89,10 @@ export default function CalendarView({
 
   const handleAIRecommendation = () => {
     // AI 추천 로직 (API 호출 등)
-    const recommendations = setToolTipOn(false);
+    setToolTipOn(false);
     if (AIBtnToggles[currentMonthIndex]) {
       console.log("제거");
+      console.log(selectedDate, "제거");
       dispatch(
         timeScheduleActions.clearAIRecommendations({
           year: selectedDate.year,
@@ -137,6 +138,10 @@ export default function CalendarView({
     return hasScheduledTime || isTempSelected;
   };
   console.log(selectedDate, "!");
+
+  useEffect(() => {
+    setAIBtnToggles(new Array(3).fill(false));
+  }, [commuteType]);
 
   return (
     <S.CalendarWrapper>
