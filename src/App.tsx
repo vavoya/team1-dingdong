@@ -6,7 +6,6 @@ import ResetStyle from "@/styles/ResetStyle.ts";
 import GlobalStyle from "./styles/GlobalStyle.ts";
 // 레이아웃
 import RootLayout from "@/pages/layout";
-import PaymentLayout from "@/pages/Payment/layout";
 // 페이지
 import HomePage from "@/pages/Home/page";
 import PaymentPurchasePage from "@/pages/Payment/Purchase/page";
@@ -15,9 +14,14 @@ import ErrorPage from "@/pages/Error/page";
 import SetHomeLocation from "@/pages/SetHomeLocation/page.tsx";
 import BusTrackerPage from "@/pages/BusTracker/page.tsx";
 import ReservationsPage from "@/pages/Reservations/page.tsx";
+import MyPage from "@/pages/MyPage/page.tsx";
+import TimetableManagementPage from "@/pages/TimetableManagement/page.tsx";
+import SuccessPage from "@/pages/Payment/Success/page.tsx";
 // 컴포넌트
 import Loading from "@/components/Loading";
 import CustomRouteBooking from "./pages/BusBooking/CustomRouteBooking/page.tsx";
+import FixedRouteBooking from "./pages/BusBooking/FixedRouteBooking/page.tsx";
+import FixedRouteBookingSelectBus from "./pages/BusBooking/FixedRouteBookingSelectBus/page.tsx";
 
 function App() {
   return (
@@ -35,16 +39,32 @@ function App() {
             <Route path="set-home-location" element={<SetHomeLocation />} />
             {/* 버스 예매하기  */}
             <Route path="custom-bus-booking" element={<CustomRouteBooking />} />
-            {/* 실시간 버스 위치 */}
+            {/* 함께 타기 버스 선택하기 */}
+            <Route
+              path="fixed-bus-select-bus"
+              element={<FixedRouteBookingSelectBus />}
+            />
+            {/* 함께 타기 예매하기  */}
+            <Route path="fixed-bus-booking" element={<FixedRouteBooking />} />
+
             <Route path="bus-tracker" element={<BusTrackerPage />} />
             {/* 예매 내역 */}
             <Route path="reservations" element={<ReservationsPage />} />
+            {/* 마이 페이지 */}
+            <Route path="my-page" element={<MyPage />} />
+            {/* 시간표 관리 페이지 */}
+            <Route
+              path="timetable-management"
+              element={<TimetableManagementPage />}
+            />
             {/* 결제 페이지 */}
-            <Route path="payment" element={<PaymentLayout />}>
+            <Route path="payment">
               {/* 배차 예약 */}
-              <Route path="reservation" element={<PaymentPurchasePage />} />
+              <Route path="reservation" element={<PaymentReservationPage />} />
               {/* 확정 예매 */}
-              <Route path="purchase" element={<PaymentReservationPage />} />
+              <Route path="purchase" element={<PaymentPurchasePage />} />
+              {/* 구매 성공 */}
+              <Route path="success" element={<SuccessPage />} />
             </Route>
             {/* 에러 페이지 */}
             <Route path="*" element={<ErrorPage />} />
