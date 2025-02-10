@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Home {
@@ -25,8 +27,4 @@ public class Home {
     private Double stationLongitude;
 
     private String stationName;
-
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 }

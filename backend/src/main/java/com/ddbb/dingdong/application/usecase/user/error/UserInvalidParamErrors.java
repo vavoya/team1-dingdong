@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.application.usecase.user;
+package com.ddbb.dingdong.application.usecase.user.error;
 
 import com.ddbb.dingdong.application.exception.InvalidParamErrorInfo;
 

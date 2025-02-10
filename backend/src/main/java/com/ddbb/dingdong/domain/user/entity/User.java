@@ -32,6 +32,16 @@ public class User {
     @JoinColumn(name = "school_id")
     private School school;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Home home;
+
+    public void associateHome(Home home) {
+        this.home = home;
+    }
+
+    public void updateHome(Double stationLatitude, Double stationLongitude, String stationName) {
+        this.home.setStationLatitude(stationLatitude);
+        this.home.setStationLongitude(stationLongitude);
+        this.home.setStationName(stationName);
+    }
 }

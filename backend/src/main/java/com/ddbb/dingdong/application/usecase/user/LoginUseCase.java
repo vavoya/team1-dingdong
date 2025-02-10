@@ -2,6 +2,7 @@ package com.ddbb.dingdong.application.usecase.user;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
+import com.ddbb.dingdong.application.usecase.user.error.UserInvalidParamErrors;
 import com.ddbb.dingdong.domain.user.service.UserManagement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

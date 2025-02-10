@@ -3,7 +3,6 @@ package com.ddbb.dingdong.application.usecase.user;
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
 import com.ddbb.dingdong.domain.user.repository.UserQueryRepository;
-import com.ddbb.dingdong.domain.user.repository.UserRepository;
 import com.ddbb.dingdong.domain.user.repository.projection.HomeLocationProjection;
 import com.ddbb.dingdong.domain.user.service.UserErrors;
 import lombok.AllArgsConstructor;
