@@ -3,6 +3,7 @@ package com.ddbb.dingdong.domain.auth.service;
 import com.ddbb.dingdong.domain.common.exception.ErrorInfo;
 
 public enum AuthErrors implements ErrorInfo {
+    INVALID_PASSWORD_FORMAT("비밀번호는 8자 이상 20자 이하여야 하며, 대문자, 소문자, 특수문자를 포함해야 합니다."),
     NOT_MATCHED_PASSWORD("패스워드가 일치하지 않습니다"),
     PASSWORD_REQUIRED("비밀번호가 설정되지 않았습니다."),
     USER_NOT_FOUND("해당 유저를 찾을 수 없습니다"),
