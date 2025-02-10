@@ -12,9 +12,6 @@ public class EmailValidator {
      * @return true: 올바른 이메일, false: 올바르지 않은 이메일
      */
     public static boolean isValidEmail(String email) {
-        if (email == null || email.isEmpty()) {
-            return false;
-        }
         return EMAIL_PATTERN.matcher(email).matches();
     }
 }
