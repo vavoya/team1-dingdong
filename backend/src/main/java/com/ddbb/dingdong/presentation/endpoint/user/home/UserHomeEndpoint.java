@@ -35,18 +35,17 @@ public class UserHomeEndpoint {
     }
 
     @PutMapping
-    public ResponseEntity<PutHomeLocationUseCase.Result> updateUserHomeLocation(
+    public ResponseEntity<Void> updateUserHomeLocation(
             @LoginUser AuthUser user,
             @RequestBody UpdateHomeLocationDto dto
     ) {
         Long userId = user.id();
         PutHomeLocationUseCase.Param param = new PutHomeLocationUseCase.Param(userId, dto);
-        PutHomeLocationUseCase.Result result;
         try {
-            result = putHomeLocationUseCase.execute(param);
+            putHomeLocationUseCase.execute(param);
         } catch (DomainException ex) {
-            throw new APIException(ex, HttpStatus.NOT_FOUND);
+            throw new APIException(ex, HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.ok().body(result);
+        return ResponseEntity.ok().build();
     }
 }
