@@ -7,8 +7,18 @@ import HomeHeader from "@/components/Headers/HomeHeader";
 import BusState from "@/pages/Home/component/BusState";
 import HomeSchool from "@/pages/Home/component/HomeSchool";
 import BusSelection from "@/pages/Home/component/BusSelection";
+import {useQueries} from "@tanstack/react-query";
+import queriesPath from "@/api/queries";
 
 export default function Page() {
+    const results = useQueries({ queries: queriesPath['/home'] });
+    const firstQuery = results[0];
+
+    if (!firstQuery.isLoading && firstQuery.data) {
+        console.log('캐시 데이터를 사용 중입니다.');
+    } else {
+        console.log('데이터를 네트워크로부터 가져오고 있습니다.');
+    }
 
 
     return (

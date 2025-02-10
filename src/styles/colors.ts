@@ -28,6 +28,7 @@ export const colors = {
   blue10: "#CCE6FF",
   blue50: "#53A9FF",
   blue100: "#0080FF", // Blue
+  blue200: "#007AFF",
 
   red10: "#FFC3BF",
   red50: "#FF776F",
