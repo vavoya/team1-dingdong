@@ -3,8 +3,11 @@ package com.ddbb.dingdong.domain.transportation.service;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
+
 import org.springframework.stereotype.Service;
 
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
@@ -42,8 +45,14 @@ public class BusStopQueryService {
                 return new AvailableBusStopDistance(projection, distance);
             })
             .filter(item -> item.distance() <= THRESHOLD_METER)
-            .sorted(Comparator.comparingDouble(AvailableBusStopDistance::distance))
-            .map(AvailableBusStopDistance::busStop)
-            .toList();
+            .collect(Collectors.groupingBy(
+                    item -> item.busStop().getBusScheduleId(),
+                    Collectors.minBy(Comparator.comparingDouble(AvailableBusStopDistance::distance))
+            ))
+                .values()
+                .stream()
+                .filter(Optional::isPresent)
+                .map(item -> item.get().busStop())
+                .toList();
     }
 }
