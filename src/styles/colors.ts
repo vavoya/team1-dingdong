@@ -24,6 +24,7 @@ export const colors = {
   gray80: "#474759", // Body fonts
   gray90: "#333345",
   gray100: "#222235", // Dark fonts
+  gray800: "#1E1E1E",
 
   blue10: "#CCE6FF",
   blue50: "#53A9FF",
@@ -36,5 +37,5 @@ export const colors = {
 
   error100: "#D2092D",
 
-  textDontEditTextPrimary: "#101828" // 마이페이지에 사용
+  textDontEditTextPrimary: "#101828", // 마이페이지에 사용
 } as const;
