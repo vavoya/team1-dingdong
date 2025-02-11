@@ -16,8 +16,7 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long clusterLabel;
+    private String clusterLabel;
 
     @Column(nullable = false)
     private Long reservationId;
