@@ -7,6 +7,7 @@ import com.ddbb.dingdong.domain.user.repository.UserRepository;
 import com.ddbb.dingdong.domain.user.service.HomeErrors;
 import com.ddbb.dingdong.domain.user.service.UserErrors;
 import com.ddbb.dingdong.presentation.endpoint.user.home.UpdateHomeLocationDto;
+import com.ddbb.dingdong.util.ParamValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -46,15 +47,15 @@ public class PutHomeLocationUseCase implements UseCase<PutHomeLocationUseCase.Pa
 
             if (userId == null || userId <= 0) {
                 throw UserErrors.NOT_FOUND.toException();
-            } else if (houseLatitude != null && (houseLatitude < -90.0 || houseLatitude > 90.0)) {
+            } else if (!ParamValidator.isValidLatitude(houseLatitude)) {
                 throw HomeErrors.INVALID_HOME_LATITUDE_RANGE.toException();
-            } else if (houseLongitude != null && (houseLongitude < -180.0 || houseLongitude > 180.0)) {
+            } else if (!ParamValidator.isValidLongitude(houseLongitude)) {
                 throw HomeErrors.INVALID_HOME_LONGITUDE_RANGE.toException();
-            } else if (stationLatitude == null || stationLatitude < -90.0 || stationLatitude > 90.0) {
+            } else if (!ParamValidator.isValidLatitude(stationLatitude)) {
                 throw HomeErrors.INVALID_STATION_LATITUDE_RANGE.toException();
-            } else if (stationLongitude == null || stationLongitude < -180.0 || stationLongitude > 180.0) {
+            } else if (!ParamValidator.isValidLongitude(stationLongitude)) {
                 throw HomeErrors.INVALID_STATION_LONGITUDE_RANGE.toException();
-            } else if (stationName != null && stationName.isEmpty()) {
+            } else if (!ParamValidator.isValidName(stationName)) {
                 throw HomeErrors.REQUIRED_STATION_NAME.toException();
             }
             return true;
