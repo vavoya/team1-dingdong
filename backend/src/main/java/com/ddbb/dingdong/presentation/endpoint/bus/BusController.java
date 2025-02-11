@@ -3,6 +3,7 @@ package com.ddbb.dingdong.presentation.endpoint.bus;
 import com.ddbb.dingdong.application.exception.APIException;
 import com.ddbb.dingdong.application.usecase.bus.GetAvailableBusLine;
 import com.ddbb.dingdong.application.usecase.bus.GetBusSchedulesUseCase;
+import com.ddbb.dingdong.application.usecase.bus.GetPathPointLine;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.infrastructure.auth.AuthUser;
@@ -11,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.ZonedDateTime;
 
@@ -24,6 +22,7 @@ import java.time.ZonedDateTime;
 public class BusController {
     private final GetBusSchedulesUseCase getBusSchedulesUseCase;
     private final GetAvailableBusLine getAvailableBusLine;
+    private final GetPathPointLine getPathPointLine;
 
     @GetMapping("/schedule/time")
     public ResponseEntity<GetBusSchedulesUseCase.Response> getBusSchedules(
@@ -47,6 +46,20 @@ public class BusController {
         try {
             GetAvailableBusLine.Param param = new GetAvailableBusLine.Param(authUser.id(), time.toLocalDateTime(), direction);
             GetAvailableBusLine.Response result = getAvailableBusLine.execute(param);
+            return ResponseEntity.ok(result);
+        } catch (DomainException e) {
+            throw new APIException(e, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/path/{busScheduleId}")
+    public ResponseEntity<GetPathPointLine.Response> getPathPointLine(
+            @LoginUser AuthUser authUser,
+            @PathVariable("busScheduleId") Long busScheduleId
+    ) {
+        try {
+            GetPathPointLine.Param param = new GetPathPointLine.Param(busScheduleId);
+            GetPathPointLine.Response result = getPathPointLine.execute(param);
             return ResponseEntity.ok(result);
         } catch (DomainException e) {
             throw new APIException(e, HttpStatus.NOT_FOUND);
