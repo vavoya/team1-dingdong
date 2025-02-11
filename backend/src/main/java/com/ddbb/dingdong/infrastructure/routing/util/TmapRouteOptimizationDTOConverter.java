@@ -1,6 +1,7 @@
 package com.ddbb.dingdong.infrastructure.routing.util;
 
 import com.ddbb.dingdong.domain.clustering.entity.Location;
+import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.infrastructure.routing.model.Coordinate;
 import com.ddbb.dingdong.infrastructure.routing.model.dto.RequestRouteOptimizationDTO;
 import com.ddbb.dingdong.infrastructure.routing.model.dto.RequestRouteOptimizationDTO.ViaPoint;
@@ -26,14 +27,14 @@ import static com.ddbb.dingdong.infrastructure.routing.model.dto.ResponseRouteOp
 @Component
 @Primary
 @RequiredArgsConstructor
-public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOConverter<RequestRouteOptimizationDTO, ResponseRouteOptimizationDTO> {
+public class TmapRouteOptimizationDTOConverter {
 
     private static final String DATE_FORMAT = "yyyyMMddHHmmss";
-
+    private static final Double BUS_DISTANCE = 0.05;
     private final HaversineDistanceFunction haversine;
 
-    @Override
-    public RequestRouteOptimizationDTO fromLocations(List<Location> locations, Double endLatitude, Double endLongitude) {
+    public RequestRouteOptimizationDTO fromLocations(List<Location> locations, Double schoolLatitude, Double schoolLongitude, Direction direction) {
+        String startX, startY, endX, endY;
         List<ViaPoint> viaPoints = new ArrayList<>();
         for (Location location : locations) {
             viaPoints.add(
@@ -44,35 +45,45 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
                     )
             );
         }
-
         Optional<ViaPoint> farthestPoint = viaPoints.stream().max((o1, o2) -> {
             double[] point1 = {Double.parseDouble(o1.getViaY()), Double.parseDouble(o1.getViaX())};
             double[] point2 = {Double.parseDouble(o2.getViaY()), Double.parseDouble(o2.getViaX())};
-            double[] endPoint = {endLatitude, endLongitude};
+            double[] endPoint = {schoolLatitude, schoolLongitude};
 
             double point1Distance = haversine.distance(point1, endPoint);
             double point2Distance = haversine.distance(point2, endPoint);
 
             return Double.compare(point1Distance, point2Distance);
+
         });
 
-//        viaPoints.remove(farthestPoint.get());
+        if(direction.equals(Direction.TO_SCHOOL)) {
+            startX = String.valueOf((Double.parseDouble(farthestPoint.get().getViaX()) + BUS_DISTANCE));
+            startY = String.valueOf((Double.parseDouble(farthestPoint.get().getViaY()) + BUS_DISTANCE));
+            endX = schoolLongitude.toString();
+            endY = schoolLatitude.toString();
+        } else {
+            startX = schoolLongitude.toString();
+            startY = schoolLatitude.toString();
+            endX = farthestPoint.get().getViaX();
+            endY = farthestPoint.get().getViaY();
+        }
+
+
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
         RequestRouteOptimizationDTO request = new RequestRouteOptimizationDTO(
-                farthestPoint.get().getViaX(),
-                farthestPoint.get().getViaY(),
+                startX,
+                startY,
                 formatter.format(LocalDateTime.now()),
-                Double.toString(endLongitude),
-                Double.toString(endLatitude),
+                endX,
+                endY,
                 viaPoints);
-//                viaPoints.subList(1, Math.min(viaPoints.size(), 20))
-//        );
         return request;
     }
 
-    @Override
     public Path toPath(ResponseRouteOptimizationDTO response) {
+        Path path = new Path();
         LocalDateTime now = LocalDateTime.now();
 
         List<Point> points;
@@ -93,6 +104,12 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
             if (geometry.getType().equals(LINE_STRING)) {
                 points = new ArrayList<>();
                 int pointSequence = 0;
+                Line line = new Line();
+                line.setSequence(lineSequence++);
+                line.setTotalMeters(Integer.parseInt(feature.getProperties().getDistance()));
+                line.setTotalSeconds(Integer.parseInt(feature.getProperties().getTime()));
+                line.setPoints(points);
+                line.setPath(path);
                 for (Coordinate coordinate : coordinates) {
                     List<Double> coordinateArray = coordinate.doubleArrayValue;
                     points.add(new Point(
@@ -100,17 +117,10 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
                             pointSequence++,
                             coordinateArray.get(1),
                             coordinateArray.get(0),
-                            null
+                            line
                     ));
                 }
-                lines.add(new Line(
-                        null,
-                        lineSequence++,
-                        Integer.parseInt(feature.getProperties().getDistance()),
-                        Integer.parseInt(feature.getProperties().getTime()),
-                        points,
-                        null
-                ));
+                lines.add(line);
 
                 LocalDateTime expectedArrivalTime = LocalDateTime.parse(
                                 feature.getProperties().getArriveTime(),
@@ -128,19 +138,15 @@ public class TmapRouteOptimizationDTOConverter implements RouteOptimizationDTOCo
                             coordinates.get(0).doubleArrayValue.get(0),
                             expectedArrivalTime,
                             locationId,
-                            null
+                            path
                 ));
 
             }
         }
-
-        return new Path(
-                null,
-                Double.parseDouble(response.getProperties().getTotalDistance()),
-                Integer.parseInt(response.getProperties().getTotalTime()),
-                lines,
-                null,
-                busStops
-        );
+        path.setTotalDistance(Double.parseDouble(response.getProperties().getTotalDistance()));
+        path.setTotalMinutes(Integer.parseInt(response.getProperties().getTotalTime()));
+        path.setLines(lines);
+        path.setBusStop(busStops);
+        return path;
     }
 }

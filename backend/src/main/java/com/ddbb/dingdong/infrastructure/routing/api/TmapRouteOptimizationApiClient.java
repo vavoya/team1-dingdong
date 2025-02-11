@@ -28,8 +28,7 @@ import java.util.Optional;
 @Primary
 @RequiredArgsConstructor
 @Slf4j
-public class TmapRouteOptimizationApiClient
-        implements RouteOptimizationApiClient<RequestRouteOptimizationDTO, ResponseRouteOptimizationDTO> {
+public class TmapRouteOptimizationApiClient {
 
     @Value("${api.tmap.base-url}")
     private String baseUrl = "";
@@ -48,7 +47,6 @@ public class TmapRouteOptimizationApiClient
                 .build();
     }
 
-    @Override
     public ResponseRouteOptimizationDTO getRouteOptimization(RequestRouteOptimizationDTO request) {
         LocalDateTime start = LocalDateTime.now();
         log.info("Optimize Start: {}시 {}분 {}초", start.getHour(), start.getMinute(), start.getSecond());
