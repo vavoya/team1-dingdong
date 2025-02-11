@@ -11,7 +11,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class ClusteringRequestDTO {
+public class CreateClusterRequestDTO {
     private Direction direction;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
