@@ -5,7 +5,10 @@ import com.ddbb.dingdong.domain.reservation.entity.Ticket;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationType;
 import com.ddbb.dingdong.domain.reservation.repository.ReservationRepository;
+import com.ddbb.dingdong.domain.reservation.service.event.AllocationFailedEvent;
+import com.ddbb.dingdong.domain.reservation.service.event.AllocationSuccessEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,13 +19,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservationManagement {
     private final ReservationRepository reservationRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public void reserveGeneral(Reservation reservation) {
-        validateDateOfGeneralReservation(reservation);
-        reservationRepository.save(reservation);
+    public Reservation reserve(Reservation reservation) {
+        if(ReservationType.GENERAL.equals(reservation.getType())){
+            validateDateOfGeneralReservation(reservation);
+        }
+        return reservationRepository.save(reservation);
     }
 
-    public List<Reservation> findByClusterLabel(Long clusterLabel) {
+    public List<Reservation> findByClusterLabel(String clusterLabel) {
         List<Reservation> cluster = reservationRepository.findAllByClusterLabel(clusterLabel);
         if(cluster.isEmpty()) {
             throw ReservationErrors.NOT_FOUND.toException();
@@ -31,9 +37,30 @@ public class ReservationManagement {
         return cluster;
     }
 
-    public void allocateTicket(Reservation reservation, Ticket ticket) {
+    public void allocate(Reservation reservation, Ticket ticket) {
         reservation.allocate(ticket);
         reservationRepository.save(reservation);
+
+        eventPublisher.publishEvent(new AllocationSuccessEvent(reservation.getId()));
+    }
+
+
+    public void fail(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(ReservationErrors.NOT_FOUND::toException);
+        reservation.fail();
+        reservationRepository.save(reservation);
+
+        eventPublisher.publishEvent(new AllocationFailedEvent(
+                reservation.getUserId(),
+                new AllocationFailedEvent.ReservationInfo(
+                        reservationId,
+                        reservation.getDirection(),
+                        reservation.getDirection().equals(Direction.TO_HOME) ? reservation.getDepartureTime() : reservation.getArrivalTime(),
+                        reservation.getStartDate()
+                ),
+                LocalDateTime.now()
+        ));
     }
 
     private void validateDateOfGeneralReservation(Reservation reservation) {
