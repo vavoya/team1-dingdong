@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
-    @Query("SELECT r FROM Reservation r, Location l WHERE l.clusterLabel = :clusterLabel AND l.reservationId =r.id")
-    List<Reservation> findAllByClusterLabel(@Param("clusterLabel") Long clusterLabel);
+    @Query("SELECT r FROM Reservation r , Location l WHERE l.clusterLabel = :clusterLabel AND r.id = l.reservationId")
+    List<Reservation> findAllByClusterLabel(@Param("clusterLabel") String clusterLabel);
 }
