@@ -9,25 +9,25 @@ export default defineConfig({
       { find: "@", replacement: "/src" }, // `@`을 `src` 폴더로 매핑
     ],
   },
-  // server: {
-  //   proxy: {
-  //     "/api": {
-  //       target: "http://3.38.114.211:8080",
-  //       changeOrigin: true,
-  //       secure: false,
-  //       headers: {
-  //         credentials: "include",
-  //       },
-  //     },
-  //     "/ws": {
-  //       target: "http://3.38.114.211:8080",
-  //       changeOrigin: true,
-  //       ws: true,
-  //       secure: false,
-  //       headers: {
-  //         credentials: "include",
-  //       },
-  //     },
-  //   },
-  // },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://3.38.114.211:8080",
+        changeOrigin: true,
+        secure: false,
+        headers: {
+          credentials: "include",
+        },
+      },
+      "/ws": {
+        target: "http://3.38.114.211:8080",
+        changeOrigin: true,
+        ws: true,
+        secure: false,
+        headers: {
+          credentials: "include",
+        },
+      },
+    },
+  },
 });

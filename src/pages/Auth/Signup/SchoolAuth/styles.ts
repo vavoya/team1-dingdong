@@ -61,7 +61,7 @@ export const VerificationTimeText = styled(Body2Regular)<{
   color: ${(props) => (props.$hasError ? colors.red : colors.gray50)};
 `;
 
-export const NextButtonWrapper = styled.button`
+export const NextButtonWrapper = styled.div`
   position: fixed;
   width: inherit;
   bottom: 0;

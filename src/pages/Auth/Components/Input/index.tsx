@@ -3,7 +3,7 @@ import { InputContainer, InputWrapper, Label, StyledInput } from "./styles";
 import { Star } from "@/pages/SetHomeLocation/components/BottomModal/styles";
 
 interface CustomInputProps {
-  hasError: boolean;
+  hasError?: boolean;
   label: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;

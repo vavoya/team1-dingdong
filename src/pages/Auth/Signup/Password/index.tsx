@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { PasswordGuidText } from "./styles";
 import CustomInput from "../../Components/Input";
 import CustomFormWrapper from "../../Components/FormWrapper";
@@ -6,10 +6,22 @@ import { NextButtonWrapper } from "../SchoolAuth/styles";
 import SolidButton from "@/components/designSystem/Button/SolidButton";
 import { useNavigate } from "react-router-dom";
 import { SIGNUP_TEXT } from "@/constants/signupTexts";
+import { isValidatePassword } from "@/utils/signUp/passwordValidation";
+import { colors } from "@/styles/colors";
 
+interface PasswordGuideTextType {
+  passwordGuideText: string;
+  color: string;
+}
 export default function PasswordSignup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [buttonActive, setButtonActive] = useState(false);
+  const [passwordGuideText, setPasswordGuideText] =
+    useState<PasswordGuideTextType>({
+      passwordGuideText: SIGNUP_TEXT.passwordGuideText,
+      color: colors.gray50,
+    });
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
@@ -19,10 +31,36 @@ export default function PasswordSignup() {
     setConfirmPassword(e.target.value);
   };
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (password.length <= 0) return;
+    if (isValidatePassword(password)) {
+      setPasswordGuideText({
+        passwordGuideText: SIGNUP_TEXT.passwordGuideText,
+        color: colors.gray50,
+      });
+    } else
+      setPasswordGuideText({
+        passwordGuideText: SIGNUP_TEXT.passwordFormatWrongText,
+        color: colors.red,
+      });
+  }, [password]);
+
+  useEffect(() => {
+    if (isValidatePassword(password) && password === confirmPassword) {
+      setButtonActive(true);
+    } else {
+      setButtonActive(false);
+    }
+  }, [password, confirmPassword]);
   return (
     <>
       <CustomFormWrapper>
         <CustomInput
+          hasError={
+            passwordGuideText.passwordGuideText ===
+              SIGNUP_TEXT.passwordFormatWrongText && password.length > 0
+          }
           label="비밀번호"
           type="password"
           value={password}
@@ -30,7 +68,9 @@ export default function PasswordSignup() {
           placeholder="8자 이상의 비밀번호"
         />
 
-        <PasswordGuidText>{SIGNUP_TEXT.passwardGuideText}</PasswordGuidText>
+        <PasswordGuidText $textColor={passwordGuideText.color}>
+          {passwordGuideText.passwordGuideText}
+        </PasswordGuidText>
 
         <CustomInput
           label="비밀번호 확인"
@@ -43,6 +83,7 @@ export default function PasswordSignup() {
 
       <NextButtonWrapper>
         <SolidButton
+          active={buttonActive}
           text="다음"
           onClick={() => navigate("/signup/user-info")}
         />
