@@ -1,5 +1,7 @@
 package com.ddbb.dingdong;
 
+import com.ddbb.dingdong.domain.payment.entity.Wallet;
+import com.ddbb.dingdong.domain.payment.repository.WalletRepository;
 import com.ddbb.dingdong.domain.user.entity.Home;
 import com.ddbb.dingdong.domain.user.entity.School;
 import com.ddbb.dingdong.domain.user.entity.User;
@@ -18,6 +20,7 @@ import java.time.LocalDateTime;
 public class ApplicationInitializer {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final WalletRepository walletRepository;
 
     @PostConstruct
     public void init() {
@@ -27,7 +30,9 @@ public class ApplicationInitializer {
             School school = new School(null, "seoul", "address", 1.0, 1.0);
             User user = new User(null, "test", "test@test.com", password, LocalDateTime.now(), school, null);
             user.associateHome(home);
-            userRepository.save(user);
+            user = userRepository.save(user);
+            Wallet wallet = new Wallet(null, user.getId(), 50000, LocalDateTime.now());
+            walletRepository.save(wallet);
         }
     }
 }
