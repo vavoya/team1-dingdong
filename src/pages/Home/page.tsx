@@ -7,11 +7,11 @@ import HomeHeader from "@/components/Headers/HomeHeader";
 import BusState from "@/pages/Home/component/BusState";
 import HomeSchool from "@/pages/Home/component/HomeSchool";
 import BusSelection from "@/pages/Home/component/BusSelection";
-import {useQueries} from "@tanstack/react-query";
-import queriesPath from "@/api/queries";
+import {usePathQueries} from "@/lib/customNav";
 
 export default function Page() {
-    const results = useQueries({ queries: queriesPath['/home'] });
+    const results = usePathQueries();
+
     const firstQuery = results[0];
 
     if (!firstQuery.isLoading && firstQuery.data) {
