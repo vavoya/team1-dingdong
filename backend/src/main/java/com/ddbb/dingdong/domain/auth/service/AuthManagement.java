@@ -1,26 +1,34 @@
 package com.ddbb.dingdong.domain.auth.service;
 
-import com.ddbb.dingdong.application.usecase.auth.util.SignUpFieldValidator;
+import com.ddbb.dingdong.util.ParamValidator;
+import com.ddbb.dingdong.domain.payment.entity.Wallet;
+import com.ddbb.dingdong.domain.payment.repository.WalletRepository;
 import com.ddbb.dingdong.domain.user.entity.Home;
+import com.ddbb.dingdong.domain.user.entity.School;
 import com.ddbb.dingdong.domain.user.entity.User;
 import com.ddbb.dingdong.domain.user.repository.UserRepository;
 import com.ddbb.dingdong.infrastructure.auth.AuthUser;
 import com.ddbb.dingdong.infrastructure.auth.AuthenticationManager;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.PasswordEncoder;
-import com.ddbb.dingdong.presentation.endpoint.auth.dto.SignUpRequestDto;
+import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.SignUpRequestDto;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
 public class AuthManagement {
     private final UserRepository userRepository;
+    private final WalletRepository walletRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
-    public void signUp(String name, String email, String password, SignUpRequestDto.Home home) {
-        checkEmail(email);
-        checkPassword(password);
+    private static final int BALANCE = 50000;
+
+    @Transactional
+    public void signUp(String name, String email, String password, SignUpRequestDto.Home home, SignUpRequestDto.School school) {
         User user = User.builder()
                 .name(name)
                 .email(email)
@@ -33,8 +41,18 @@ public class AuthManagement {
                         home.getStationLongitude(),
                         home.getStationName()
                 ))
+                .createdAt(LocalDateTime.now())
+                .school(new School(
+                        null,
+                        school.getName(),
+                        school.getRoadNameAddress(),
+                        school.getLatitude(),
+                        school.getLongitude()
+                ))
                 .build();
-        userRepository.save(user);
+        user = userRepository.save(user);
+        Wallet wallet = new Wallet(null, user.getId(), BALANCE, LocalDateTime.now());
+        walletRepository.save(wallet);
     }
 
     public void login(String email, String password) {
@@ -50,7 +68,7 @@ public class AuthManagement {
     }
 
     public void checkPassword(String password) {
-        if (!SignUpFieldValidator.isValidPassword(password)) {
+        if (!ParamValidator.isValidPassword(password)) {
             throw AuthErrors.INVALID_PASSWORD_FORMAT.toException();
         }
     }

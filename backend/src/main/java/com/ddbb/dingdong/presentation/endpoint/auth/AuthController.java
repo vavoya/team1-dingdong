@@ -4,9 +4,10 @@ import com.ddbb.dingdong.application.exception.APIException;
 import com.ddbb.dingdong.application.usecase.auth.CheckEmailUseCase;
 import com.ddbb.dingdong.application.usecase.auth.LoginUseCase;
 import com.ddbb.dingdong.application.usecase.auth.SignUpUseCase;
+import com.ddbb.dingdong.domain.auth.service.AuthErrors;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
-import com.ddbb.dingdong.presentation.endpoint.auth.dto.CheckEmailDto;
-import com.ddbb.dingdong.presentation.endpoint.auth.dto.SignUpRequestDto;
+import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.CheckEmailDto;
+import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.SignUpRequestDto;
 import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.LoginRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import static com.ddbb.dingdong.domain.auth.service.AuthErrors.EMAIL_ALREADY_EXISTS;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,7 +47,7 @@ public class AuthController {
         try {
             checkEmailUseCase.execute(param);
         } catch (DomainException e) {
-            if (e.error.equals(EMAIL_ALREADY_EXISTS)) {
+            if (e.error.equals(AuthErrors.EMAIL_ALREADY_EXISTS)) {
                 throw new APIException(e, HttpStatus.CONFLICT);
             } else {
                 throw new APIException(e, HttpStatus.BAD_REQUEST);
@@ -65,12 +64,13 @@ public class AuthController {
                 signUpRequestDto.getName(),
                 signUpRequestDto.getEmail(),
                 signUpRequestDto.getPassword(),
-                signUpRequestDto.getHome()
+                signUpRequestDto.getHome(),
+                signUpRequestDto.getSchool()
         );
         try {
             signUpUseCase.execute(param);
         } catch (DomainException e) {
-            if (e.error.equals(EMAIL_ALREADY_EXISTS)) {
+            if (e.error.equals(AuthErrors.EMAIL_ALREADY_EXISTS)) {
                 throw new APIException(e, HttpStatus.CONFLICT);
             } else {
                 throw new APIException(e, HttpStatus.BAD_REQUEST);
