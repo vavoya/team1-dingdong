@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.presentation.endpoint.auth;
+package com.ddbb.dingdong.presentation.endpoint.auth.exchanges;
 
 import lombok.Data;
 

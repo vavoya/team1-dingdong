@@ -3,9 +3,9 @@ package com.ddbb.dingdong.application.usecase.auth;
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
 import com.ddbb.dingdong.application.usecase.auth.errors.AuthParamErrors;
-import com.ddbb.dingdong.application.usecase.auth.util.EmailValidator;
+import com.ddbb.dingdong.util.ParamValidator;
 import com.ddbb.dingdong.domain.auth.service.AuthManagement;
-import com.ddbb.dingdong.presentation.endpoint.auth.CheckEmailDto;
+import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.CheckEmailDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class CheckEmailUseCase implements UseCase<CheckEmailUseCase.Param, Void>
             String email = dto.getEmail();
             if (email == null || email.isBlank()) {
                 throw AuthParamErrors.EMAIL_REQUIRED.toException();
-            } else if (!EmailValidator.isValidEmail(email)) {
+            } else if (!ParamValidator.isValidEmail(email)) {
                 throw AuthParamErrors.INVALID_EMAIL_FORMAT.toException();
             }
             return true;
