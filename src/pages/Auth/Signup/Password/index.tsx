@@ -12,7 +12,7 @@ import {
   NextButton,
 } from "./styles";
 
-const PasswordSignup: React.FC = () => {
+export default function PasswordSignup() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -63,6 +63,4 @@ const PasswordSignup: React.FC = () => {
       <NextButton>다음</NextButton>
     </Container>
   );
-};
-
-export default PasswordSignup;
+}

@@ -1,5 +1,5 @@
 import { colors } from "@/styles/colors";
-import { Body1SemiBold } from "@/styles/typography";
+import { Body1SemiBold, Heading2SemiBold } from "@/styles/typography";
 import styled from "styled-components";
 
 export const LoginHome = {
@@ -12,24 +12,20 @@ export const LoginHome = {
     background: linear-gradient(180deg, #fff 54.33%, #ffedb5 100%);
   `,
 
-  Title: styled.h1`
-    font-size: 32px;
-    font-weight: bold;
-    color: #1e1e1e;
-    margin-bottom: 8px;
+  Logo: styled.div`
+    margin-bottom: 22px;
   `,
 
-  SubTitle: styled.p`
-    font-size: 16px;
-    color: #4a4a4a;
-    margin-bottom: 32px;
+  SubTitle: styled(Heading2SemiBold)`
+    color: ${colors.gray100};
+    margin-bottom: 34px;
   `,
 
   IconWrapper: styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 100px;
   `,
 
   ButtonWrapper: styled.div`
@@ -69,7 +65,7 @@ export const LoginHome = {
 
   FooterText: styled.p`
     font-size: 12px;
-    color: #777;
+    color: ${colors.gray70};
     margin-top: 20px;
   `,
 };

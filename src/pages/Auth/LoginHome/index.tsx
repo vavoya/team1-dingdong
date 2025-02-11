@@ -2,6 +2,8 @@ import { LoginHome } from "./styles";
 import Lottie from "react-lottie";
 import animationData from "@/assets/lottie/busLoadingAnimation.json";
 import { useNavigate } from "react-router-dom";
+import DingdongLogoIcon from "@/components/designSystem/Icons/LoginHome/DingdongLogoIcon";
+import SolidButton from "@/components/designSystem/Button/SolidButton";
 
 const defaultOptions = {
   loop: true,
@@ -16,15 +18,15 @@ export default function LoginHomeScreen() {
   const navigate = useNavigate();
   return (
     <LoginHome.Container>
-      <LoginHome.Title>DingDong</LoginHome.Title>
+      <LoginHome.Logo>
+        <DingdongLogoIcon />
+      </LoginHome.Logo>
       <LoginHome.SubTitle>딩동 한 번이면 캠퍼스까지 슝-</LoginHome.SubTitle>
       <LoginHome.IconWrapper>
         <Lottie width={140} height={105} options={defaultOptions} />
       </LoginHome.IconWrapper>
       <LoginHome.ButtonWrapper>
-        <LoginHome.LoginButton onClick={() => navigate("/login")}>
-          로그인 하기
-        </LoginHome.LoginButton>
+        <SolidButton onClick={() => navigate("/login")} text={"로그인 하기"} />
         <LoginHome.SignUpButton onClick={() => navigate("/signup-school-auth")}>
           학교 이메일로 회원가입
         </LoginHome.SignUpButton>

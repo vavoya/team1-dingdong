@@ -16,7 +16,7 @@ import {
   NextButton,
 } from "./styles";
 
-const SignupVerification: React.FC = () => {
+export default function SchoolAuthSignUp() {
   const [email, setEmail] = useState("abcd1234@snu.ac.kr");
   const [verificationCode, setVerificationCode] = useState("123456");
 
@@ -60,6 +60,4 @@ const SignupVerification: React.FC = () => {
       <NextButton>다음</NextButton>
     </Container>
   );
-};
-
-export default SignupVerification;
+}
