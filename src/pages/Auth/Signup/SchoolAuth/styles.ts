@@ -28,14 +28,16 @@ export const EmailInputWrapper = styled.div`
   margin-bottom: 10px;
 `;
 
-export const EmailInput = styled(Body2Medium).attrs({ as: "input" })`
+export const EmailInput = styled(Body2Medium).attrs({ as: "input" })<{
+  $hasError: boolean;
+}>`
   display: flex;
   padding: 8px 11px;
   justify-content: space-between;
   align-items: center;
   flex: 1 0 0;
   border-radius: 4px;
-  border: 1px solid ${colors.gray30};
+  border: 1px solid ${(props) => (props.$hasError ? colors.red : colors.gray30)};
 
   color: ${colors.gray100};
 `;

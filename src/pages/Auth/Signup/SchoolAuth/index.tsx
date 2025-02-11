@@ -94,7 +94,11 @@ export default function SchoolAuthSignUp() {
             학교 이메일 <Star>*</Star>
           </Label>
           <EmailInputWrapper>
-            <EmailInput value={email} onChange={handleEmailChange} />
+            <EmailInput
+              $hasError={hasErrorEmail}
+              value={email}
+              onChange={handleEmailChange}
+            />
             <VerifyButton onClick={clickedEmailSendButton}>전송</VerifyButton>
           </EmailInputWrapper>
           {!hasErrorEmail && sendEmailButtonClicked && !isExpired ? (
