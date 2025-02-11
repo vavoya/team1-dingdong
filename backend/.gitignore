@@ -28,6 +28,7 @@ out/
 !**/src/test/**/out/
 application-prod.yml
 .env
+.env.prod
 
 ### NetBeans ###
 /nbproject/private/
