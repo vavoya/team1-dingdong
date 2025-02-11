@@ -16,7 +16,7 @@ public class RequestRouteOptimizationDTO {
     private final String startX;
     private final String startY;
     private final String startTime;
-    private String endName = "서울대학교";
+    private String endName = "목적지";
     private final String endX;
     private final String endY;
     private String endPoiId;
