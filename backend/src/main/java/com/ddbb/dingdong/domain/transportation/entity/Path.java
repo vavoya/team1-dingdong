@@ -24,7 +24,7 @@ public class Path {
     @Column(nullable = false)
     private Integer totalMinutes;
 
-    @OneToMany(mappedBy = "path", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "path", cascade = CascadeType.PERSIST)
     private List<Line> lines;
 
     @OneToOne
