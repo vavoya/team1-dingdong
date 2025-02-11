@@ -53,8 +53,10 @@ export const VerifyButton = styled(Body2Medium).attrs({ as: "button" })`
   color: ${colors.orange900};
 `;
 
-export const VerificationTimeText = styled(Body2Regular)`
-  color: ${colors.gray50};
+export const VerificationTimeText = styled(Body2Regular)<{
+  $hasError: boolean;
+}>`
+  color: ${(props) => (props.$hasError ? colors.red : colors.gray50)};
 `;
 
 export const NextButtonWrapper = styled.button`

@@ -20,7 +20,9 @@ export const InputContainer = styled.div`
   width: 100%;
 `;
 
-export const StyledInput = styled(Body2Medium).attrs({ as: "input" })`
+export const StyledInput = styled(Body2Medium).attrs({ as: "input" })<{
+  $hasError: boolean;
+}>`
   display: flex;
   width: 100%;
   padding: 8px 11px;
@@ -28,7 +30,7 @@ export const StyledInput = styled(Body2Medium).attrs({ as: "input" })`
   align-items: center;
   flex: 1 0 0;
   border-radius: 4px;
-  border: 1px solid ${colors.gray30};
+  border: 1px solid ${(props) => (props.$hasError ? colors.red : colors.gray30)};
   color: ${colors.gray100};
 
   &::placeholder {
