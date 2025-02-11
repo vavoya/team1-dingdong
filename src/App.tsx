@@ -17,11 +17,13 @@ import ReservationsPage from "@/pages/Reservations/page.tsx";
 import MyPage from "@/pages/MyPage/page.tsx";
 import TimetableManagementPage from "@/pages/TimetableManagement/page.tsx";
 import SuccessPage from "@/pages/Payment/Success/page.tsx";
+import RechargePage from "@/pages/Wallet/page.tsx";
 // 컴포넌트
-import Loading from "@/components/Loading";
-import CustomRouteBooking from "./pages/BusBooking/CustomRouteBooking/page.tsx";
-import FixedRouteBooking from "./pages/BusBooking/FixedRouteBooking/page.tsx";
-import FixedRouteBookingSelectBus from "./pages/BusBooking/FixedRouteBookingSelectBus/page.tsx";
+import CustomRouteBooking from "@/pages/BusBooking/CustomRouteBooking/page.tsx";
+
+import LoadingModal from "@/components/Loading";
+import FixedRouteBooking from "@/pages/BusBooking/FixedRouteBooking/page.tsx";
+import FixedRouteBookingSelectBus from "@/pages/BusBooking/FixedRouteBookingSelectBus/page.tsx";
 
 function App() {
   return (
@@ -30,7 +32,7 @@ function App() {
       <ResetStyle />
       <GlobalStyle />
       {/* React Route */}
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<LoadingModal text={"페이지 불러오는 중"} />}>
         <Routes>
           <Route path="/" element={<RootLayout />}>
             {/* 홈 */}
@@ -39,6 +41,7 @@ function App() {
             <Route path="set-home-location" element={<SetHomeLocation />} />
             {/* 버스 예매하기  */}
             <Route path="custom-bus-booking" element={<CustomRouteBooking />} />
+
             {/* 함께 타기 버스 선택하기 */}
             <Route
               path="fixed-bus-select-bus"
@@ -47,6 +50,7 @@ function App() {
             {/* 함께 타기 예매하기  */}
             <Route path="fixed-bus-booking" element={<FixedRouteBooking />} />
 
+            {/* 실시간 버스 위치 */}
             <Route path="bus-tracker" element={<BusTrackerPage />} />
             {/* 예매 내역 */}
             <Route path="reservations" element={<ReservationsPage />} />
@@ -66,6 +70,8 @@ function App() {
               {/* 구매 성공 */}
               <Route path="success" element={<SuccessPage />} />
             </Route>
+            {/* 충전 페이지 */}
+            <Route path="recharge" element={<RechargePage />} />
             {/* 에러 페이지 */}
             <Route path="*" element={<ErrorPage />} />
           </Route>

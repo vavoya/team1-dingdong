@@ -91,8 +91,6 @@ export default function CalendarView({
     // AI 추천 로직 (API 호출 등)
     setToolTipOn(false);
     if (AIBtnToggles[currentMonthIndex]) {
-      console.log("제거");
-      console.log(selectedDate, "제거");
       dispatch(
         timeScheduleActions.clearAIRecommendations({
           year: selectedDate.year,
