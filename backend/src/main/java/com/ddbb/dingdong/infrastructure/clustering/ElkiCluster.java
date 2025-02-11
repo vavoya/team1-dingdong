@@ -22,7 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -31,27 +34,7 @@ public class ElkiCluster {
     private final HaversineDistanceFunction haversineDistanceFunction;
     private final RandomUniformGeneratedInitialMeans randomInit; // ELKI K-Means 초기화용
 
-    private static final Logger logger = LoggerFactory.getLogger(ElkiCluster.class);
-
-    public void elkiKmeans(List<Location> allLocations, int k) {
-        // DB에서 모든 location 데이터 읽어오기
-        if (allLocations.isEmpty()) return;
-
-        // double[][] 형태로 (위도, 경도) 좌표 추출
-        double[][] data = getAllLocations(allLocations);
-
-        // ELKI Database 초기화
-        Database db = initializeElkiDatabase(data);
-
-        // ELKI K-Means 수행 (초기 값: k(클러스터 수, 초기값: 3))
-        KMeansLloyd<NumberVector> kmeans = new KMeansLloyd<>(haversineDistanceFunction, k, 0, randomInit);
-
-        Clustering<KMeansModel> result = kmeans.run(db);
-
-        saveElkiResults(allLocations, db, result);
-    }
-
-    public List<Location> elkiDBScan(List<Location> allLocations, double radius, int minPts) {
+    public List<Location> elkiDBScan(List<Location> allLocations, double radius, int minPts, String labelPrefix) {
         // DB에서 모든 location 데이터 읽어오기
         if (allLocations.isEmpty()) return null;
 
@@ -67,7 +50,7 @@ public class ElkiCluster {
         // ELKI DBSCAN 수행 (초기 값: eps = 3.0(3km), minPts = 2)
         Clustering<Model> result = dbscan.run(db);
 
-        saveElkiResults(allLocations, db, result);
+        saveElkiResults(allLocations, db, result, labelPrefix);
 
         return allLocations;
     }
@@ -95,11 +78,11 @@ public class ElkiCluster {
         return db;
     }
 
-    private <T extends Model> void saveElkiResults(List<Location> allLocations, Database db, Clustering<T> result) {
+    private <T extends Model> void saveElkiResults(List<Location> allLocations, Database db, Clustering<T> result, String labelPrefix) {
         // 각 노드의 결과 라벨 노이즈 값으로 초기화 (노이즈 = -1)
-        long[] labels = new long[allLocations.size()];
+        int[] labels = new int[allLocations.size()];
         for (int i = 0; i < allLocations.size(); i++) {
-            labels[i] = -1L;
+            labels[i] = -1;
         }
 
         Relation<NumberVector> relation = db.getRelation(TypeUtil.NUMBER_VECTOR_FIELD);
@@ -107,7 +90,7 @@ public class ElkiCluster {
 
         // 결과 추출
         List<? extends de.lmu.ifi.dbs.elki.data.Cluster<T>> clusters = result.getAllClusters();
-        long cid = 0; // 결과에 해당하는 클러스터 ID 부여
+        int cid = 0; // 결과에 해당하는 클러스터 ID 부여
         for (de.lmu.ifi.dbs.elki.data.Cluster<T> cluster : clusters) {
             if (!cluster.isNoise()) {
                 // internalGetIndex() 사용 시, Offset이 꼬일 수 있으므로 사용하지 말 것
@@ -119,12 +102,51 @@ public class ElkiCluster {
             }
         }
 
-        saveResults(allLocations, labels);
+        saveResults(allLocations, labels, labelPrefix);
     }
 
-    private void saveResults(List<Location> allLocations, long[] labels) {
-        for (int i = 0; i < allLocations.size(); i++) {
-            allLocations.get(i).setClusterLabel(labels[i] == Integer.MAX_VALUE ? -1L : labels[i]);
+    public void saveResults(List<Location> allLocations, int[] labels, String labelPrefix) {
+        Map<Integer, List<Integer>> clusterGroups = new HashMap<>();
+
+        for (int i = 0; i < labels.length; i++) {
+            if (labels[i] == -1) continue;
+            clusterGroups.computeIfAbsent(labels[i], k -> new ArrayList<>()).add(i);
+        }
+
+        for (Map.Entry<Integer, List<Integer>> entry : clusterGroups.entrySet()) {
+            int clusterId = entry.getKey();
+            List<Integer> indices = entry.getValue();
+
+            // 15개씩 분할
+            List<List<Integer>> subClusters = new ArrayList<>();
+            for (int i = 0; i < indices.size(); i += 15) {
+                subClusters.add(new ArrayList<>(indices.subList(i, Math.min(i + 15, indices.size()))));
+            }
+
+            // 마지막 클러스터 크기가 4 미만이면 조정
+            if (subClusters.size() > 1) {
+                List<Integer> lastCluster = subClusters.get(subClusters.size() - 1);
+                if (lastCluster.size() < 4) {
+                    int need = 4 - lastCluster.size(); // 부족한 개수
+                    for (int j = subClusters.size() - 2; j >= 0 && need > 0; j--) {
+                        List<Integer> prevCluster = subClusters.get(j);
+                        while (!prevCluster.isEmpty() && need > 0) {
+                            lastCluster.add(prevCluster.remove(prevCluster.size() - 1));
+                            need--;
+                        }
+                    }
+                }
+            }
+
+            // 클러스터 라벨 할당
+            int subClusterNum = 0;
+            for (List<Integer> subCluster : subClusters) {
+                subClusterNum++;
+                String subLabel = labelPrefix + clusterId + "_" + subClusterNum;
+                for (int idx : subCluster) {
+                    allLocations.get(idx).setClusterLabel(subLabel);
+                }
+            }
         }
     }
 }
