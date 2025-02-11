@@ -40,12 +40,19 @@ function App() {
       <Suspense fallback={<LoadingModal text={"페이지 불러오는 중"} />}>
         <Routes>
           <Route path="/" element={<RootLayout />}>
-            {/* 홈 */}
             <Route path="home" element={<HomePage />} />
             {/* 탑승지 위치 설정 */}
             <Route path="set-home-location" element={<SetHomeLocation />} />
             {/* 버스 예매하기  */}
             <Route path="custom-bus-booking" element={<CustomRouteBooking />} />
+
+            {/* 함께 타기 버스 선택하기 */}
+            <Route
+              path="fixed-bus-select-bus"
+              element={<FixedRouteBookingSelectBus />}
+            />
+            {/* 함께 타기 예매하기  */}
+            <Route path="fixed-bus-booking" element={<FixedRouteBooking />} />
 
             {/* 실시간 버스 위치 */}
             <Route path="bus-tracker" element={<BusTrackerPage />} />
