@@ -1,20 +1,18 @@
 import React, { useState, ChangeEvent } from "react";
 import {
-  Container,
-  Header,
-  CloseButton,
-  Title,
-  FormGroup,
   Label,
-  Required,
   EmailInputWrapper,
   EmailInput,
   VerifyButton,
   VerificationTimeText,
-  VerificationCodeInput,
-  VerificationGuideText,
-  NextButton,
+  NextButtonWrapper,
+  EmailFormWrapper,
 } from "./styles";
+import SolidButton from "@/components/designSystem/Button/SolidButton";
+import { Star } from "@/pages/SetHomeLocation/components/BottomModal/styles";
+import CustomInput from "../../Components/Input";
+import { useNavigate } from "react-router-dom";
+import CustomFormWrapper from "../../Components/FormWrapper";
 
 export default function SchoolAuthSignUp() {
   const [email, setEmail] = useState("abcd1234@snu.ac.kr");
@@ -27,37 +25,35 @@ export default function SchoolAuthSignUp() {
   const handleVerificationCodeChange = (e: ChangeEvent<HTMLInputElement>) => {
     setVerificationCode(e.target.value);
   };
+  const navigate = useNavigate();
 
   return (
-    <Container>
-      <Header>
-        <Title>회원가입</Title>
-        <CloseButton>×</CloseButton>
-      </Header>
+    <>
+      <CustomFormWrapper>
+        <EmailFormWrapper>
+          <Label>
+            학교 이메일 <Star>*</Star>
+          </Label>
+          <EmailInputWrapper>
+            <EmailInput value={email} onChange={handleEmailChange} />
+            <VerifyButton>전송</VerifyButton>
+          </EmailInputWrapper>
+          <VerificationTimeText>
+            인증 코드 유효 시간: 1분 34초
+          </VerificationTimeText>
+        </EmailFormWrapper>
 
-      <FormGroup>
-        <Label>
-          학교 이메일 <Required>*</Required>
-        </Label>
-        <EmailInputWrapper>
-          <EmailInput value={email} onChange={handleEmailChange} />
-          <VerifyButton>전송</VerifyButton>
-        </EmailInputWrapper>
-        <VerificationTimeText>
-          인증 코드 유효 시간: 1분 34초
-        </VerificationTimeText>
-      </FormGroup>
-
-      <FormGroup>
-        <VerificationGuideText>인증 코드를 입력해주세요</VerificationGuideText>
-        <VerificationCodeInput
+        <CustomInput
+          label="인증 코드를 입력해주세요"
           value={verificationCode}
           onChange={handleVerificationCodeChange}
-          maxLength={6}
+          placeholder="6자리 코드"
         />
-      </FormGroup>
+      </CustomFormWrapper>
 
-      <NextButton>다음</NextButton>
-    </Container>
+      <NextButtonWrapper>
+        <SolidButton text="다음" onClick={() => navigate("password")} />
+      </NextButtonWrapper>
+    </>
   );
 }

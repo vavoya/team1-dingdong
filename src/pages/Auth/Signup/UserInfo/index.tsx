@@ -1,23 +1,17 @@
 import React, { ChangeEvent, useState } from "react";
-import {
-  Container,
-  Header,
-  CloseButton,
-  Title,
-  TitleWrapper,
-  ProfileIcon,
-  FormGroup,
-  Label,
-  Required,
-  Input,
-  CompleteButton,
-} from "./styles";
+import { NameGuideText } from "./styles";
+import CustomFormWrapper from "../../Components/FormWrapper";
+import CustomInput from "../../Components/Input";
+import { NextButtonWrapper } from "../SchoolAuth/styles";
+import SolidButton from "@/components/designSystem/Button/SolidButton";
+import { useNavigate } from "react-router-dom";
+import { SIGNUP_TEXT } from "@/constants/signupTexts";
 
 const UserInfoSignup = () => {
   const [formData, setFormData] = useState({
     name: "",
     address: "",
-    addressDetail: "",
+    addressNickname: "",
     contact: "",
   });
 
@@ -28,67 +22,44 @@ const UserInfoSignup = () => {
       [name]: value,
     }));
   };
+  const navigate = useNavigate();
 
   return (
-    <Container>
-      <Header>
-        <TitleWrapper>
-          <Title>회원가입</Title>
-          <ProfileIcon>J</ProfileIcon>
-        </TitleWrapper>
-        <CloseButton>×</CloseButton>
-      </Header>
-
-      <FormGroup>
-        <Label>
-          이름 <Required>*</Required>
-        </Label>
-        <Input
-          name="name"
-          placeholder="이름을 입력해주세요"
+    <>
+      <CustomFormWrapper>
+        <CustomInput
+          label="이름"
           value={formData.name}
           onChange={handleChange}
+          placeholder="이름을 입력해주세요"
         />
-      </FormGroup>
 
-      <FormGroup>
-        <Label>
-          주소 <Required>*</Required>
-        </Label>
-        <Input
-          name="address"
-          placeholder="주소를 입력해주세요"
+        <NameGuideText>{SIGNUP_TEXT.nameGuideText}</NameGuideText>
+
+        <CustomInput
+          label="주소"
           value={formData.address}
           onChange={handleChange}
+          placeholder="주소를 입력해주세요"
         />
-      </FormGroup>
 
-      <FormGroup>
-        <Label>
-          주소 상세 <Required>*</Required>
-        </Label>
-        <Input
-          name="addressDetail"
-          placeholder="주소 상세을 설정해주세요"
-          value={formData.addressDetail}
+        <CustomInput
+          label="주소 별칭"
+          value={formData.addressNickname}
           onChange={handleChange}
+          placeholder="주소 별칭을 설정해주세요"
         />
-      </FormGroup>
-
-      <FormGroup>
-        <Label>
-          연락처 <Required>*</Required>
-        </Label>
-        <Input
-          name="contact"
+        <CustomInput
+          label="연락처"
+          value={formData.address}
+          onChange={handleChange}
           placeholder="연락처를 입력해주세요"
-          value={formData.contact}
-          onChange={handleChange}
         />
-      </FormGroup>
-
-      <CompleteButton>완료</CompleteButton>
-    </Container>
+      </CustomFormWrapper>
+      <NextButtonWrapper>
+        <SolidButton text="완료" onClick={() => navigate("/home")} />
+      </NextButtonWrapper>{" "}
+    </>
   );
 };
 

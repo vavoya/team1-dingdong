@@ -29,6 +29,7 @@ import PasswordSignup from "./pages/Auth/Signup/Password/index.tsx";
 import UserInfoSignup from "./pages/Auth/Signup/UserInfo/index.tsx";
 import FixedRouteBooking from "@/pages/BusBooking/FixedRouteBooking/page.tsx";
 import FixedRouteBookingSelectBus from "@/pages/BusBooking/FixedRouteBookingSelectBus/page.tsx";
+import SignupLayout from "./pages/Auth/Signup/page.tsx";
 
 function App() {
   return (
@@ -41,14 +42,18 @@ function App() {
         <Routes>
           <Route path="/" element={<RootLayout />}>
             <Route path="home" element={<HomePage />} />
+
             {/* 로그인 */}
             <Route path="/login-home" element={<LoginHomeScreen />} />
             <Route path="/login" element={<Login />} />
 
             {/* 회원 가입 */}
-            <Route path="/signup-school-auth" element={<SchoolAuthSignUp />} />
-            <Route path="/signup-passward" element={<PasswordSignup />} />
-            <Route path="/signup-user-info" element={<UserInfoSignup />} />
+
+            <Route path="/signup" element={<SignupLayout />}>
+              <Route index element={<SchoolAuthSignUp />} />
+              <Route path="password" element={<PasswordSignup />} />
+              <Route path="user-info" element={<UserInfoSignup />} />
+            </Route>
 
             {/* 탑승지 위치 설정 */}
             <Route path="set-home-location" element={<SetHomeLocation />} />
