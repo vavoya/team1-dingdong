@@ -75,7 +75,7 @@ export default function TimeViewBottomModal({
             <S.ScheduleBox key={dateInfo}>
               <S.DateInfo>{dateInfo}</S.DateInfo>
               <S.TimeInfo>
-                <S.Time>{time}</S.Time>
+                <S.Time>{time.toString().padStart(2, "0")}</S.Time>
                 {modalType === "editable" && (
                   <S.EditIconWrapper
                     onClick={() => editIconHandler(timeScheduleIndex)}>

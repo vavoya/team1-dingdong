@@ -11,9 +11,9 @@ export const Wrapper = styled.div`
   gap: 20px;
 
   position: sticky;
-  z-index: 2; // 투명하게 통과되지 않도록 z축 구분.
   top: 60px;
   background-color: white;
+  z-index: 2;
 `;
 
 export const Subtitle = styled.div`

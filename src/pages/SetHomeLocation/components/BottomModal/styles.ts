@@ -25,7 +25,7 @@ export const BottomModal = styled.div<{ showBottomSheet: boolean }>`
   height: 217px;
 
   display: ${(props) => (props.showBottomSheet ? "flex" : "none")};
-  padding: 28px 20px 20px 20px;
+  padding: 24px 20px 20px 20px;
   flex-direction: column;
   align-items: flex-start;
 
