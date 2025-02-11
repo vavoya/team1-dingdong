@@ -37,7 +37,8 @@ public class BusSchedule {
     @Column(nullable = false)
     private Long schoolId;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bus_id")
     private Bus bus;
 
     @OneToOne(mappedBy = "busSchedule", cascade = CascadeType.ALL)

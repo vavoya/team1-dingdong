@@ -1,5 +1,6 @@
 package com.ddbb.dingdong.domain.user.service;
 
+import com.ddbb.dingdong.domain.auth.service.AuthErrors;
 import com.ddbb.dingdong.domain.user.entity.User;
 import com.ddbb.dingdong.domain.user.repository.UserRepository;
 import com.ddbb.dingdong.infrastructure.auth.AuthUser;
@@ -17,7 +18,7 @@ public class UserManagement {
 
     public void login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(UserErrors.NOT_FOUND::toException);
-        if(!passwordEncoder.matches(password, user.getPassword())) throw UserErrors.NOT_MATCHED_PASSWORD.toException();
+        if(!passwordEncoder.matches(password, user.getPassword())) throw AuthErrors.NOT_MATCHED_PASSWORD.toException();
         authenticationManager.setAuthentication(new AuthUser(user.getId()));
     }
 

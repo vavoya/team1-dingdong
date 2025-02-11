@@ -2,6 +2,7 @@ package com.ddbb.dingdong.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -34,4 +36,14 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Home home;
+
+    public void associateHome(Home home) {
+        this.home = home;
+    }
+
+    public void updateHome(Double stationLatitude, Double stationLongitude, String stationName) {
+        this.home.setStationLatitude(stationLatitude);
+        this.home.setStationLongitude(stationLongitude);
+        this.home.setStationName(stationName);
+    }
 }

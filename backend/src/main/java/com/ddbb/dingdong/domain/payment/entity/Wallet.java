@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,7 +32,7 @@ public class Wallet {
     private LocalDateTime lastUpdatedAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL)
-    private List<DingdongMoneyUsageHistory> usageHistory;
+    private List<DingdongMoneyUsageHistory> usageHistory = new ArrayList<>();
 
     public void pay(int totalPrice) {
         if(this.balance < totalPrice) {

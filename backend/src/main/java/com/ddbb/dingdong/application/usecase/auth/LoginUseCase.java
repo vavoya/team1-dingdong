@@ -1,8 +1,9 @@
-package com.ddbb.dingdong.application.usecase.user;
+package com.ddbb.dingdong.application.usecase.auth;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
-import com.ddbb.dingdong.domain.user.service.UserManagement;
+import com.ddbb.dingdong.application.usecase.auth.errors.AuthParamErrors;
+import com.ddbb.dingdong.domain.auth.service.AuthManagement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,14 +12,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class LoginUseCase implements UseCase<LoginUseCase.Param,Void> {
-    private final UserManagement userManagement;
+    private final AuthManagement authManagement;
 
     @Override
     public Void execute(Param param) {
         param.validate();
         String email = param.email;
         String rawPassword = param.rawPassword;
-        userManagement.login(email, rawPassword);
+        authManagement.login(email, rawPassword);
         return null;
     }
 
@@ -30,8 +31,8 @@ public class LoginUseCase implements UseCase<LoginUseCase.Param,Void> {
 
         @Override
         public boolean validate() {
-            if (email.isBlank()) throw UserInvalidParamErrors.REQUIRED_EMAIL.toException();
-            if (rawPassword.isBlank()) throw UserInvalidParamErrors.REQUIRED_PASSWORD.toException();
+            if (email.isBlank()) throw AuthParamErrors.EMAIL_REQUIRED.toException();
+            if (rawPassword.isBlank()) throw AuthParamErrors.PASSWORD_REQUIRED.toException();
 
             return true;
         }

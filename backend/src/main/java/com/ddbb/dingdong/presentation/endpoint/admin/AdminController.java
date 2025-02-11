@@ -18,15 +18,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
-public class BusController {
+public class AdminController {
     private final CreateClusterUseCase createClusterUseCase;
     private final CreateRouteUseCase createRouteUseCase;
     private final GetLocationUseCase getLocationUsecase;

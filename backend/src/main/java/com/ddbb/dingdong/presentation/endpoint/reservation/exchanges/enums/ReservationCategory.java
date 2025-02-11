@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.presentation.endpoint.reservation.exchanges;
+package com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.enums;
 
 public enum ReservationCategory {
     ALL,

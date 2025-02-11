@@ -28,6 +28,17 @@ public class ReservationManagement {
         return reservationRepository.save(reservation);
     }
 
+    public void cancel(Long userId, Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(ReservationErrors.NOT_FOUND::toException);
+
+        if(!reservation.getUserId().equals(userId)) {
+            throw ReservationErrors.INVALID_ACCESS.toException();
+        }
+
+        reservation.cancel();
+    }
+
     public List<Reservation> findByClusterLabel(String clusterLabel) {
         List<Reservation> cluster = reservationRepository.findAllByClusterLabel(clusterLabel);
         if(cluster.isEmpty()) {
