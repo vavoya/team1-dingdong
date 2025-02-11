@@ -1,7 +1,7 @@
 package com.ddbb.dingdong.domain.payment.entity.vo;
 
 public enum DingdongMoneyUsageType {
-    PAYMENT,
+    PAY,
     CANCEL,
     REFUND,
     ;
