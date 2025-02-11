@@ -20,14 +20,15 @@ import SuccessPage from "@/pages/Payment/Success/page.tsx";
 import RechargePage from "@/pages/Wallet/page.tsx";
 // 컴포넌트
 import CustomRouteBooking from "@/pages/BusBooking/CustomRouteBooking/page.tsx";
+
 import LoadingModal from "@/components/Loading";
 import LoginHomeScreen from "./pages/Auth/LoginHome/index.tsx";
 import Login from "./pages/Auth/Login/index.tsx";
 import SchoolAuthSignUp from "./pages/Auth/Signup/SchoolAuth/index.tsx";
 import PasswordSignup from "./pages/Auth/Signup/Password/index.tsx";
 import UserInfoSignup from "./pages/Auth/Signup/UserInfo/index.tsx";
-//import FixedRouteBooking from "@/pages/BusBooking/FixedRouteBooking/page.tsx";
-//import FixedRouteBookingSelectBus from "@/pages/BusBooking/FixedRouteBookingSelectBus/page.tsx";
+import FixedRouteBooking from "@/pages/BusBooking/FixedRouteBooking/page.tsx";
+import FixedRouteBookingSelectBus from "@/pages/BusBooking/FixedRouteBookingSelectBus/page.tsx";
 
 function App() {
   return (
@@ -39,13 +40,6 @@ function App() {
       <Suspense fallback={<LoadingModal text={"페이지 불러오는 중"} />}>
         <Routes>
           <Route path="/" element={<RootLayout />}>
-            {/* 로그인  */}
-            <Route path="login-home" element={<LoginHomeScreen />} />
-            <Route path="login" element={<Login />} />
-            {/* 회원가입 */}
-            <Route path="signup-school-auth" element={<SchoolAuthSignUp />} />
-            <Route path="signup-password" element={<PasswordSignup />} />
-            <Route path="signup-user-info" element={<UserInfoSignup />} />
             {/* 홈 */}
             <Route path="home" element={<HomePage />} />
             {/* 탑승지 위치 설정 */}

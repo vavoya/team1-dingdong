@@ -1,7 +1,8 @@
-import {useNavigate as orginUseNavigation} from "react-router-dom";
-import {useQueryClient} from "@tanstack/react-query";
-import {useState} from "react";
+import {useLocation, useNavigate as originUseNavigation} from "react-router-dom";
+import {useQueries, useQueryClient} from "@tanstack/react-query";
+import React, {useState} from "react";
 import QueryObj from "@/api/queries"
+import queriesPath from "@/api/queries"
 import {QueryParams} from "@/lib/customNav/interface.ts";
 import LoadingModal from "@/components/Loading";
 import {createRoot, Root} from "react-dom/client";
@@ -15,7 +16,7 @@ interface LinkProps{
     children?: React.ReactNode,
 }
 export default function Link({href, children}: LinkProps) {
-    const navigate = orginUseNavigation();
+    const navigate = originUseNavigation();
     const queryClient = useQueryClient();
     const [loadingState, setLoadingState] = useState<loadingStateType>('default');
 
@@ -57,9 +58,12 @@ export default function Link({href, children}: LinkProps) {
     )
 }
 
-
+interface NavigateProps {
+    href: string;
+    state?: any
+}
 export function useNavigate() {
-    const originNavigate = orginUseNavigation();
+    const originNavigate = originUseNavigation();
     const queryClient = useQueryClient();
 
     const mountModal = () => {
@@ -78,7 +82,7 @@ export function useNavigate() {
         modalContainer.remove(); // 컨테이너를 DOM에서 제거
     }
 
-    return ({href}: LinkProps) => {
+    return ({href, state}: NavigateProps) => {
         const {root, modalContainer} = mountModal();
         root.render(<LoadingModal text={"페이지 불러오는 중"}/>);
 
@@ -89,7 +93,7 @@ export function useNavigate() {
                 .then(() => {
                     // 모든 쿼리 성공 시 모달을 unmount 및 제거 후 라우팅
                     unmountModal(root, modalContainer);
-                    originNavigate(href);    // 네비게이션 실행
+                    originNavigate(href, {state: state});    // 네비게이션 실행
                 })
                 .catch(() => {
                     root.render(
@@ -109,7 +113,14 @@ export function useNavigate() {
                 });
         }
         else {
-            originNavigate(href);    // 네비게이션 실행
+            originNavigate(href, {state: state});    // 네비게이션 실행
         }
     };
+}
+
+export function usePathQueries() {
+    const location = useLocation();
+    const path = location.pathname;
+    const queries = queriesPath[path] || []; // undefined 방지
+    return useQueries({ queries });
 }
