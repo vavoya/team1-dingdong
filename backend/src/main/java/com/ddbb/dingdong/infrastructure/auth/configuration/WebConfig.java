@@ -50,7 +50,7 @@ public class WebConfig implements WebMvcConfigurer {
                         String.format("%s://%s:%s",CLIENT_SCHEMA, CLIENT_ADDRESS, CLIENT_PORT)
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("Cookie")
+                .allowedHeaders("Cookie", "credentials", "Content-Type")
                 .exposedHeaders("Set-Cookie")
                 .allowCredentials(true)
                 .maxAge(3600); // 1시간 동안 pre-flight 요청 결과를 캐시
