@@ -8,14 +8,11 @@ import com.ddbb.dingdong.domain.reservation.entity.Reservation;
 import com.ddbb.dingdong.domain.reservation.entity.Ticket;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.service.ReservationManagement;
-import com.ddbb.dingdong.domain.transportation.entity.Bus;
 import com.ddbb.dingdong.domain.transportation.entity.BusSchedule;
 import com.ddbb.dingdong.domain.transportation.entity.BusStop;
 import com.ddbb.dingdong.domain.transportation.entity.Path;
-import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.domain.transportation.service.BusScheduleManagement;
 import com.ddbb.dingdong.domain.user.entity.School;
-import com.ddbb.dingdong.domain.user.entity.User;
 import com.ddbb.dingdong.domain.user.service.UserManagement;
 import com.ddbb.dingdong.infrastructure.routing.BusRouteCreationService;
 import lombok.AllArgsConstructor;
@@ -39,24 +36,24 @@ public class CreateRouteUseCase implements UseCase<CreateRouteUseCase.Param, Voi
     @Transactional
     @Override
     public Void execute(Param param) {
-        Long clusterLabel = param.getClusterLabel();
+        String clusterLabel = param.getClusterLabel();
         generateBusSchedule(clusterLabel);
 
         return null;
     }
 
     //tmap api로 버스 스케쥴 만들기.
-    private void generateBusSchedule(Long clusterLabel) {
+    private void generateBusSchedule(String clusterLabel) {
         List<Reservation> reservations = reservationManagement.findByClusterLabel(clusterLabel);
         Reservation anyReservation = reservations.get(0);
         Direction direction = anyReservation.getDirection();
-        Long schoolId = userManagement.load(anyReservation.getUserId()).getSchool().getId();
+        School school = userManagement.load(anyReservation.getUserId()).getSchool();
         List<Location> locations = clusteringService.findByClusterLabel(clusterLabel);
-        Path path = busRouteCreationService.routeOptimization(locations);
+        Path path = busRouteCreationService.routeOptimization(locations, school, direction);
         LocalDateTime dingdongTime = direction.equals(Direction.TO_HOME) ? anyReservation.getDepartureTime() : anyReservation.getArrivalTime();
         BusSchedule busSchedule = busScheduleManagement.allocateBusSchedule(
                 path,
-                schoolId,
+                school.getId(),
                 direction,
                 dingdongTime,
                 anyReservation.getStartDate()
@@ -82,29 +79,26 @@ public class CreateRouteUseCase implements UseCase<CreateRouteUseCase.Param, Voi
             allocatedBusStop.put(busStop.getLocationId(), busStop);
         }
 
-        if(lastBusStop != null) {
+        if(lastBusStop != null && !locatedId.isEmpty()) {
             Long lastLocationId = locatedId.stream().findFirst().get();
             allocatedBusStop.put(lastLocationId, lastBusStop);
         }
 
-        System.out.println(allocatedBusStop);
-        System.out.println(allocatedReservation);
-        System.out.println(reservations.size());
-
         for(Reservation reservation : reservations) {
             Long allocationId = allocatedReservation.get(reservation.getId());
             BusStop busStop = allocatedBusStop.get(allocationId);
+            busStop.setLocationId(allocationId);
             Ticket ticket = new Ticket();
             ticket.setBusScheduleId(busSchedule.getId());
             ticket.setReservation(reservation);
             ticket.setBusStopId(busStop.getId());
-            reservationManagement.allocateTicket(reservation,ticket);
+            reservationManagement.allocate(reservation,ticket);
         }
     }
 
     @Getter
     @AllArgsConstructor
     public static class Param implements Params {
-        private Long clusterLabel;
+        private String clusterLabel;
     }
 }
