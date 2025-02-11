@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.domain.reservation.entity;
+package com.ddbb.dingdong.domain.notification;
 
 import com.ddbb.dingdong.domain.reservation.entity.vo.NotificationType;
 import jakarta.persistence.*;
@@ -30,7 +30,6 @@ public class Notification {
     @Column(nullable = false)
     private Long userId;
 
-    @ManyToOne
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
+    @Column(nullable = false)
+    private Long reservationId;
 }
