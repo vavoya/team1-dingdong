@@ -30,7 +30,7 @@ public class User {
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE ,fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id")
     private School school;
 

@@ -5,11 +5,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class DingdongMoneyUsageHistory {
@@ -20,6 +22,8 @@ public class DingdongMoneyUsageHistory {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private DingdongMoneyUsageType type;
+
+    private Long refundedReservationId;
 
     @Column(nullable = false)
     private Integer amount;

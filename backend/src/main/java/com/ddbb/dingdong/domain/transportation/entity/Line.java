@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Line {
@@ -23,9 +25,9 @@ public class Line {
     private Integer totalMeters;
 
     @Column(nullable = false)
-    private Integer totalMinutes;
+    private Integer totalSeconds;
 
-    @OneToMany(mappedBy = "line")
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL)
     private List<Point> points;
 
     @ManyToOne

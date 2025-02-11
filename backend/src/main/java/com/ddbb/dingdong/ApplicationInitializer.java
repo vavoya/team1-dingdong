@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Component
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class ApplicationInitializer {
             User user = new User(null, "test", "test@test.com", password, LocalDateTime.now(), school, null);
             user.associateHome(home);
             user = userRepository.save(user);
-            Wallet wallet = new Wallet(null, user.getId(), 50000, LocalDateTime.now());
+            Wallet wallet = new Wallet(null, user.getId(), 50000, LocalDateTime.now(), new ArrayList<>());
             walletRepository.save(wallet);
         }
     }

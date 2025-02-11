@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Component
 @RequiredArgsConstructor
@@ -51,7 +52,7 @@ public class AuthManagement {
                 ))
                 .build();
         user = userRepository.save(user);
-        Wallet wallet = new Wallet(null, user.getId(), BALANCE, LocalDateTime.now());
+        Wallet wallet = new Wallet(null, user.getId(), BALANCE, LocalDateTime.now(), new ArrayList<>());
         walletRepository.save(wallet);
     }
 

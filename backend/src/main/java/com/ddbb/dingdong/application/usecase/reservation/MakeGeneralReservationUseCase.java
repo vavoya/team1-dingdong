@@ -3,6 +3,8 @@ package com.ddbb.dingdong.application.usecase.reservation;
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
 import com.ddbb.dingdong.application.exception.APIException;
+import com.ddbb.dingdong.domain.clustering.entity.Location;
+import com.ddbb.dingdong.domain.clustering.service.ClusteringService;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.domain.payment.service.PaymentManagement;
 import com.ddbb.dingdong.domain.reservation.entity.Reservation;
@@ -10,6 +12,8 @@ import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationStatus;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationType;
 import com.ddbb.dingdong.domain.reservation.service.ReservationManagement;
+import com.ddbb.dingdong.domain.user.entity.Home;
+import com.ddbb.dingdong.domain.user.service.UserManagement;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.TokenManager;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,6 +38,8 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
     private final ReservationManagement reservationManagement;
     private final PaymentManagement paymentManagement;
     private final TokenManager tokenManager;
+    private final UserManagement userManagement;
+    private final ClusteringService clusteringService;
 
     @Transactional
     @Override
@@ -58,6 +64,8 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
     }
 
     private void makeGeneralReservations(Param.ReservationInfo reservationInfo) {
+        Home home = userManagement.load(reservationInfo.userId).getHome();
+
         for(Param.ReservationInfo.ReservationDate date : reservationInfo.reservationDates) {
             Reservation reservation = new Reservation();
             reservation.setUserId(reservationInfo.getUserId());
@@ -70,7 +78,12 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
             }else {
                 reservation.setDepartureTime(date.date);
             }
-            reservationManagement.reserveGeneral(reservation);
+            Location location = new Location();
+            Long reservationId = reservationManagement.reserve(reservation).getId();
+            location.setReservationId(reservationId);
+            location.setLatitude(home.getStationLatitude());
+            location.setLongitude(home.getStationLongitude());
+            clusteringService.saveLocation(location);
         }
     }
 
