@@ -53,6 +53,14 @@ public class Reservation {
         this.status = ReservationStatus.CANCELED;
     }
 
+    public void fail() {
+        if(!ReservationStatus.PENDING.equals(this.status)) {
+            throw ReservationErrors.ALLOCATION_NOT_ALLOWED.toException();
+        }
+
+        this.status = ReservationStatus.FAIL_ALLOCATED;
+    }
+
     public void allocate(Ticket ticket) {
         if(ticket == null || ticket.getBusScheduleId() == null || ticket.getBusStopId() == null) {
             throw ReservationErrors.INVALID_BUS_TICKET.toException();
