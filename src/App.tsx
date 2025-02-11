@@ -41,6 +41,15 @@ function App() {
         <Routes>
           <Route path="/" element={<RootLayout />}>
             <Route path="home" element={<HomePage />} />
+            {/* 로그인 */}
+            <Route path="/login-home" element={<LoginHomeScreen />} />
+            <Route path="/login" element={<Login />} />
+
+            {/* 회원 가입 */}
+            <Route path="/signup-school-auth" element={<SchoolAuthSignUp />} />
+            <Route path="/signup-passward" element={<PasswordSignup />} />
+            <Route path="/signup-user-info" element={<UserInfoSignup />} />
+
             {/* 탑승지 위치 설정 */}
             <Route path="set-home-location" element={<SetHomeLocation />} />
             {/* 버스 예매하기  */}
