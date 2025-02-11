@@ -18,9 +18,11 @@ import {
   usePostUserVerificationCode,
 } from "@/hooks/SignUp/useSignUp";
 import { useTimer } from "@/hooks/SignUp/useTimer";
+import { isValidEmailFormat } from "@/utils/login/emailValidation";
 
 export default function SchoolAuthSignUp() {
   const [email, setEmail] = useState("");
+  const [emailFormatHasError, setEmailFormatHasError] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [sendEmailButtonClicked, setSendEmailButtonClicked] = useState(false);
   const [nextButtonActive, setNextButtonActive] = useState(false);
@@ -49,16 +51,25 @@ export default function SchoolAuthSignUp() {
     setVerificationCode(e.target.value);
   };
 
+  const certifiedEmail = () => {
+    setEmailErrorText("");
+    setHasErrorEmail(false);
+  };
+  const notCertifiedEmail = () => {
+    setEmailErrorText("제휴 대학이 아닙니다");
+    setHasErrorEmail(true);
+    setTimeout(() => {
+      setEmailErrorText(""); // emailFormatError와 겹치기 피하기.
+    }, 3000);
+  };
   const clickedEmailSendButton = () => {
     setSendEmailButtonClicked(true);
     postUserSchoolEmailMutation(email, {
       onSuccess: () => {
-        setEmailErrorText("");
-        setHasErrorEmail(false);
+        certifiedEmail();
       },
       onError: () => {
-        setEmailErrorText("제휴 대학이 아닙니다");
-        setHasErrorEmail(true);
+        notCertifiedEmail();
       },
     });
   };
@@ -90,6 +101,13 @@ export default function SchoolAuthSignUp() {
     } else setNextButtonActive(false);
   }, [email, verificationCode, sendEmailButtonClicked]);
 
+  useEffect(() => {
+    if (email.length === 0 || isValidEmailFormat(email)) {
+      setEmailFormatHasError(false);
+      return;
+    }
+    setEmailFormatHasError(true);
+  }, [email]);
   return (
     <>
       <CustomFormWrapper>
@@ -103,8 +121,18 @@ export default function SchoolAuthSignUp() {
               value={email}
               onChange={handleEmailChange}
             />
-            <VerifyButton onClick={clickedEmailSendButton}>전송</VerifyButton>
+            <VerifyButton
+              disabled={emailFormatHasError}
+              $active={!emailFormatHasError && email.length > 0}
+              onClick={clickedEmailSendButton}>
+              전송
+            </VerifyButton>
           </EmailInputWrapper>
+          {emailFormatHasError && (
+            <VerificationTimeText $hasError={emailFormatHasError}>
+              올바른 이메일 형식이 아닙니다.
+            </VerificationTimeText>
+          )}
           {!hasErrorEmail && sendEmailButtonClicked && !isExpired ? (
             <VerificationTimeText $hasError={hasErrorEmail}>
               인증 코드 유효 시간: {formattedTime}

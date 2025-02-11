@@ -42,7 +42,9 @@ export const EmailInput = styled(Body2Medium).attrs({ as: "input" })<{
   color: ${colors.gray100};
 `;
 
-export const VerifyButton = styled(Body2Medium).attrs({ as: "button" })`
+export const VerifyButton = styled(Body2Medium).attrs({ as: "button" })<{
+  $active: boolean;
+}>`
   display: flex;
   padding: 8px 12px;
   justify-content: center;
@@ -52,7 +54,7 @@ export const VerifyButton = styled(Body2Medium).attrs({ as: "button" })`
   border-radius: 4px;
   border: 1px solid ${colors.gray30};
 
-  color: ${colors.orange900};
+  color: ${(props) => (props.$active ? colors.orange900 : colors.gray30)};
 `;
 
 export const VerificationTimeText = styled(Body2Regular)<{
