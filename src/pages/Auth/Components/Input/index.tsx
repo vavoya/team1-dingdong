@@ -3,6 +3,8 @@ import { InputContainer, InputWrapper, Label, StyledInput } from "./styles";
 import { Star } from "@/pages/SetHomeLocation/components/BottomModal/styles";
 
 interface CustomInputProps {
+  name?: string; // ✅ name 추가!
+  onClick?: () => void;
   hasError?: boolean;
   label: string;
   value: string;
@@ -10,9 +12,12 @@ interface CustomInputProps {
   placeholder?: string;
   type?: string;
   starNeed?: boolean;
+  maxLength?: number;
 }
 
 export default function CustomInput({
+  name,
+  maxLength,
   hasError = false,
   label,
   value,
@@ -20,6 +25,7 @@ export default function CustomInput({
   placeholder = "",
   type = "text",
   starNeed = true,
+  onClick,
 }: CustomInputProps) {
   return (
     <InputWrapper>
@@ -28,6 +34,9 @@ export default function CustomInput({
       </Label>
       <InputContainer>
         <StyledInput
+          maxLength={maxLength}
+          name={name}
+          onClick={onClick}
           $hasError={hasError}
           type={type}
           value={value}

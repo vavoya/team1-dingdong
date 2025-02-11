@@ -1,5 +1,14 @@
 import { axiosInstance } from "@/api";
 
+export interface UserInfo {
+  email: string;
+  password: string;
+  name: string;
+  address: string;
+  addressNickname: string;
+  phoneNumber: string;
+}
+
 export async function postSendUserSchoolEmail(email: string) {
   try {
     return axiosInstance.post("/api/home", {
@@ -18,6 +27,17 @@ export async function postUserVerificationCode(code: string) {
     });
   } catch (err: any) {
     console.error("유저가 받은 인증 코드 전송 실패:", err);
+    throw new Error(err);
+  }
+}
+
+export async function postUserInfo(userInfo: UserInfo) {
+  try {
+    return axiosInstance.post("/api/signup", {
+      userInfo,
+    });
+  } catch (err: any) {
+    console.error("회원가입 실패:", err);
     throw new Error(err);
   }
 }

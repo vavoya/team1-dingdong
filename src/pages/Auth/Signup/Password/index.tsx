@@ -4,7 +4,7 @@ import CustomInput from "../../Components/Input";
 import CustomFormWrapper from "../../Components/FormWrapper";
 import { NextButtonWrapper } from "../SchoolAuth/styles";
 import SolidButton from "@/components/designSystem/Button/SolidButton";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SIGNUP_TEXT } from "@/constants/signupTexts";
 import { isValidatePassword } from "@/utils/signUp/passwordValidation";
 import { colors } from "@/styles/colors";
@@ -14,6 +14,9 @@ interface PasswordGuideTextType {
   color: string;
 }
 export default function PasswordSignup() {
+  const location = useLocation();
+  const { email } = location.state; // 이전 단계에서의 이메일
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [buttonActive, setButtonActive] = useState(false);
@@ -85,7 +88,9 @@ export default function PasswordSignup() {
         <SolidButton
           active={buttonActive}
           text="다음"
-          onClick={() => navigate("/signup/user-info")}
+          onClick={() =>
+            navigate("/signup/user-info", { state: { email, password } })
+          }
         />
       </NextButtonWrapper>
     </>

@@ -68,7 +68,11 @@ export default function SchoolAuthSignUp() {
       onSuccess: () => {
         setVerificationCodeErrorText("");
         setHasErrorCode(false);
-        navigate("password");
+        navigate("password", {
+          state: {
+            email,
+          },
+        });
       },
       onError: () => {
         setVerificationCodeErrorText("올바른 인증 코드가 아닙니다.");
