@@ -13,11 +13,10 @@ import java.util.List;
 @Repository
 public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
     @Query("SELECT bst.roadNameAddress as busStopName, bst.latitude as latitude, bst.longitude as longitude, " +
-            "bst.expectedArrivalTime as busStopTime, b.name as busName, p.id as pathId, bs.id as busScheduleId " +
+            "bst.expectedArrivalTime as busStopTime, b.name as busName, bs.id as busScheduleId " +
             "FROM BusStop bst " +
             "JOIN Ticket t ON t.busStopId = bst.id " +
             "JOIN BusSchedule bs ON t.busScheduleId = bs.id " +
-            "JOIN Path p ON p.busSchedule.id = bs.id  " +
             "JOIN Bus b ON b.id = bs.bus.id " +
             "WHERE bs.departureTime = :departureTime AND bs.schoolId = :schoolId " +
             "AND bs.status = 'READY'")
@@ -27,11 +26,10 @@ public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
     );
 
     @Query("SELECT bst.roadNameAddress as busStopName, bst.latitude as latitude, bst.longitude as longitude, " +
-            "bst.expectedArrivalTime as busStopTime, b.name as busName, p.id as pathId, bs.id as busScheduleId " +
+            "bst.expectedArrivalTime as busStopTime, b.name as busName, bs.id as busScheduleId " +
             "FROM BusStop bst " +
             "JOIN Ticket t ON t.busStopId = bst.id " +
             "JOIN BusSchedule bs ON t.busScheduleId = bs.id " +
-            "JOIN Path p ON p.busSchedule.id = bs.id  " +
             "JOIN Bus b ON b.id = bs.bus.id " +
             "WHERE bs.arrivalTime = :arrivalTime AND bs.schoolId = :schoolId " +
             "AND bs.status = 'READY'")
