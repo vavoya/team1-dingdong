@@ -1,15 +1,17 @@
-package com.ddbb.dingdong.domain.notification;
+package com.ddbb.dingdong.domain.notification.entity;
 
-import com.ddbb.dingdong.domain.reservation.entity.vo.NotificationType;
+import com.ddbb.dingdong.domain.notification.entity.vo.NotificationType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notification {
@@ -22,7 +24,7 @@ public class Notification {
     private NotificationType type;
 
     @Column(nullable = false)
-    private Boolean isRead;
+    private Boolean isRead = false;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -32,4 +34,8 @@ public class Notification {
 
     @Column(nullable = false)
     private Long reservationId;
+
+    public void read(){
+        this.isRead = true;
+    }
 }
