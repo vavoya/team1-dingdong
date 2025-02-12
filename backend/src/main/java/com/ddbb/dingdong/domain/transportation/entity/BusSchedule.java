@@ -2,6 +2,7 @@ package com.ddbb.dingdong.domain.transportation.entity;
 
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
+import com.ddbb.dingdong.domain.transportation.service.BusErrors;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
