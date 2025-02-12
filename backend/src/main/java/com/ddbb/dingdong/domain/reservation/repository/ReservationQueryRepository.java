@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface ReservationQueryRepository extends JpaRepository<Reservation, Long> {
     @Query("""
-        SELECT u.home.stationName AS userHomeStationName,
+        SELECT DISTINCT l.stationName AS userHomeStationName,
                r.id AS reservationId,
                r.startDate AS startDate,
                r.direction AS direction,
@@ -28,7 +28,7 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
         LEFT JOIN BusSchedule bs_arrival ON bs_arrival.id = t.busScheduleId
         LEFT JOIN Bus b ON bs_arrival.bus.id = b.id
         LEFT JOIN Path p ON p.busSchedule.id = bs_arrival.id
-        LEFT JOIN User u ON r.userId = :userId
+        LEFT JOIN Location l ON l.reservationId = r.id
         WHERE r.userId = :userId
             AND (
                 (:category = 0)
@@ -37,7 +37,7 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
                 OR
                 (:category = 2 AND CAST(r.status AS STRING) = 'PENDING')
                 OR
-                (:category = 3 AND CAST(r.status AS STRING) = 'NOT_ALLOCATED')
+                (:category = 3 AND CAST(r.status AS STRING) = 'FAIL_ALLOCATED')
                 OR
                 (:category = 4 AND CAST(bs_arrival.status AS STRING) = 'ENDED')
                 OR
