@@ -7,4 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AllocationSuccessEvent {
     private Long reservationId;
+    private Long userId;
 }
