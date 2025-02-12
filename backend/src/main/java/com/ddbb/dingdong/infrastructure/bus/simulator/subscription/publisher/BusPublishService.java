@@ -1,5 +1,6 @@
 package com.ddbb.dingdong.infrastructure.bus.simulator.subscription.publisher;
 
+import com.ddbb.dingdong.infrastructure.bus.simulator.BusSimulatorFactory;
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.BusSubscriptionManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.geo.Point;
@@ -14,10 +15,18 @@ import java.util.function.Supplier;
  * **/
 @Service
 @RequiredArgsConstructor
-public class BusPublisherFactory {
+public class BusPublishService {
+    private final BusSimulatorFactory busSimulatorFactory;
     private final BusSubscriptionManager manager;
 
-    public SubmissionPublisher<Point> createSimulator(Long busScheduleId, Supplier<Point> supplier) {
-        return new PeriodicBusPublisher<>(manager, busScheduleId, supplier, 1, 0, TimeUnit.SECONDS);
+    public void publishSimulator(
+            Long busScheduleId,
+            Long interval,
+            Long initialDelay,
+            TimeUnit timeUnit
+    ) {
+        Supplier<Point> supplier =  busSimulatorFactory.create(busScheduleId);
+        SubmissionPublisher<Point> publisher = new PeriodicBusPublisher<>(manager, busScheduleId, supplier, interval, initialDelay, timeUnit);
+        manager.addPublishers(busScheduleId, publisher);
     }
 }

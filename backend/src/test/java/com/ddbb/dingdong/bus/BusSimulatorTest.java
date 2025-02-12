@@ -2,37 +2,31 @@ package com.ddbb.dingdong.bus;
 
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.BusSubscriptionManager;
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.UserSubscription;
-import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.publisher.BusPublisherFactory;
+import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.publisher.BusPublishService;
 import com.ddbb.dingdong.infrastructure.bus.simulator.segment.RouteSegmentProvider;
 import com.ddbb.dingdong.infrastructure.bus.simulator.segment.impl.TMapStubRouteSegmentProvider;
 import com.ddbb.dingdong.infrastructure.bus.simulator.BusSimulatorFactory;
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.subscriber.StubConsoleSubscriber;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.geo.Point;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.SubmissionPublisher;
+import java.util.concurrent.*;
 
 class BusSimulatorTest {
     private BusSubscriptionManager manager;
-    private BusPublisherFactory publisherFactory;
+    private BusPublishService publishService;
     private BusSimulatorFactory factory;
     private RouteSegmentProvider segmentProvider;
 
     public BusSimulatorTest() {
-        this.manager = new BusSubscriptionManager();
-        this.publisherFactory = new BusPublisherFactory(manager);
         this.segmentProvider = new TMapStubRouteSegmentProvider();
+        this.manager = new BusSubscriptionManager();
         this.factory = new BusSimulatorFactory(segmentProvider);
-
+        this.publishService = new BusPublishService(this.factory, manager);
     }
 
     @Test()
     void test() throws InterruptedException {
         ExecutorService executor = Executors.newFixedThreadPool(13);
-        SubmissionPublisher<Point> publisher = publisherFactory.createSimulator(0L, factory.create(0L));
         CountDownLatch countDownLatch = new CountDownLatch(1);
         for (int i = 0; i < 3; i++) {
             int finalI = i;
@@ -51,7 +45,7 @@ class BusSimulatorTest {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            this.manager.addPublishers(0L, publisher);
+            publishService.publishSimulator(0L, 1L, 0L, TimeUnit.SECONDS);
         });
         executor.submit(() -> {
             try {
