@@ -1,16 +1,11 @@
 package com.ddbb.dingdong.presentation.endpoint.reservation;
 
 import com.ddbb.dingdong.application.exception.APIException;
-import com.ddbb.dingdong.application.usecase.reservation.CancelReservationUseCase;
-import com.ddbb.dingdong.application.usecase.reservation.GetReservationsUseCase;
-import com.ddbb.dingdong.application.usecase.reservation.MakeGeneralReservationUseCase;
-import com.ddbb.dingdong.application.usecase.reservation.RequestReservationUseCase;
+import com.ddbb.dingdong.application.usecase.reservation.*;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.infrastructure.auth.AuthUser;
 import com.ddbb.dingdong.infrastructure.auth.annotation.LoginUser;
-import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.GeneralReservationConfirmDTO;
-import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.ReservationCancelDTO;
-import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.ReservationRequestDTO;
+import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.*;
 import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.enums.ReservationCategory;
 import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.enums.SortType;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +20,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/users/reservations")
 public class ReservationController {
     private final GetReservationsUseCase getReservationsUseCase;
-    private final RequestReservationUseCase requestReservationUseCase;
+    private final RequestGeneralReservationUseCase requestGeneralReservationUseCase;
+    private final RequestTogetherReservationUseCase requestTogetherReservationUseCase;
     private final MakeGeneralReservationUseCase makeGeneralReservationUseCase;
+    private final MakeTogetherReservationUseCase makeTogetherReservationUseCase;
     private final CancelReservationUseCase cancelReservationUseCase;
 
     @GetMapping
@@ -50,22 +47,65 @@ public class ReservationController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/token")
-    public ResponseEntity<RequestReservationUseCase.Result> getReservations(
+    @DeleteMapping
+    public ResponseEntity<Void> cancelReservation(
             @LoginUser AuthUser user,
-            @RequestBody ReservationRequestDTO reservationRequestDTO
+            @RequestBody ReservationCancelDTO reservationCancelDTO
     ) {
         Long userId = user.id();
-        RequestReservationUseCase.Param param = new RequestReservationUseCase.Param(
+        Long reservationId = reservationCancelDTO.getReservationId();
+        CancelReservationUseCase.Param param = new CancelReservationUseCase.Param(
                 userId,
-                reservationRequestDTO.getDirection(),
-                reservationRequestDTO.getDates().stream().map(
-                        reservationInfo -> new RequestReservationUseCase.Param.ReservationInfo(reservationInfo.getDate())
+                reservationId
+        );
+
+        try {
+            cancelReservationUseCase.execute(param);
+        } catch (DomainException ex) {
+            throw new APIException(ex, HttpStatus.BAD_REQUEST);
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/token/general")
+    public ResponseEntity<RequestGeneralReservationUseCase.Result> getReservations(
+            @LoginUser AuthUser user,
+            @RequestBody GeneralReservationRequestDTO generalReservationRequestDTO
+    ) {
+        Long userId = user.id();
+        RequestGeneralReservationUseCase.Param param = new RequestGeneralReservationUseCase.Param(
+                userId,
+                generalReservationRequestDTO.getDirection(),
+                generalReservationRequestDTO.getDates().stream().map(
+                        reservationInfo -> new RequestGeneralReservationUseCase.Param.ReservationInfo(reservationInfo.getDate())
                 ).toList()
         );
-        RequestReservationUseCase.Result result;
+        RequestGeneralReservationUseCase.Result result;
         try {
-            result = requestReservationUseCase.execute(param);
+            result = requestGeneralReservationUseCase.execute(param);
+        } catch (DomainException ex) {
+            throw new APIException(ex, HttpStatus.BAD_REQUEST);
+        }
+
+        return ResponseEntity.ok().body(result);
+    }
+
+    @PostMapping("/token/together")
+    public ResponseEntity<RequestTogetherReservationUseCase.Result> getReservations(
+            @LoginUser AuthUser user,
+            @RequestBody TogetherReservationRequestDTO togetherReservationRequestDTO
+    ) {
+        Long userId = user.id();
+        RequestTogetherReservationUseCase.Param param = new RequestTogetherReservationUseCase.Param(
+                userId,
+                togetherReservationRequestDTO.getBusStopId(),
+                togetherReservationRequestDTO.getBusScheduleId(),
+                togetherReservationRequestDTO.getDate()
+        );
+        RequestTogetherReservationUseCase.Result result;
+        try {
+            result = requestTogetherReservationUseCase.execute(param);
         } catch (DomainException ex) {
             throw new APIException(ex, HttpStatus.BAD_REQUEST);
         }
@@ -98,20 +138,23 @@ public class ReservationController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> cancelReservation(
+    @PostMapping("/together")
+    public ResponseEntity<Void> makeTogetherReservation(
             @LoginUser AuthUser user,
-            @RequestBody ReservationCancelDTO reservationCancelDTO
+            @RequestBody TogetherReservationConfirmDTO togetherReservationConfirmDTO
     ) {
         Long userId = user.id();
-        Long reservationId = reservationCancelDTO.getReservationId();
-        CancelReservationUseCase.Param param = new CancelReservationUseCase.Param(
-                userId,
-                reservationId
+        MakeTogetherReservationUseCase.Param param = new MakeTogetherReservationUseCase.Param(
+                togetherReservationConfirmDTO.getToken(),
+                new MakeTogetherReservationUseCase.Param.ReservationInfo(
+                        userId,
+                        togetherReservationConfirmDTO.getBusStopId(),
+                        togetherReservationConfirmDTO.getBusScheduleId(),
+                        togetherReservationConfirmDTO.getDate()
+                )
         );
-
         try {
-            cancelReservationUseCase.execute(param);
+            makeTogetherReservationUseCase.execute(param);
         } catch (DomainException ex) {
             throw new APIException(ex, HttpStatus.BAD_REQUEST);
         }

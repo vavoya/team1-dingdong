@@ -15,7 +15,7 @@ import java.util.List;
 public class GeneralReservationConfirmDTO {
     private String token;
     private String direction;
-    private List<ReservationRequestDTO.ReservationInfo> dates;
+    private List<GeneralReservationRequestDTO.ReservationInfo> dates;
 
     @Getter
     @NoArgsConstructor
@@ -24,4 +24,5 @@ public class GeneralReservationConfirmDTO {
         @JsonDeserialize(using = LocalDateTimeDeserializer.class)
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime date;
-    }}
+    }
+}
