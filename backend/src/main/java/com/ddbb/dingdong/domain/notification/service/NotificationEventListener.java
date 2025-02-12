@@ -46,6 +46,7 @@ public class NotificationEventListener {
             while (retryTimes < 3) {
                 try {
                     socket.sendMessage(new TextMessage(ALARM_SOCKET_MSG));
+                    break;
                 } catch (IOException e) {
                     retryTimes++;
                 }
