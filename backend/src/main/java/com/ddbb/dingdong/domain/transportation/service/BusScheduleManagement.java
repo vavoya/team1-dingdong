@@ -7,8 +7,11 @@ import com.ddbb.dingdong.domain.transportation.entity.Path;
 import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.domain.transportation.repository.BusScheduleRepository;
 import com.ddbb.dingdong.domain.transportation.service.dto.UserBusStopTime;
+import com.ddbb.dingdong.domain.transportation.service.event.BusDepartureEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -23,6 +26,7 @@ import static com.ddbb.dingdong.domain.transportation.service.BusErrors.BUS_UPDA
 @RequiredArgsConstructor
 public class BusScheduleManagement {
     private final BusScheduleRepository busScheduleRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public BusSchedule allocateBusSchedule(Path path, Long schoolId, Direction direction, LocalDateTime dingdongTime, LocalDate startDate, int reservationCount) {
         BusSchedule busSchedule = new BusSchedule();
@@ -82,6 +86,13 @@ public class BusScheduleManagement {
                     throw BUS_UPDATE_ERROR.toException();
                 }
             }
+        }
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void publishDepartureEvent(List<UserBusStopTime> userBusStopTimes) {
+        for (UserBusStopTime userBusStopTime : userBusStopTimes) {
+            eventPublisher.publishEvent(new BusDepartureEvent(userBusStopTime.getTime(), userBusStopTime.getUserIds()));
         }
     }
 }
