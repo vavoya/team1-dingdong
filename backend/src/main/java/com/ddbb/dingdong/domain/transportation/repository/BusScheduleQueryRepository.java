@@ -46,5 +46,5 @@ public interface BusScheduleQueryRepository extends JpaRepository<BusSchedule, L
             "JOIN BusSchedule bs ON bs.id = ticket.busScheduleId " +
             "WHERE bs.id = :busScheduleId " +
             "ORDER BY busStop.sequence")
-    List<UserBusStopProjection> findUserBusStopsByBusScheduleId(@Param("busScheduleId") Long busScheduleId);
+    List<UserBusStopProjection> findUserBusStops(@Param("busScheduleId") Long busScheduleId);
 }
