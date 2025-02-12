@@ -5,6 +5,7 @@ import com.ddbb.dingdong.domain.transportation.repository.projection.PathSegment
 import com.ddbb.dingdong.infrastructure.bus.simulator.RouteSegment;
 import com.ddbb.dingdong.infrastructure.bus.simulator.segment.RouteSegmentProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Primary
 @RequiredArgsConstructor
 public class RepositoryRouteSegmentProvider implements RouteSegmentProvider {
     private final PathQueryRepository pathQueryRepository;
