@@ -1,7 +1,8 @@
-package com.ddbb.dingdong.infrastructure.bus.simulator.subscription.publisher;
+package com.ddbb.dingdong.domain.transportation.service;
 
 import com.ddbb.dingdong.infrastructure.bus.simulator.BusSimulatorFactory;
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.BusSubscriptionManager;
+import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.publisher.PeriodicBusPublisher;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;

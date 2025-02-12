@@ -2,7 +2,7 @@ package com.ddbb.dingdong.bus;
 
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.BusSubscriptionManager;
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.UserSubscription;
-import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.publisher.BusPublishService;
+import com.ddbb.dingdong.domain.transportation.service.BusPublishService;
 import com.ddbb.dingdong.infrastructure.bus.simulator.segment.RouteSegmentProvider;
 import com.ddbb.dingdong.infrastructure.bus.simulator.segment.impl.TMapStubRouteSegmentProvider;
 import com.ddbb.dingdong.infrastructure.bus.simulator.BusSimulatorFactory;
