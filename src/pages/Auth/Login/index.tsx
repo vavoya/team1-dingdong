@@ -83,7 +83,13 @@ const Login = () => {
       </CustomFormWrapper>
 
       <NextButtonWrapper>
-        <SolidButton text="다음" onClick={loginHandler} />
+        <SolidButton
+          text="다음"
+          active={
+            !emailFormatHasError && password.length > 0 && email.length > 0
+          }
+          onClick={loginHandler}
+        />
       </NextButtonWrapper>
     </>
   );
