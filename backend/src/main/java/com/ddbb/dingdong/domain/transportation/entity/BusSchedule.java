@@ -42,10 +42,20 @@ public class BusSchedule {
     @Column(nullable = false)
     private Long schoolId;
 
+    @Column(nullable = false)
+    private Integer count = 15;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "bus_id")
     private Bus bus;
 
     @OneToOne(mappedBy = "busSchedule", cascade = CascadeType.ALL)
     private Path path;
+
+    public void issue() {
+        if (count <= 0) {
+            throw BusErrors.NO_SEATS.toException();
+        }
+        count--;
+    }
 }
