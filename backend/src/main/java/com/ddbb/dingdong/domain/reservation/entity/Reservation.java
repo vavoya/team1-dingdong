@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reservation {
@@ -71,5 +71,16 @@ public class Reservation {
 
         this.ticket = ticket;
         this.status = ReservationStatus.ALLOCATED;
+    }
+
+    public void issueTicket(Ticket ticket) {
+        if(ticket == null || ticket.getBusScheduleId() == null || ticket.getBusStopId() == null) {
+            throw ReservationErrors.INVALID_BUS_TICKET.toException();
+        }
+        if(!ReservationStatus.ALLOCATED.equals(this.status)) {
+            throw ReservationErrors.ALLOCATION_NOT_ALLOWED.toException();
+        }
+
+        this.ticket = ticket;
     }
 }
