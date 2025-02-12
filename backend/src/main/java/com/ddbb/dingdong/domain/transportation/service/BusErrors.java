@@ -6,6 +6,7 @@ import com.ddbb.dingdong.domain.common.exception.ErrorInfo;
 
 public enum BusErrors implements ErrorInfo {
     NO_SOCKET_CONNECTION("연결된 소켓이 없습니다."),
+    NO_SEATS("남은 좌석이 없습니다."),
     ;
     private String desc;
 
