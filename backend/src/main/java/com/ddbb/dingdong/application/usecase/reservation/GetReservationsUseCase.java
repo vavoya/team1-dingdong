@@ -46,6 +46,9 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
         List<Result.ReservationInfo> reservationInfos = result.stream()
                 .map(r -> {
                     Result.ReservationInfo.OperationInfo operationInfo = null;
+                    LocalDateTime expectedArrivalTime = r.getExpectedArrivalTime();
+                    LocalDateTime expectedDepartureTime = r.getExpectedDepartureTime();
+
                     if(ReservationStatus.ALLOCATED.equals(r.getReservationStatus())) {
                         operationInfo = new Result.ReservationInfo.OperationInfo(
                                 r.getBusScheduleId(),
@@ -54,6 +57,8 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
                                 r.getBusStopArrivalTime(),
                                 r.getTotalMinutes()
                         );
+                        expectedDepartureTime = r.getRealDepartureTime();
+                        expectedArrivalTime = r.getRealArrivalTime();
                     }
                     String busStopName = r.getBusStopRoadNameAddress() == null ? r.getUserHomeStationName() : r.getBusStopRoadNameAddress();
                     return new Result.ReservationInfo(
@@ -61,7 +66,8 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
                             r.getStartDate(),
                             busStopName,
                             r.getDirection(),
-                            r.getExpectedArrivalTime(),
+                            expectedArrivalTime,
+                            expectedDepartureTime,
                             r.getReservationStatus(),
                             operationInfo
                     );
@@ -93,6 +99,7 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
             private String busStopName;
             private Direction direction;
             private LocalDateTime expectedArrivalTime;
+            private LocalDateTime expectedDepartureTime;
             private ReservationStatus reservationStatus;
             private OperationInfo operationInfo;
 

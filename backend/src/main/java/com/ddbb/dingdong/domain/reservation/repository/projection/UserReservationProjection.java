@@ -14,6 +14,9 @@ public interface UserReservationProjection {
     String getUserHomeStationName();
     Direction getDirection();
     LocalDateTime getExpectedArrivalTime();
+    LocalDateTime getExpectedDepartureTime();
+    LocalDateTime getRealDepartureTime();
+    LocalDateTime getRealArrivalTime();
     ReservationStatus getReservationStatus();
     Long getBusScheduleId();
     OperationStatus getBusStatus();
