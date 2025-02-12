@@ -1,13 +1,12 @@
 import ExitHeader from "@/components/Headers/ExitHeader";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { PageTitle, TitleName } from "./styles";
-import { useNavigate } from "@/lib/customNav";
 
 export default function SignupLayout() {
   const navigate = useNavigate();
   return (
     <>
-      <ExitHeader text="" onClick={() => navigate({ href: "/login-home" })} />
+      <ExitHeader text="" onClick={() => navigate("/login-home")} />
       <PageTitle>
         <TitleName>회원가입</TitleName>
       </PageTitle>

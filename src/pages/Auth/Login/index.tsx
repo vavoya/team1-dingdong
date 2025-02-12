@@ -3,7 +3,7 @@ import PopHeader from "@/components/Headers/PopHeader";
 import CustomFormWrapper from "../Components/FormWrapper";
 import { NextButtonWrapper } from "../Signup/SchoolAuth/styles";
 import SolidButton from "@/components/designSystem/Button/SolidButton";
-import { useNavigate } from "@/lib/customNav";
+import { useNavigate } from "react-router-dom";
 import CustomInput from "../Components/Input";
 import { PageTitle, TitleName } from "./styles";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -38,7 +38,7 @@ const Login = () => {
     const loginFormData = { email, password };
     postLoginMutation(loginFormData, {
       onSuccess: () => {
-        navigate({ href: "/home" });
+        navigate("/home");
       },
       onError: () => {
         // 에러 발생.
