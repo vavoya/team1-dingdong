@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, useEffect, useRef } from "react";
 import { PasswordGuidText } from "./styles";
 import CustomInput from "../../Components/Input";
 import CustomFormWrapper from "../../Components/FormWrapper";
@@ -15,7 +15,15 @@ interface PasswordGuideTextType {
 }
 export default function PasswordSignup() {
   const location = useLocation();
-  const { email } = location.state; // 이전 단계에서의 이메일
+  const navigate = useNavigate();
+  const userEmail = useRef();
+  useEffect(() => {
+    if (!location.state) {
+      navigate("/signup");
+      return;
+    }
+    userEmail.current = location.state.email;
+  }, []);
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -33,7 +41,6 @@ export default function PasswordSignup() {
   const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     setConfirmPassword(e.target.value);
   };
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (password.length <= 0) return;
@@ -89,7 +96,9 @@ export default function PasswordSignup() {
           active={buttonActive}
           text="다음"
           onClick={() =>
-            navigate("/signup/user-info", { state: { email, password } })
+            navigate("/signup/user-info", {
+              state: { email: userEmail.current, password },
+            })
           }
         />
       </NextButtonWrapper>

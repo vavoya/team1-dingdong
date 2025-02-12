@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { NameGuideText } from "./styles";
 import CustomFormWrapper from "../../Components/FormWrapper";
 import CustomInput from "../../Components/Input";
@@ -16,15 +16,30 @@ import {
 } from "@/utils/signUp/userInfoFormatValidation";
 import { usePostUserInfo } from "@/hooks/SignUp/useSignUp";
 
+// 예시 타입들
+
 export default function UserInfoSignup() {
   const location = useLocation();
-  const { email, password } = location.state; // 이전 단계에서의 이메일
+  const userInfoFromPreviousStep = useRef<{
+    email: string;
+    password: string;
+  }>({ email: "", password: "" });
+
   const [formData, setFormData] = useState({
     name: "",
     address: "",
     addressNickname: "",
     phoneNumber: "",
   });
+
+  useEffect(() => {
+    // 직접 링크 접속시, 데이터가 없다면 다시 이동.
+    if (!location.state) {
+      navigate("/signup");
+      return;
+    }
+    userInfoFromPreviousStep.current = location.state;
+  }, []);
 
   const [nameFormatError, setNameFormatError] = useState(false);
   const { postUserInfoMutation } = usePostUserInfo();
@@ -73,11 +88,7 @@ export default function UserInfoSignup() {
   console.log(formData);
 
   useEffect(() => {
-    if (!isValidNameFormat(formData.name)) {
-      setNameFormatError(true);
-    } else {
-      setNameFormatError(false);
-    }
+    setNameFormatError(!isValidNameFormat(formData.name));
   }, [formData.name]);
 
   const submitButtonActive =
@@ -87,13 +98,11 @@ export default function UserInfoSignup() {
     isValidPhoneNumber(formData.phoneNumber);
 
   const submitUserInfoHandler = () => {
-    const userInfo = {
-      email,
-      password,
+    const finalUserInfo = {
+      ...userInfoFromPreviousStep.current,
       ...formData,
     };
-
-    postUserInfoMutation(userInfo, {
+    postUserInfoMutation(finalUserInfo, {
       onSuccess: () => {
         navigate("/home");
       },
