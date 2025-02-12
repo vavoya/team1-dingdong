@@ -37,7 +37,7 @@ public class BusSchedule {
     @Column(nullable = false)
     private Long schoolId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "bus_id")
     private Bus bus;
 
