@@ -1,5 +1,6 @@
 package com.ddbb.dingdong.domain.transportation.entity;
 
+import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,10 @@ public class BusSchedule {
 
     @Column(nullable = false)
     private LocalDate startDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Direction direction;
 
     private LocalDateTime departureTime;
 
