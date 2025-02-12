@@ -6,7 +6,7 @@ import com.ddbb.dingdong.domain.transportation.entity.BusSchedule;
 import com.ddbb.dingdong.domain.transportation.entity.Path;
 import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.domain.transportation.repository.BusScheduleRepository;
-import com.ddbb.dingdong.domain.transportation.service.dto.BusStopTime;
+import com.ddbb.dingdong.domain.transportation.service.dto.UserBusStopTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,36 +48,36 @@ public class BusScheduleManagement {
         return busScheduleRepository.save(busSchedule);
     }
 
-    public List<BusStopTime> adjustBusStopTimes(LocalDateTime now, List<BusStopTime> busStopTimes) {
-        List<BusStopTime> adjustedBusStopTimes = new ArrayList<>();
-        if (busStopTimes == null || busStopTimes.isEmpty()) {
-            return adjustedBusStopTimes;
+    public List<UserBusStopTime> adjustBusStopTimes(LocalDateTime now, List<UserBusStopTime> userBusStopTimes) {
+        List<UserBusStopTime> adjustedUserBusStopTimes = new ArrayList<>();
+        if (userBusStopTimes == null || userBusStopTimes.isEmpty()) {
+            return adjustedUserBusStopTimes;
         }
-        BusStopTime head = busStopTimes.get(0);
+        UserBusStopTime head = userBusStopTimes.get(0);
         LocalDateTime updateTime = now;
         LocalDateTime prevTime = head.getTime();
 
-        adjustedBusStopTimes.add(new BusStopTime(head.getBusStopId(), updateTime));
-
-        for (int i = 1; i < busStopTimes.size(); i++) {
-            BusStopTime item = busStopTimes.get(i);
+        adjustedUserBusStopTimes.add(head.ofTime(updateTime));
+        for (int i = 1; i < userBusStopTimes.size(); i++) {
+            UserBusStopTime item = userBusStopTimes.get(i);
 
             long intervalSecond = ChronoUnit.SECONDS.between(prevTime, item.getTime());
             updateTime = updateTime.plusSeconds(intervalSecond);
-            adjustedBusStopTimes.add(new BusStopTime(item.getBusStopId(), updateTime));
+
+            adjustedUserBusStopTimes.add(item.ofTime(updateTime));
             prevTime = item.getTime();
         }
-        return adjustedBusStopTimes;
+        return adjustedUserBusStopTimes;
     }
 
     // TODO:: bulk update
     @Transactional
-    public void updateBusStopTimes(List<BusStopTime> busStopTimes, List<BusStopTime> oldBusStopTimes) {
-        for (int i = 0; i < busStopTimes.size(); i++) {
-            BusStopTime oldBusStopTime = oldBusStopTimes.get(i);
-            BusStopTime newBusStopTime = busStopTimes.get(i);
-            if (!oldBusStopTime.equals(newBusStopTime)) {
-                int res = busScheduleRepository.updateBusStopArrivalTime(newBusStopTime.getTime(), newBusStopTime.getBusStopId());
+    public void updateBusStopTimes(List<UserBusStopTime> userBusStopTimes, List<UserBusStopTime> oldUserBusStopTimes) {
+        for (int i = 0; i < userBusStopTimes.size(); i++) {
+            UserBusStopTime oldUserBusStopTime = oldUserBusStopTimes.get(i);
+            UserBusStopTime newUserBusStopTime = userBusStopTimes.get(i);
+            if (!oldUserBusStopTime.equals(newUserBusStopTime)) {
+                int res = busScheduleRepository.updateBusStopArrivalTime(newUserBusStopTime.getTime(), newUserBusStopTime.getBusStopId());
                 if (res == 0) {
                     throw BUS_UPDATE_ERROR.toException();
                 }
