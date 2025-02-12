@@ -2,9 +2,11 @@ package com.ddbb.dingdong.application.usecase.reservation;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
+import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationStatus;
 import com.ddbb.dingdong.domain.reservation.repository.ReservationQueryRepository;
 import com.ddbb.dingdong.domain.reservation.repository.projection.UserReservationProjection;
+import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.enums.ReservationCategory;
 import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.enums.SortType;
 import lombok.AllArgsConstructor;
@@ -30,10 +32,10 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
     public Result execute(Param param) {
         int category = switch (param.category) {
             case ALL -> 0;
-            case ALLOCATION_SUCCESS -> 1;
-            case ALLOCATION_PENDING -> 2;
-            case ALLOCATION_FAILED -> 3;
-            case OPERATION_FINISHED -> 4;
+            case ALLOCATED -> 1;
+            case PENDING -> 2;
+            case FAIL_ALLOCATED -> 3;
+            case ENDED -> 4;
             case CANCELED -> 5;
         };
         int sort = switch (param.sort) {
@@ -44,7 +46,7 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
         List<Result.ReservationInfo> reservationInfos = result.stream()
                 .map(r -> {
                     Result.ReservationInfo.OperationInfo operationInfo = null;
-                    if(ReservationStatus.ALLOCATED.name().equals(r.getReservationStatus())) {
+                    if(ReservationStatus.ALLOCATED.equals(r.getReservationStatus())) {
                         operationInfo = new Result.ReservationInfo.OperationInfo(
                                 r.getBusScheduleId(),
                                 r.getBusStatus(),
@@ -89,16 +91,16 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
             private Long reservationId;
             private LocalDate startDate;
             private String busStopName;
-            private String direction;
+            private Direction direction;
             private LocalDateTime expectedArrivalTime;
-            private String reservationStatus;
+            private ReservationStatus reservationStatus;
             private OperationInfo operationInfo;
 
             @Getter
             @AllArgsConstructor
             public static class OperationInfo {
                 private Long busScheduleId;
-                private String busStatus;
+                private OperationStatus busStatus;
                 private String busName;
                 private LocalDateTime busStopArrivalTime;
                 private Integer totalMinutes;
