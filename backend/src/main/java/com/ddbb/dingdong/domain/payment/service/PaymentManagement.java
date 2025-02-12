@@ -31,7 +31,7 @@ public class PaymentManagement {
     @EventListener
     public void refund(AllocationFailedEvent event) {
         Long userId = event.getUserId();
-        Long reservationId = event.getReservationInfo().getReservationId();
+        Long reservationId = event.getReservationId();
         Wallet wallet = walletRepository.findWalletByUserIdForUpdate(userId)
                 .orElseThrow(PaymentErrors.WALLET_NOT_FOUND::toException);
         wallet.refund(PRICE, reservationId);
