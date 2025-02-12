@@ -41,6 +41,7 @@ public class GetNotificationsUseCase implements UseCase<GetNotificationsUseCase.
                 new Result.NotificationInfo(
                         projection.getType(),
                         projection.getTimeStamp(),
+                        projection.getIsRead(),
                         new Result.ReservationInfo(
                                 projection.getReservationId(),
                                 projection.startStationName(),
@@ -70,6 +71,7 @@ public class GetNotificationsUseCase implements UseCase<GetNotificationsUseCase.
         public static class NotificationInfo {
             private NotificationType type;
             private LocalDateTime timeStamp;
+            private boolean isRead;
             private ReservationInfo reservationInfo;
         }
 
