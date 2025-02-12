@@ -22,6 +22,9 @@ public class Location {
     private Long reservationId;
 
     @Column(nullable = false)
+    private String stationName;
+
+    @Column(nullable = false)
     private Double longitude;
 
     @Column(nullable = false)
