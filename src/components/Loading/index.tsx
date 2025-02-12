@@ -1,9 +1,9 @@
+import {createRoot, Root} from "react-dom/client";
 import Lottie from 'react-lottie';
 import animationData from '@/assets/lottie/busLoadingAnimation.json'
 import {Backdrop, LoadingText, Modal} from "@/components/Loading/styles.ts";
 import {useEffect} from "react";
 import {createPortal} from "react-dom";
-import {createRoot, Root} from "react-dom/client";
 
 
 
