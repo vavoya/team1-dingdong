@@ -7,12 +7,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class CheckUnreadNotificationUseCase implements UseCase<CheckUnreadNotificationUseCase.Param, CheckUnreadNotificationUseCase.Result> {
     private final NotificationManagement notificationManagement;
 
+    @Transactional
     @Override
     public Result execute(Param param) {
         Long userId = param.getUserId();
