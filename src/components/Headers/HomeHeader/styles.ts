@@ -12,7 +12,6 @@ export const Wrapper = styled.header`
   align-items: center;
   background: ${colors.gray20};
   border-bottom: 1px solid ${colors.gray20};
-  background: ${colors.gray0};
 `;
 
 export const NavList = styled.ul`

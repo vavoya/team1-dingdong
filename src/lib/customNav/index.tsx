@@ -15,6 +15,7 @@ interface LinkProps{
     queryParams?: QueryParams,
     children?: React.ReactNode,
 }
+// 사용하면 안됨. 부족함. useNavigate 사용
 export default function Link({href, children}: LinkProps) {
     const navigate = originUseNavigation();
     const queryClient = useQueryClient();
@@ -66,29 +67,13 @@ export function useNavigate() {
     const originNavigate = originUseNavigation();
     const queryClient = useQueryClient();
 
-    const mountModal = () => {
-        const modalContainer = document.createElement('div');
-        modalContainer.id = 'loading-modal-container';
-        document.body.appendChild(modalContainer);
-
-        // React 18의 createRoot를 사용하여 LoadingModal 렌더링
-        const root = createRoot(modalContainer);
-
-        return {root, modalContainer}
-    }
-
-    const unmountModal = (root: Root, modalContainer: HTMLDivElement) => {
-        root.unmount();          // 컴포넌트를 unmount
-        modalContainer.remove(); // 컨테이너를 DOM에서 제거
-    }
-
     return ({href, state}: NavigateProps) => {
-        const {root, modalContainer} = mountModal();
-        root.render(<LoadingModal text={"페이지 불러오는 중"}/>);
-
         const queryList = QueryObj[href]
 
         if (queryList?.length > 0) {
+            const {root, modalContainer} = mountModal();
+            root.render(<LoadingModal text={"페이지 불러오는 중"}/>);
+
             Promise.all(queryList.map(query => queryClient.fetchQuery({...query, staleTime: Infinity})))
                 .then(() => {
                     // 모든 쿼리 성공 시 모달을 unmount 및 제거 후 라우팅
@@ -123,4 +108,22 @@ export function usePathQueries() {
     const path = location.pathname;
     const queries = queriesPath[path] || []; // undefined 방지
     return useQueries({ queries });
+}
+
+
+// 헬퍼 함수
+export function mountModal() {
+    const modalContainer = document.createElement('div');
+    modalContainer.id = 'loading-modal-container';
+    document.body.appendChild(modalContainer);
+
+    // React 18의 createRoot를 사용하여 LoadingModal 렌더링
+    const root = createRoot(modalContainer);
+
+    return {root, modalContainer}
+}
+
+export function unmountModal(root: Root, modalContainer: HTMLDivElement) {
+    root.unmount();          // 컴포넌트를 unmount
+    modalContainer.remove(); // 컨테이너를 DOM에서 제거
 }
