@@ -27,7 +27,7 @@ public class TokenManager {
         }
     }
 
-    public void validateToken(String token, String data)  {
+    public boolean validateToken(String token, String data)  {
         String decryptedData;
 
         try {
@@ -36,7 +36,7 @@ public class TokenManager {
             throw new RuntimeException("Error validating token", e);
         }
 
-        String[] parts = decryptedData.split("\\$");
+        String[] parts = decryptedData.split("\\"+DELIMITER);
         if (parts.length != 2) throw TokenErrors.INVALID.toException();
 
         String originalHashedParam = parts[0];
@@ -46,6 +46,7 @@ public class TokenManager {
 
         String newHashedParam = sha512Encoder.hash(data);
         if (!newHashedParam.equals(originalHashedParam)) throw TokenErrors.INCORRECT_SIGNATURE.toException();
+        return true;
     }
 
 }
