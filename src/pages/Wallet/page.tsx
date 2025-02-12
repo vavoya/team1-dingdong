@@ -10,7 +10,7 @@ import {
     HistoryDate,
     HistoryList,
     HistoryStatus,
-    HistoryStatusBox,
+    HistoryStatusBox, Main,
     PageDivider,
     PageWrapper,
     RechargeButton,
@@ -19,11 +19,13 @@ import {
     Title
 } from "@/pages/Wallet/styles.ts";
 import {colors} from "@/styles/colors.ts";
-import {useNavigate} from "@/lib/customNav";
+import useToast from "@/hooks/useToast";
+import {useNavigate} from "react-router-dom";
 
 
 export default function Page() {
     const navigate = useNavigate();
+    const setToast = useToast();
 
     const temp: HistoryItemProps[] = [
         {
@@ -79,35 +81,37 @@ export default function Page() {
     return (
         <PageWrapper>
             <PopHeader text={"결제 수단 관리"} />
-            <Title>
-                딩동머니 관리
-            </Title>
-            <SubTitle>
-                결제 및 입금 내역을 확인하세요!
-            </SubTitle>
-            <CardBox>
-                <DingDongCard />
-            </CardBox>
-            <ButtonBox>
-                <SendButton>
-                    <ButtonText color={colors.gray90}>
-                        내 계좌로 송금하기
-                    </ButtonText>
-                </SendButton>
-                <RechargeButton onClick={() => navigate({href: '/home'})}>
-                    <ButtonText color={colors.gray0}>
-                        딩동 머니 채우기
-                    </ButtonText>
-                </RechargeButton>
-            </ButtonBox>
-            <PageDivider />
-            <HistoryList>
-                {
-                    temp.map((data, key) => (
-                        <HistoryItem key={key} isDeposit={data.isDeposit} date={data.date} amount={data.amount} balance={data.balance}/>
-                    ))
-                }
-            </HistoryList>
+            <Main>
+                <Title>
+                    딩동머니 관리
+                </Title>
+                <SubTitle>
+                    결제 및 입금 내역을 확인하세요!
+                </SubTitle>
+                <CardBox>
+                    <DingDongCard />
+                </CardBox>
+                <ButtonBox>
+                    <SendButton onClick={() => setToast("새  토스트토스트토스트토스트토스트토스트토스트토스트토스트")}>
+                        <ButtonText color={colors.gray90}>
+                            내 계좌로 송금하기
+                        </ButtonText>
+                    </SendButton>
+                    <RechargeButton onClick={() => navigate('/home')}>
+                        <ButtonText color={colors.gray0}>
+                            딩동 머니 채우기
+                        </ButtonText>
+                    </RechargeButton>
+                </ButtonBox>
+                <PageDivider />
+                <HistoryList>
+                    {
+                        temp.map((data, key) => (
+                            <HistoryItem key={key} isDeposit={data.isDeposit} date={data.date} amount={data.amount} balance={data.balance}/>
+                        ))
+                    }
+                </HistoryList>
+            </Main>
         </PageWrapper>
     )
 }

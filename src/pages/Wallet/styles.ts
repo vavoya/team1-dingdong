@@ -13,6 +13,12 @@ export const PageWrapper = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+`
+
+export const Main = styled.main`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     padding: 0 20px;
 `
 
