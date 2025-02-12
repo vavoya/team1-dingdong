@@ -52,7 +52,7 @@ public class ReservationManagement {
         reservation.allocate(ticket);
         reservationRepository.save(reservation);
 
-        eventPublisher.publishEvent(new AllocationSuccessEvent(reservation.getId()));
+        eventPublisher.publishEvent(new AllocationSuccessEvent(reservation.getId(), reservation.getUserId()));
     }
 
 
@@ -62,16 +62,7 @@ public class ReservationManagement {
         reservation.fail();
         reservationRepository.save(reservation);
 
-        eventPublisher.publishEvent(new AllocationFailedEvent(
-                reservation.getUserId(),
-                new AllocationFailedEvent.ReservationInfo(
-                        reservationId,
-                        reservation.getDirection(),
-                        reservation.getDirection().equals(Direction.TO_HOME) ? reservation.getDepartureTime() : reservation.getArrivalTime(),
-                        reservation.getStartDate()
-                ),
-                LocalDateTime.now()
-        ));
+        eventPublisher.publishEvent(new AllocationFailedEvent(reservation.getId(), reservation.getUserId()));
     }
 
     private void validateDateOfGeneralReservation(Reservation reservation) {
