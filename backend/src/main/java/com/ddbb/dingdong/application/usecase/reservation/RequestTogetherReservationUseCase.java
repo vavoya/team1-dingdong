@@ -50,9 +50,6 @@ public class RequestTogetherReservationUseCase implements UseCase<RequestTogethe
 
         @Override
         public boolean validate() {
-            if (date == null) {
-                throw ReservationInvalidParamErrors.NOT_SINGLE_RESERVATION_DATES.toException();
-            }
             if (!validateReservationDate(date)) throw ReservationInvalidParamErrors.INVALID_DATE.toException();
 
             return true;
