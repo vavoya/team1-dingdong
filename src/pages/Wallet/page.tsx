@@ -1,6 +1,7 @@
 import PopHeader from "@/components/Headers/PopHeader";
 import DingDongCard from "@/pages/Payment/components/DingDongCard";
 import {
+
     ButtonBox, ButtonText,
     CardBox,
     History,
@@ -27,56 +28,58 @@ export default function Page() {
     const navigate = useNavigate();
     const setToast = useToast();
 
-    const temp: HistoryItemProps[] = [
-        {
-            isDeposit: false,
-            date: '24.12.27 11:00',
-            amount: '10,000원',
-            balance: '잔액페이 12,000원'
-        },
-        {
-            isDeposit: true,
-            date: '24.12.27 11:00',
-            amount: '10,000원',
-            balance: '잔액페이 12,000원'
-        },
-        {
-            isDeposit: false,
-            date: '24.12.27 11:00',
-            amount: '10,000원',
-            balance: '잔액페이 12,000원'
-        },
-        {
-            isDeposit: true,
-            date: '24.12.27 11:00',
-            amount: '10,000원',
-            balance: '잔액페이 12,000원'
-        },
-        {
-            isDeposit: false,
-            date: '24.12.27 11:00',
-            amount: '10,000원',
-            balance: '잔액페이 12,000원'
-        },
-        {
-            isDeposit: true,
-            date: '24.12.27 11:00',
-            amount: '10,000원',
-            balance: '잔액페이 12,000원'
-        },
-        {
-            isDeposit: false,
-            date: '24.12.27 11:00',
-            amount: '10,000원',
-            balance: '잔액페이 12,000원'
-        },
-        {
-            isDeposit: true,
-            date: '24.12.27 11:00',
-            amount: '10,000원',
-            balance: '잔액페이 12,000원'
-        }
-    ]
+
+  const temp: HistoryItemProps[] = [
+    {
+      isDeposit: false,
+      date: "24.12.27 11:00",
+      amount: "10,000원",
+      balance: "잔액페이 12,000원",
+    },
+    {
+      isDeposit: true,
+      date: "24.12.27 11:00",
+      amount: "10,000원",
+      balance: "잔액페이 12,000원",
+    },
+    {
+      isDeposit: false,
+      date: "24.12.27 11:00",
+      amount: "10,000원",
+      balance: "잔액페이 12,000원",
+    },
+    {
+      isDeposit: true,
+      date: "24.12.27 11:00",
+      amount: "10,000원",
+      balance: "잔액페이 12,000원",
+    },
+    {
+      isDeposit: false,
+      date: "24.12.27 11:00",
+      amount: "10,000원",
+      balance: "잔액페이 12,000원",
+    },
+    {
+      isDeposit: true,
+      date: "24.12.27 11:00",
+      amount: "10,000원",
+      balance: "잔액페이 12,000원",
+    },
+    {
+      isDeposit: false,
+      date: "24.12.27 11:00",
+      amount: "10,000원",
+      balance: "잔액페이 12,000원",
+    },
+    {
+      isDeposit: true,
+      date: "24.12.27 11:00",
+      amount: "10,000원",
+      balance: "잔액페이 12,000원",
+    },
+  ];
+
 
     return (
         <PageWrapper>
@@ -114,33 +117,28 @@ export default function Page() {
             </Main>
         </PageWrapper>
     )
+
 }
 
 interface HistoryItemProps {
-    isDeposit: boolean;
-    date: string;
-    amount: string;
-    balance: string;
+  isDeposit: boolean;
+  date: string;
+  amount: string;
+  balance: string;
 }
-function HistoryItem({isDeposit, date, amount, balance}: HistoryItemProps) {
-    return (
-        <History>
-            <HistoryStatusBox>
-                <HistoryStatus isDeposit={isDeposit}>
-                    {isDeposit ? "입금" : "출금"}
-                </HistoryStatus>
-                <HistoryDate>
-                    {date}
-                </HistoryDate>
-            </HistoryStatusBox>
-            <HistoryAmountBox>
-                <HistoryAmount>
-                    {amount}
-                </HistoryAmount>
-                <HistoryBalance>
-                    {balance}
-                </HistoryBalance>
-            </HistoryAmountBox>
-        </History>
-    )
+function HistoryItem({ isDeposit, date, amount, balance }: HistoryItemProps) {
+  return (
+    <History>
+      <HistoryStatusBox>
+        <HistoryStatus isDeposit={isDeposit}>
+          {isDeposit ? "입금" : "출금"}
+        </HistoryStatus>
+        <HistoryDate>{date}</HistoryDate>
+      </HistoryStatusBox>
+      <HistoryAmountBox>
+        <HistoryAmount>{amount}</HistoryAmount>
+        <HistoryBalance>{balance}</HistoryBalance>
+      </HistoryAmountBox>
+    </History>
+  );
 }

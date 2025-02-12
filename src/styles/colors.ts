@@ -24,17 +24,19 @@ export const colors = {
   gray80: "#474759", // Body fonts
   gray90: "#333345",
   gray100: "#222235", // Dark fonts
+  gray800: "#1E1E1E",
 
   blue10: "#CCE6FF",
   blue50: "#53A9FF",
   blue100: "#0080FF", // Blue
   blue200: "#007AFF",
 
+  red: "#FF3B30",
   red10: "#FFC3BF",
   red50: "#FF776F",
   red100: "#FF3B30", // Red
 
   error100: "#D2092D",
 
-  textDontEditTextPrimary: "#101828" // 마이페이지에 사용
+  textDontEditTextPrimary: "#101828", // 마이페이지에 사용
 } as const;

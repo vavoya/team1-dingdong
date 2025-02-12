@@ -32,5 +32,5 @@ export const usePutHomeLocation = () => {
       });
     },
   });
-  return putHomeLocationMutation;
+  return { putHomeLocationMutation };
 };
