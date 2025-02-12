@@ -17,6 +17,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ddbb.dingdong.domain.transportation.service.BusErrors.BUS_UPDATE_ERROR;
+
 @Service
 @RequiredArgsConstructor
 public class BusScheduleManagement {
@@ -68,5 +70,18 @@ public class BusScheduleManagement {
         return adjustedBusStopTimes;
     }
 
-
+    // TODO:: bulk update
+    @Transactional
+    public void updateBusStopTimes(List<BusStopTime> busStopTimes, List<BusStopTime> oldBusStopTimes) {
+        for (int i = 0; i < busStopTimes.size(); i++) {
+            BusStopTime oldBusStopTime = oldBusStopTimes.get(i);
+            BusStopTime newBusStopTime = busStopTimes.get(i);
+            if (!oldBusStopTime.equals(newBusStopTime)) {
+                int res = busScheduleRepository.updateBusStopArrivalTime(newBusStopTime.getTime(), newBusStopTime.getBusStopId());
+                if (res == 0) {
+                    throw BUS_UPDATE_ERROR.toException();
+                }
+            }
+        }
+    }
 }
