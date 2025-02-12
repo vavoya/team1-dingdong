@@ -4,6 +4,7 @@ import com.ddbb.dingdong.domain.transportation.entity.BusSchedule;
 import com.ddbb.dingdong.domain.transportation.repository.projection.BusReservedSeatProjection;
 import com.ddbb.dingdong.domain.transportation.repository.projection.ScheduleTimeProjection;
 import jakarta.persistence.LockModeType;
+import com.ddbb.dingdong.domain.transportation.repository.projection.UserBusStopProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -37,4 +38,13 @@ public interface BusScheduleQueryRepository extends JpaRepository<BusSchedule, L
             "AND r.status != 'CANCELED' " +
             "GROUP BY bs.id")
     List<BusReservedSeatProjection> findReservedSeatCount(@Param("busScheduleIds") List<Long> busScheduleIds);
+
+    @Query("SELECT busStop.id as busStopId, res.userId as userId, busStop.expectedArrivalTime as busStopArrivalTime " +
+            "FROM BusStop busStop " +
+            "JOIN Ticket ticket ON ticket.busStopId = busStop.id " +
+            "JOIN Reservation res ON res.id = ticket.reservation.id " +
+            "JOIN BusSchedule bs ON bs.id = ticket.busScheduleId " +
+            "WHERE bs.id = :busScheduleId " +
+            "ORDER BY busStop.sequence")
+    List<UserBusStopProjection> findUserBusStopsByBusScheduleId(@Param("busScheduleId") Long busScheduleId);
 }
