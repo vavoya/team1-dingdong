@@ -47,7 +47,7 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
                 .map(r -> {
                     Result.ReservationInfo.OperationInfo operationInfo = null;
                     LocalDateTime expectedArrivalTime = r.getExpectedArrivalTime();
-                    LocalDateTime expectedDepartureTime = r.getRealDepartureTime();
+                    LocalDateTime expectedDepartureTime = r.getExpectedDepartureTime();
 
                     if(ReservationStatus.ALLOCATED.equals(r.getReservationStatus())) {
                         operationInfo = new Result.ReservationInfo.OperationInfo(
