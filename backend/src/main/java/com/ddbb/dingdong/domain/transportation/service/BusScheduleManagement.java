@@ -6,11 +6,16 @@ import com.ddbb.dingdong.domain.transportation.entity.BusSchedule;
 import com.ddbb.dingdong.domain.transportation.entity.Path;
 import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.domain.transportation.repository.BusScheduleRepository;
+import com.ddbb.dingdong.domain.transportation.service.dto.BusStopTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +45,28 @@ public class BusScheduleManagement {
         path.setBusSchedule(busSchedule);
         return busScheduleRepository.save(busSchedule);
     }
+
+    public List<BusStopTime> adjustBusStopTimes(LocalDateTime now, List<BusStopTime> busStopTimes) {
+        List<BusStopTime> adjustedBusStopTimes = new ArrayList<>();
+        if (busStopTimes == null || busStopTimes.isEmpty()) {
+            return adjustedBusStopTimes;
+        }
+        BusStopTime head = busStopTimes.get(0);
+        LocalDateTime updateTime = now;
+        LocalDateTime prevTime = head.getTime();
+
+        adjustedBusStopTimes.add(new BusStopTime(head.getBusStopId(), updateTime));
+
+        for (int i = 1; i < busStopTimes.size(); i++) {
+            BusStopTime item = busStopTimes.get(i);
+
+            long intervalSecond = ChronoUnit.SECONDS.between(prevTime, item.getTime());
+            updateTime = updateTime.plusSeconds(intervalSecond);
+            adjustedBusStopTimes.add(new BusStopTime(item.getBusStopId(), updateTime));
+            prevTime = item.getTime();
+        }
+        return adjustedBusStopTimes;
+    }
+
 
 }
