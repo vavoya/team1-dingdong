@@ -1,12 +1,15 @@
 // 라이브러리
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { Query, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  FetchQueryOptions,
+  QueryClient,
+  QueryClientProvider,
+  QueryOptions,
+} from "@tanstack/react-query";
 import App from "./App.tsx";
 import { LoaderFunctionArgs, redirect } from "react-router-dom";
 import { createBrowserRouter } from "react-router";
-
-import QueryObj from "@/api/queries";
 
 export const queryClient = new QueryClient();
 
@@ -155,7 +158,7 @@ export const router = createBrowserRouter([
   },
 ]);
 
-export function createLoader(queries: Query[] = []) {
+export function createLoader(queries: QueryOptions[] = []) {
   async function loader({ request, params }: LoaderFunctionArgs) {
     const previousUrl = window.location.pathname;
     const currentUrl = new URL(request.url).pathname; // 현재 URL 가져오기
@@ -194,7 +197,10 @@ export function createLoader(queries: Query[] = []) {
 
       const response = await Promise.all(
         queries.map((query) =>
-          queryClient.fetchQuery({ ...query, staleTime: Infinity })
+          queryClient.fetchQuery({
+            ...query,
+            staleTime: Infinity,
+          } as FetchQueryOptions)
         )
       );
       // fetch 성공 후
