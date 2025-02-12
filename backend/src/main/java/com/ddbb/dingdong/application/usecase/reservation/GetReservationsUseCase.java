@@ -46,6 +46,7 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
                     Result.ReservationInfo.OperationInfo operationInfo = null;
                     if(ReservationStatus.ALLOCATED.name().equals(r.getReservationStatus())) {
                         operationInfo = new Result.ReservationInfo.OperationInfo(
+                                r.getBusScheduleId(),
                                 r.getBusStatus(),
                                 r.getBusName(),
                                 r.getBusStopArrivalTime(),
@@ -96,6 +97,7 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
             @Getter
             @AllArgsConstructor
             public static class OperationInfo {
+                private Long busScheduleId;
                 private String busStatus;
                 private String busName;
                 private LocalDateTime busStopArrivalTime;
