@@ -16,6 +16,7 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
                r.direction AS direction,
                r.arrivalTime AS expectedArrivalTime,
                r.status AS reservationStatus,
+               bs_arrival.id AS busScheduleId,
                b.name AS busName,
                bs_arrival.status AS busStatus,
                bs.roadNameAddress AS busStopRoadNameAddress,
