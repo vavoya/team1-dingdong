@@ -17,8 +17,8 @@ public class RepositoryRouteSegmentProvider implements RouteSegmentProvider {
     private final PathQueryRepository pathQueryRepository;
 
     @Override
-    public List<RouteSegment> getRouteSegments(Long busId) {
-        List<PathSegmentProjection> projections = pathQueryRepository.findSegmentByBusScheduleId(busId);
+    public List<RouteSegment> getRouteSegments(Long busScheduleId) {
+        List<PathSegmentProjection> projections = pathQueryRepository.findSegmentByBusScheduleId(busScheduleId);
         return projections.stream()
                 .collect(Collectors.groupingBy(PathSegmentProjection::getLineId, Collectors.toList()))
                 .values()

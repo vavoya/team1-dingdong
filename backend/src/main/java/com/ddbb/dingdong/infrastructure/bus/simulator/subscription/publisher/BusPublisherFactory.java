@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 public class BusPublisherFactory {
     private final BusSubscriptionManager manager;
 
-    public SubmissionPublisher<Point> createSimulator(Long busId, Supplier<Point> supplier) {
-        return new PeriodicBusPublisher<>(manager, busId, supplier, 1, 0, TimeUnit.SECONDS);
+    public SubmissionPublisher<Point> createSimulator(Long busScheduleId, Supplier<Point> supplier) {
+        return new PeriodicBusPublisher<>(manager, busScheduleId, supplier, 1, 0, TimeUnit.SECONDS);
     }
 }

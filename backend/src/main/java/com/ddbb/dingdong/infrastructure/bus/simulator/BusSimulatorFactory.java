@@ -1,6 +1,5 @@
 package com.ddbb.dingdong.infrastructure.bus.simulator;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +19,12 @@ public class BusSimulatorFactory {
     private static final double UNIT_SECOND = 1.0;
 
     /**
-     * @param busId : 출발할 버스 아이디
-     * 주어진 Segment 리스트를 기반으로 정해진 UNIT_SECOND 마다의 버스 위치를 계산하여
-     * 각 단위초마다 버스 위치를 시뮬레이트 하는 BusSimulator를 만듭니다.
-     * **/
-    public BusSimulator create(Long busId) {
-        List<RouteSegment> segments = segmentProvider.getRouteSegments(busId);
+     * @param busScheduleId : 출발시킬 버스 운행 아이디
+     *   주어진 Segment 리스트를 기반으로 정해진 UNIT_SECOND 마다의 버스 위치를 계산하여
+     *   각 단위초마다 버스 위치를 시뮬레이트 하는 BusSimulator를 만듭니다.
+     **/
+    public BusSimulator create(Long busScheduleId) {
+        List<RouteSegment> segments = segmentProvider.getRouteSegments(busScheduleId);
         double deltaTime = UNIT_SECOND;
 
         List<Point> simulatedPoints = new ArrayList<>();
