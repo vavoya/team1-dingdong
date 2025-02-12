@@ -5,5 +5,5 @@ import java.time.LocalDateTime;
 public interface UserBusStopProjection {
     Long getUserId();
     LocalDateTime getBusStopArrivalTime();
-    Long busStopId();
+    Long getBusStopId();
 }
