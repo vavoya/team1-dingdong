@@ -47,6 +47,8 @@ import SignupLayout from "./pages/Auth/Signup/page.tsx";
 import PasswordSignup from "./pages/Auth/Signup/Password/index.tsx";
 import UserInfoSignup from "./pages/Auth/Signup/UserInfo/index.tsx";
 import SchoolAuthSignUp from "./pages/Auth/Signup/SchoolAuth/index.tsx";
+import Notification from "./pages/Notification/page.tsx";
+import { notificationLoader } from "./hooks/Notification/useNotification.ts";
 
 export const router = createBrowserRouter([
   {
@@ -55,14 +57,20 @@ export const router = createBrowserRouter([
     errorElement: <></>,
     children: [
       {
+        index: true,
+        Component: LoginHomeScreen,
+      },
+      {
         // 홈
         path: "home",
         Component: Home,
       },
       {
-        path: "login-home",
-        Component: LoginHomeScreen,
+        path: "notification",
+        Component: Notification,
+        // loader: createLoader([notificationLoader]),
       },
+
       {
         path: "login",
         Component: Login,
