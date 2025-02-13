@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.presentation.endpoint.user.home;
+package com.ddbb.dingdong.presentation.endpoint.user.exchanges;
 
 import lombok.Getter;
 
