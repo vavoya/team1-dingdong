@@ -19,10 +19,10 @@ public class Path {
     private Long id;
 
     @Column(nullable = false)
-    private Double totalDistance;
+    private Double totalMeter;
 
     @Column(nullable = false)
-    private Integer totalMinutes;
+    private Integer totalSeconds;
 
     @OneToMany(mappedBy = "path", cascade = CascadeType.PERSIST)
     private List<Line> lines;

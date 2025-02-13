@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,14 +23,14 @@ public class BusRouteCreationService {
     private final TmapRouteOptimizationApiClient apiClient;
     private final TmapRouteOptimizationDTOConverter routeOptimizationDTOConverter;
 
-    public Path routeOptimization(List<Location> locations, School school, Direction direction) {
+    public Path routeOptimization(List<Location> locations, School school, Direction direction, LocalDateTime dingdongTime) {
         RequestRouteOptimizationDTO request;
         ResponseRouteOptimizationDTO response;
 
         request = generateRequests(locations, school, direction);
         response = apiClient.getRouteOptimization(request);
 
-        return routeOptimizationDTOConverter.toPath(response);
+        return routeOptimizationDTOConverter.toPath(response, dingdongTime, direction);
     }
 
     private RequestRouteOptimizationDTO generateRequests(List<Location> locations, School school, Direction direction) {

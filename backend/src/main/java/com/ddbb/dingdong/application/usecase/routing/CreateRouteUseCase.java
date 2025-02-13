@@ -49,8 +49,8 @@ public class CreateRouteUseCase implements UseCase<CreateRouteUseCase.Param, Voi
         Direction direction = anyReservation.getDirection();
         School school = userManagement.load(anyReservation.getUserId()).getSchool();
         List<Location> locations = clusteringService.findByClusterLabel(clusterLabel);
-        Path path = busRouteCreationService.routeOptimization(locations, school, direction);
-        LocalDateTime dingdongTime = direction.equals(Direction.TO_HOME) ? anyReservation.getDepartureTime() : anyReservation.getArrivalTime();
+        LocalDateTime dingdongTime = direction.equals(Direction.TO_SCHOOL) ? anyReservation.getArrivalTime() : anyReservation.getDepartureTime();
+        Path path = busRouteCreationService.routeOptimization(locations, school, direction, dingdongTime);
         BusSchedule busSchedule = busScheduleManagement.allocateBusSchedule(
                 path,
                 school.getId(),

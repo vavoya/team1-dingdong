@@ -54,8 +54,7 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
                                 r.getBusScheduleId(),
                                 r.getBusStatus(),
                                 r.getBusName(),
-                                r.getBusStopArrivalTime(),
-                                r.getTotalMinutes()
+                                r.getBusStopArrivalTime()
                         );
                         expectedDepartureTime = r.getRealDepartureTime();
                         expectedArrivalTime = r.getRealArrivalTime();
@@ -110,7 +109,6 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
                 private OperationStatus busStatus;
                 private String busName;
                 private LocalDateTime busStopArrivalTime;
-                private Integer totalMinutes;
             }
         }
     }
