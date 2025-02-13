@@ -57,6 +57,15 @@ export function mountModal() {
     // React 18의 createRoot를 사용하여 LoadingModal 렌더링
     const root = createRoot(modalContainer);
 
+    // url 변경 되면 제거
+    window.addEventListener(
+        "popstate",
+        () => {
+            unmountModal(root, modalContainer);
+        },
+        { once: true }
+    );
+
     return {root, modalContainer}
 }
 
