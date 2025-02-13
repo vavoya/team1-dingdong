@@ -29,7 +29,7 @@ public class ApplicationInitializer {
     public void init() {
         if (userRepository.findByEmail("test@test.com").isEmpty()) {
             String password = passwordEncoder.encode("abcd1234!@");
-            School school = new School(null, "seoul", "address", 1.0, 1.0);
+            School school = new School(null, "서울대학교", "서울대학교 1번길", 126.9527, 37.4602);
             school = schoolRepository.save(school);
 
             for (int i = 0 ; i < 30; i++) {
