@@ -1,5 +1,4 @@
 import {
-  Arrow,
   Banner,
   CardContainer,
   Content,

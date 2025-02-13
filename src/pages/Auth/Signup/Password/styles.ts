@@ -1,4 +1,3 @@
-import { colors } from "@/styles/colors";
 import { Body2Regular } from "@/styles/typography";
 import styled from "styled-components";
 

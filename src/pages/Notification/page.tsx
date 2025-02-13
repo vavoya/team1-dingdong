@@ -1,6 +1,6 @@
 import PopHeader from "@/components/Headers/PopHeader";
 import { NotificationCardWrapper, NotificationLimit } from "./styles";
-import { useLoaderData } from "react-router-dom";
+// import { useLoaderData } from "react-router-dom";
 import NotificationCard from "./Components/NotificationCard";
 import { NotificationProps } from "./model/notificationCardType";
 

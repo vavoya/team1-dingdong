@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import {
   Label,
   EmailInputWrapper,
@@ -38,7 +38,7 @@ export default function SchoolAuthSignUp() {
 
   const navigate = useNavigate();
 
-  const { formattedTime, isExpired, startTimer } = useTimer(5); // 인증코드 타이머.
+  const { formattedTime, isExpired } = useTimer(5); // 인증코드 타이머.
 
   const { postUserSchoolEmailMutation } = usePostUserSchoolEmail();
   const { postUserVerificationCodeMutation } = usePostUserVerificationCode();
@@ -124,7 +124,8 @@ export default function SchoolAuthSignUp() {
             <VerifyButton
               disabled={emailFormatHasError}
               $active={!emailFormatHasError && email.length > 0}
-              onClick={clickedEmailSendButton}>
+              onClick={clickedEmailSendButton}
+            >
               전송
             </VerifyButton>
           </EmailInputWrapper>

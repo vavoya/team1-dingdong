@@ -48,7 +48,7 @@ import PasswordSignup from "./pages/Auth/Signup/Password/index.tsx";
 import UserInfoSignup from "./pages/Auth/Signup/UserInfo/index.tsx";
 import SchoolAuthSignUp from "./pages/Auth/Signup/SchoolAuth/index.tsx";
 import Notification from "./pages/Notification/page.tsx";
-import { notificationLoader } from "./hooks/Notification/useNotification.ts";
+// import { notificationLoader } from "./hooks/Notification/useNotification.ts";
 
 export const router = createBrowserRouter([
   {

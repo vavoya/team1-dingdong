@@ -1,4 +1,3 @@
-import { FC } from "react";
 import { NotificationProps } from "../../model/notificationCardType";
 import { AlarmText, Description, LinkBox } from "./styles";
 
