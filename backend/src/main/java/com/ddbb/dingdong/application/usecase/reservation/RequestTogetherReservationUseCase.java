@@ -2,26 +2,49 @@ package com.ddbb.dingdong.application.usecase.reservation;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
+import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
+import com.ddbb.dingdong.domain.reservation.service.ReservationErrors;
+import com.ddbb.dingdong.domain.reservation.service.ReservationManagement;
+import com.ddbb.dingdong.domain.transportation.entity.BusSchedule;
+import com.ddbb.dingdong.domain.transportation.repository.BusScheduleRepository;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.TokenManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class RequestTogetherReservationUseCase implements UseCase<RequestTogetherReservationUseCase.Param, RequestTogetherReservationUseCase.Result> {
     private final TokenManager tokenManager;
+    private final BusScheduleRepository busScheduleRepository;
+    private final ReservationManagement reservationManagement;
 
     @Override
     public Result execute(Param param) {
+        LocalDateTime hopeTime = extractTimeFromBusSchedule(param);
+        checkHasDuplicatedReservation(param.userId, hopeTime);
         String token = generateToken(param);
-
         return new Result(token);
     }
 
     private String generateToken(Param param) {
         return tokenManager.generateToken(param);
+    }
+
+    private void checkHasDuplicatedReservation(Long userId, LocalDateTime hopeTime) {
+        reservationManagement.checkHasDuplicatedReservation(userId, hopeTime);
+    }
+
+    private LocalDateTime extractTimeFromBusSchedule(Param param) {
+        Long busScheduleId = param.busScheduleId;
+        BusSchedule schedule = busScheduleRepository.findById(busScheduleId).orElseThrow(ReservationErrors.BUS_SCHEDULE_NOT_FOUND::toException);
+        LocalDateTime hopeTime = schedule.getDirection().equals(Direction.TO_SCHOOL)
+                ? schedule.getArrivalTime()
+                : schedule.getDepartureTime();
+        return hopeTime;
     }
 
     @Getter

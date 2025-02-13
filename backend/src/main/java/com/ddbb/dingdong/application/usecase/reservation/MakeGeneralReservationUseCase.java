@@ -9,6 +9,7 @@ import com.ddbb.dingdong.domain.reservation.entity.Reservation;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationStatus;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationType;
+import com.ddbb.dingdong.domain.reservation.service.ReservationErrors;
 import com.ddbb.dingdong.domain.reservation.service.ReservationManagement;
 import com.ddbb.dingdong.domain.user.entity.Home;
 import com.ddbb.dingdong.domain.user.service.UserManagement;
@@ -40,6 +41,7 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
     @Override
     public Void execute(Param param) {
         validateToken(param);
+        checkHasDuplicatedReservation(param.reservationInfo.userId, param.reservationInfo.reservationDates);
         reserve(param);
         pay(param);
 
@@ -48,6 +50,19 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
 
     private void validateToken(Param param) {
         tokenManager.validateToken(param.token, param.reservationInfo);
+    }
+
+    private void checkHasDuplicatedReservation(Long userId, List<Param.ReservationInfo.ReservationDate> hopeTimes) {
+        for (int i = 0; i < hopeTimes.size() - 1; i++) {
+            for (int j = i + 1; j < hopeTimes.size(); j++) {
+                if (hopeTimes.get(i).getDate().isEqual(hopeTimes.get(j).getDate())) {
+                    throw ReservationErrors.DUPLICATED_RESERVATION_DATE.toException();
+                }
+            }
+        }
+        for (Param.ReservationInfo.ReservationDate hopeTime : hopeTimes) {
+            reservationManagement.checkHasDuplicatedReservation(userId, hopeTime.date);
+        }
     }
 
     private void reserve(Param param) {

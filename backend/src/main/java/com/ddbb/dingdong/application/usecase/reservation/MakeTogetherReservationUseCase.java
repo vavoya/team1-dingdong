@@ -2,6 +2,8 @@ package com.ddbb.dingdong.application.usecase.reservation;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
+import com.ddbb.dingdong.application.exception.APIException;
+import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.domain.payment.service.PaymentManagement;
 import com.ddbb.dingdong.domain.reservation.entity.Reservation;
 import com.ddbb.dingdong.domain.reservation.entity.Ticket;
@@ -22,6 +24,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class MakeTogetherReservationUseCase implements UseCase<MakeTogetherReservationUseCase.Param, Void> {
@@ -35,10 +39,25 @@ public class MakeTogetherReservationUseCase implements UseCase<MakeTogetherReser
     @Override
     public Void execute(Param param) {
         validateToken(param);
+        LocalDateTime hopeTime = extractTimeFromBusSchedule(param);
+        checkHasDuplicatedReservation(param.reservationInfo.userId, hopeTime);
         reserve(param);
         pay(param);
 
         return null;
+    }
+
+    private void checkHasDuplicatedReservation(Long userId, LocalDateTime hopeTime) {
+        reservationManagement.checkHasDuplicatedReservation(userId, hopeTime);
+    }
+
+    private LocalDateTime extractTimeFromBusSchedule(MakeTogetherReservationUseCase.Param param) {
+        Long busScheduleId = param.reservationInfo.busScheduleId;
+        BusSchedule schedule = busScheduleRepository.findById(busScheduleId).orElseThrow(ReservationErrors.BUS_SCHEDULE_NOT_FOUND::toException);
+        LocalDateTime hopeTime = schedule.getDirection().equals(Direction.TO_SCHOOL)
+                ? schedule.getArrivalTime()
+                : schedule.getDepartureTime();
+        return hopeTime;
     }
 
     private void validateToken(Param param) {
@@ -66,8 +85,8 @@ public class MakeTogetherReservationUseCase implements UseCase<MakeTogetherReser
 
         Long queryBusScheduleId = busStop.getPath().getBusSchedule().getId();
 
-        if (busScheduleId.equals(queryBusScheduleId)) {
-            throw ReservationErrors.INVALID_BUS_STOP.toException();
+        if (!busScheduleId.equals(queryBusScheduleId)) {
+            throw ReservationErrors.INVALID_BUS_SCHEDULE.toException();
         }
 
         Reservation reservation = makeReservation(busSchedule, userId);

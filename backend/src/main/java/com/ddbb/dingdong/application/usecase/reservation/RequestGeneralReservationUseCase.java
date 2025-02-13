@@ -4,6 +4,8 @@ import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
 import com.ddbb.dingdong.application.usecase.reservation.error.ReservationInvalidParamErrors;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
+import com.ddbb.dingdong.domain.reservation.service.ReservationErrors;
+import com.ddbb.dingdong.domain.reservation.service.ReservationManagement;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.TokenManager;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,23 +20,38 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class RequestGeneralReservationUseCase implements UseCase<RequestGeneralReservationUseCase.Param, RequestGeneralReservationUseCase.Result> {
     private final TokenManager tokenManager;
+    private final ReservationManagement reservationManagement;
 
     @Override
     public Result execute(Param param) {
         param.validate();
+        checkHasDuplicatedReservation(param.userId, param.reservationDates);
         String token = generateToken(param);
-
         return new Result(token);
     }
 
     private String generateToken(Param param) {
         return tokenManager.generateToken(param);
+    }
+
+    private void checkHasDuplicatedReservation(Long userId, List<RequestGeneralReservationUseCase.Param.ReservationInfo> hopeTimes) {
+        for (int i = 0; i < hopeTimes.size() - 1; i++) {
+            for (int j = i + 1; j < hopeTimes.size(); j++) {
+                if (hopeTimes.get(i).getDate().isEqual(hopeTimes.get(j).getDate())) {
+                    throw ReservationErrors.DUPLICATED_RESERVATION_DATE.toException();
+                }
+            }
+        }
+        for (RequestGeneralReservationUseCase.Param.ReservationInfo hopeTime : hopeTimes) {
+            reservationManagement.checkHasDuplicatedReservation(userId, hopeTime.date);
+        }
     }
 
     @Getter
@@ -52,6 +69,11 @@ public class RequestGeneralReservationUseCase implements UseCase<RequestGeneralR
             @JsonDeserialize(using = LocalDateTimeDeserializer.class)
             @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
             private LocalDateTime date;
+
+            public boolean equals(ReservationInfo o) {
+                return o.date.isEqual(this.date);
+
+            }
         }
 
         @Override
