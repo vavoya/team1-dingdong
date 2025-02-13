@@ -4,6 +4,7 @@ import com.ddbb.dingdong.domain.common.exception.ErrorInfo;
 
 public enum ReservationErrors implements ErrorInfo {
     NOT_FOUND("해당 예매 내역이 존재 하지 않습니다."),
+    ALREADY_SAME_RESERVATION_EXISTS("이미 같은 버스에 대한 예매 내역이 존재합니다."),
     INVALID_ACCESS("해당 예매에 접근 할 수 없습니다."),
 
     EXPIRED_RESERVATION_DATE("해당 예약시간이 이미 마감되었습니다."),
@@ -22,6 +23,7 @@ public enum ReservationErrors implements ErrorInfo {
     CANCELLATION_NOT_ALLOWED("배차 대기인 상태에서만 예매를 취소할 수 있습니다."),
     ALLOCATION_NOT_ALLOWED("배차 대기인 상태에서만 버스를 배차시킬 수 있습니다."),
     ISSUE_NOT_ALLOWED("배차 완료인 상태에서만 티켓을 발급할 수 있습니다."),
+    TICKETS_NOT_FOUND("티켓이 존재하지 않습니다."),
 
     TICKET_SOLD_OUT("해당 티켓이 모두 판매되었습니다."),
 
