@@ -17,7 +17,7 @@ interface TicketCardProps {
   isRead?: boolean;
   cardType?: "confirmed" | "failed" | "welcome";
   departureStation?: string;
-  arrivalStation?: string;
+  destination?: string;
   departureTime?: string;
   arrivalTime?: string;
   hoursUntilDeparture?: number;
@@ -29,7 +29,7 @@ export default function TicketCard({
   isRead,
   cardType = "confirmed",
   departureStation,
-  arrivalStation,
+  destination,
   departureTime,
   arrivalTime,
   hoursUntilDeparture,
@@ -66,7 +66,7 @@ export default function TicketCard({
         </StationInfo>
         <ChevronRightIcon size={32} fill={colors.gray30} />
         <StationInfo>
-          <StationName>{arrivalStation}</StationName>
+          <StationName>{destination}</StationName>
           <Time>{arrivalTime} 하차</Time>
         </StationInfo>
       </Content>
