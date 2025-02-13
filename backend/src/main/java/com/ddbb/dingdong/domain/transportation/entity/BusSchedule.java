@@ -44,7 +44,7 @@ public class BusSchedule {
     private Long schoolId;
 
     @Column(nullable = false)
-    private Integer count = 15;
+    private Integer remainingSeats = 15;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "bus_id")
@@ -54,9 +54,9 @@ public class BusSchedule {
     private Path path;
 
     public void issue() {
-        if (count <= 0) {
+        if (remainingSeats <= 0) {
             throw BusErrors.NO_SEATS.toException();
         }
-        count--;
+        remainingSeats--;
     }
 }
