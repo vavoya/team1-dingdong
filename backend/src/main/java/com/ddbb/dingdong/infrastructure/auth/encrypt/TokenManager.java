@@ -2,6 +2,8 @@ package com.ddbb.dingdong.infrastructure.auth.encrypt;
 
 import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.AESEncoder;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.SHA512Encoder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +29,16 @@ public class TokenManager {
         }
     }
 
-    public boolean validateToken(String token, String data)  {
+    public boolean validateToken(String token, Object target)  {
+        String data;
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            data = objectMapper.writeValueAsString(target);
+        } catch (JsonProcessingException e) {
+            throw TokenErrors.INVALID.toException();
+        }
+
         String decryptedData;
 
         try {
