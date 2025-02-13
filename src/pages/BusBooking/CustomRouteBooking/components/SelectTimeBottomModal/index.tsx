@@ -54,16 +54,14 @@ export default function SelectTimeBottomModal({
 
   // 디바운스 훅 생성
   function useDebounce<T>(callback: (...args: T[]) => void, delay: number) {
-    const timeoutRef = useRef<number>();
+    const timeoutRef = useRef<NodeJS.Timeout>();
 
     return useCallback(
       (...args: T[]) => {
-        // 이전 타이머가 있다면 클리어
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
         }
 
-        // 새로운 타이머 설정
         timeoutRef.current = setTimeout(() => {
           callback(...args);
         }, delay);
@@ -188,7 +186,8 @@ export default function SelectTimeBottomModal({
       isOpen={isTimeSelectModalOpen}
       onClose={() => {
         setIsTimeSelectModalOpen(false);
-      }}>
+      }}
+    >
       <S.ModalHeader>
         {commuteType === "등교"
           ? "도착 시각을 선택해주세요"
@@ -242,7 +241,8 @@ export default function SelectTimeBottomModal({
         <S.CheckBox
           onClick={() => {
             setRepeatIconToggle((prev) => !prev);
-          }}>
+          }}
+        >
           <DayRepeatBoxIcon
             fill={repeatIconToggle ? colors.orange900 : colors.gray40}
           />

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { NameGuideText } from "./styles";
 import CustomFormWrapper from "../../Components/FormWrapper";
 import CustomInput from "../../Components/Input";

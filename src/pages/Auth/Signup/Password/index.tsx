@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect, useRef } from "react";
+import { useState, ChangeEvent, useEffect, useRef } from "react";
 import { PasswordGuidText } from "./styles";
 import CustomInput from "../../Components/Input";
 import CustomFormWrapper from "../../Components/FormWrapper";

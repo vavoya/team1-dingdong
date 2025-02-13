@@ -16,7 +16,7 @@ export const useTimer = (initialMinutes: number): TimerHookReturnType => {
   const [isExpired, setIsExpired] = useState(false);
 
   useEffect(() => {
-    let interval: number;
+    let interval: NodeJS.Timeout;
 
     if (isRunning && seconds > 0) {
       interval = setInterval(() => {

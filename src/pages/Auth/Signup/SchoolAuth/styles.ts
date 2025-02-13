@@ -1,10 +1,5 @@
 import { colors } from "@/styles/colors";
-import {
-  Body1Medium,
-  Body2Medium,
-  Body2Regular,
-  Heading2SemiBold,
-} from "@/styles/typography";
+import { Body1Medium, Body2Medium, Body2Regular } from "@/styles/typography";
 import styled from "styled-components";
 
 export const EmailFormWrapper = styled.div`
