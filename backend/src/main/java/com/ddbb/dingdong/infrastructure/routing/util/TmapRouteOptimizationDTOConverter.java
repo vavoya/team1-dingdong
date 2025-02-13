@@ -64,8 +64,8 @@ public class TmapRouteOptimizationDTOConverter {
         } else {
             startX = schoolLongitude.toString();
             startY = schoolLatitude.toString();
-            endX = farthestPoint.get().getViaX();
-            endY = farthestPoint.get().getViaY();
+            endX = String.valueOf((Double.parseDouble(farthestPoint.get().getViaX()) + BUS_DISTANCE));
+            endY = String.valueOf((Double.parseDouble(farthestPoint.get().getViaY()) + BUS_DISTANCE));
         }
 
 
@@ -80,9 +80,7 @@ public class TmapRouteOptimizationDTOConverter {
                 viaPoints);
         return request;
     }
-// 첫번째 라인스트링의 1번째 coordinate의 value 1 , 0 -> 버스 출발 bus stop
-// 두번째 ~ 마지막 lineString은 원래 했던대로 가면댐
-    // 마지막 lineString의 마지막 coordinate
+
     public Path toPath(List<Location> locations, ResponseRouteOptimizationDTO response , LocalDateTime dingdongTime, Direction direction) {
         Path path = new Path();
         LocalDateTime now = LocalDateTime.now();
@@ -175,15 +173,7 @@ public class TmapRouteOptimizationDTOConverter {
                 }
             }
         }
-        if(direction.equals(Direction.TO_HOME)) {
-            BusStop lastBusStop = new BusStop();
-            lastBusStop.setLatitude(lastCoordinates.get(lastCoordinates.size() - 1).doubleArrayValue.get(1));
-            lastBusStop.setLongitude(lastCoordinates.get(lastCoordinates.size() - 1).doubleArrayValue.get(0));
-            lastBusStop.setExpectedArrivalTime(dingdongTime);
-            lastBusStop.setSequence(busStopSequence);
-            lastBusStop.setPath(path);
-            busStops.add(lastBusStop);
-        }
+
         Map<Long, String> locationRoadNames = new HashMap<>();
         for(Location location : locations) {
             locationRoadNames.put(location.getId(), location.getStationName());
@@ -194,14 +184,14 @@ public class TmapRouteOptimizationDTOConverter {
             busStop.setLocationId(locationIds.get(i - 1));
             busStop.setRoadNameAddress(locationRoadNames.get(busStop.getLocationId()));
         }
+        BusStop lastBusStop = new BusStop();
+        lastBusStop.setLatitude(lastCoordinates.get(lastCoordinates.size() - 1).doubleArrayValue.get(1));
+        lastBusStop.setLongitude(lastCoordinates.get(lastCoordinates.size() - 1).doubleArrayValue.get(0));
+        lastBusStop.setExpectedArrivalTime(dingdongTime);
+        lastBusStop.setSequence(busStopSequence);
+        lastBusStop.setPath(path);
+        busStops.add(lastBusStop);
         if(direction.equals(Direction.TO_SCHOOL)) {
-            BusStop lastBusStop = new BusStop();
-            lastBusStop.setLatitude(lastCoordinates.get(lastCoordinates.size() - 1).doubleArrayValue.get(1));
-            lastBusStop.setLongitude(lastCoordinates.get(lastCoordinates.size() - 1).doubleArrayValue.get(0));
-            lastBusStop.setExpectedArrivalTime(dingdongTime);
-            lastBusStop.setSequence(busStopSequence);
-            lastBusStop.setPath(path);
-            busStops.add(lastBusStop);
             for (int i = busStops.size() - 2 ; i >= 0; i--) {
                 BusStop prevBusStop = busStops.get(i + 1);
                 BusStop busStop = busStops.get(i);
