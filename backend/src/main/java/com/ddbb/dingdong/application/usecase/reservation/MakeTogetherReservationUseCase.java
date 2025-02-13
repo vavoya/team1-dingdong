@@ -66,7 +66,7 @@ public class MakeTogetherReservationUseCase implements UseCase<MakeTogetherReser
 
         Long queryBusScheduleId = busStop.getPath().getBusSchedule().getId();
 
-        if (busScheduleId.equals(queryBusScheduleId)) {
+        if (!busScheduleId.equals(queryBusScheduleId)) {
             throw ReservationErrors.INVALID_BUS_STOP.toException();
         }
 
