@@ -18,7 +18,7 @@ public class WebMvcExceptionHandler extends ResponseEntityExceptionHandler {
         if (e instanceof APIException) {
             ErrorResponse response = new ErrorResponse(
                     ((APIException) e).error.getCode(),
-                    ((APIException) e).error.getMessage(),
+                    ((APIException) e).error.getDesc(),
                     LocalDateTime.now()
             );
 
@@ -26,7 +26,7 @@ public class WebMvcExceptionHandler extends ResponseEntityExceptionHandler {
         } else if (e instanceof InvalidParamException) {
             ErrorResponse response = new ErrorResponse(
                     ((InvalidParamException) e).error.getCode(),
-                    ((InvalidParamException) e).error.getMessage(),
+                    ((InvalidParamException) e).error.getDesc(),
                     LocalDateTime.now()
             );
 
@@ -34,7 +34,7 @@ public class WebMvcExceptionHandler extends ResponseEntityExceptionHandler {
         } else if (e instanceof DomainException) {
             ErrorResponse response = new ErrorResponse(
                     ((DomainException) e).error.getCode(),
-                    ((DomainException) e).error.getMessage(),
+                    ((DomainException) e).error.getDesc(),
                     LocalDateTime.now()
             );
 
