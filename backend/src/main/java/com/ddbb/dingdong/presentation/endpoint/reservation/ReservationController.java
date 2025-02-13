@@ -32,9 +32,10 @@ public class ReservationController {
             @RequestParam SortType sort,
             @RequestParam ReservationCategory category,
             @RequestParam int page,
-            @RequestParam int pageSize
+            @RequestParam(defaultValue = "-1") int pageSize
     ) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = pageSize == -1 ? Pageable.unpaged() : PageRequest.of(page, pageSize);
+
         Long userId = user.id();
         GetReservationsUseCase.Param param= new GetReservationsUseCase.Param(userId, pageable, sort, category);
         GetReservationsUseCase.Result result;
@@ -100,8 +101,7 @@ public class ReservationController {
         RequestTogetherReservationUseCase.Param param = new RequestTogetherReservationUseCase.Param(
                 userId,
                 togetherReservationRequestDTO.getBusStopId(),
-                togetherReservationRequestDTO.getBusScheduleId(),
-                togetherReservationRequestDTO.getDate()
+                togetherReservationRequestDTO.getBusScheduleId()
         );
         RequestTogetherReservationUseCase.Result result;
         try {

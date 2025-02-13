@@ -43,10 +43,12 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
                 (:category = 4 AND CAST(bs_arrival.status AS STRING) = 'ENDED')
                 OR
                 (:category = 5 AND CAST(r.status AS STRING) = 'CANCELED')
+                OR
+                (:category = 6 AND (CAST(r.status AS STRING) = 'ALLOCATED' OR CAST(r.status AS STRING) = 'PENDING'))
                 )
             ORDER BY
                CASE WHEN :sort = 0 THEN r.startDate END DESC,
                CASE WHEN :sort = 1 THEN r.startDate END ASC
-        """)
-    Page<UserReservationProjection> findFlatReservationsByUserId(@Param("userId") Long userId, @Param("category") int category, @Param("sort") int sort, Pageable p);
+    """)
+    Page<UserReservationProjection> queryReservationsByUserId(@Param("userId") Long userId, @Param("category") int category, @Param("sort") int sort, Pageable p);
 }
