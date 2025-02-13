@@ -149,8 +149,7 @@ public class ReservationController {
                 new MakeTogetherReservationUseCase.Param.ReservationInfo(
                         userId,
                         togetherReservationConfirmDTO.getBusStopId(),
-                        togetherReservationConfirmDTO.getBusScheduleId(),
-                        togetherReservationConfirmDTO.getDate()
+                        togetherReservationConfirmDTO.getBusScheduleId()
                 )
         );
         try {
