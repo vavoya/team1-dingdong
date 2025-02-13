@@ -10,17 +10,19 @@ export default defineConfig({
     ],
   },
   server: {
+    host: "0.0.0.0", // ✅ 네트워크 모든 IP에서 접근 가능
+    port: 5173, // 포트 설정 (기본값: 5173)
     proxy: {
       "/api": {
-        target: "http://3.38.114.211:8080",
+        target: "https://ding-dong-bus.shop",
         changeOrigin: true,
-        secure: false,
+        secure: true,
         headers: {
           credentials: "include",
         },
       },
       "/ws": {
-        target: "http://3.38.114.211:8080",
+        target: "https://ding-dong-bus.shop",
         changeOrigin: true,
         ws: true,
         secure: false,
