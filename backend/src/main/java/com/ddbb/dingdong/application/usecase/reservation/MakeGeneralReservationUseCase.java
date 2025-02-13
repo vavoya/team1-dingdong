@@ -71,7 +71,7 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
             location.setReservationId(reservationId);
             location.setLatitude(home.getStationLatitude());
             location.setLongitude(home.getStationLongitude());
-            location.setStationName(home.getStationName());
+            location.setStationName(home.getStationRoadAddressName());
             clusteringService.saveLocation(location);
         }
     }
