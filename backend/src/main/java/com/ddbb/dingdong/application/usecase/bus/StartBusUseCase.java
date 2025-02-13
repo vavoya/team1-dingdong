@@ -4,6 +4,7 @@ import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
 import com.ddbb.dingdong.domain.transportation.repository.BusScheduleQueryRepository;
 import com.ddbb.dingdong.domain.transportation.repository.projection.UserBusStopProjection;
+import com.ddbb.dingdong.domain.transportation.service.BusErrors;
 import com.ddbb.dingdong.domain.transportation.service.BusPublishService;
 import com.ddbb.dingdong.domain.transportation.service.BusScheduleManagement;
 import com.ddbb.dingdong.domain.transportation.service.dto.UserBusStopTime;
@@ -30,7 +31,9 @@ public class StartBusUseCase implements UseCase<StartBusUseCase.Param, Void> {
     @Transactional
     public Void execute(StartBusUseCase.Param param) {
         List<UserBusStopProjection> projections = busScheduleQueryRepository.findUserBusStops(param.getBusScheduleId());
-
+        if (projections.isEmpty()) {
+            throw BusErrors.NO_BUS_FOUND.toException();
+        }
         Map<Long, UserBusStopTime> busStopTimeMap = new LinkedHashMap<>();
         for (UserBusStopProjection proj : projections) {
             if (!busStopTimeMap.containsKey(proj.getBusStopId())) {
