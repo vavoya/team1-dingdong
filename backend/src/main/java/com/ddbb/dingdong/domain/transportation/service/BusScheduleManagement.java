@@ -28,6 +28,7 @@ public class BusScheduleManagement {
         } else {
             busSchedule.setDepartureTime(dingdongTime);
         }
+        busSchedule.setCount(15);
         busSchedule.setStartDate(startDate);
         busSchedule.setStatus(OperationStatus.READY);
         path.setBusSchedule(busSchedule);
