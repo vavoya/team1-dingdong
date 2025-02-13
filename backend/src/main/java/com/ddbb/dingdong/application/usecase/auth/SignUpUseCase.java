@@ -9,9 +9,9 @@ import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.SignUpRequestDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class SignUpUseCase implements UseCase<SignUpUseCase.Param, Void> {
     private final AuthManagement authManagement;

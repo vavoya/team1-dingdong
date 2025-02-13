@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.presentation.endpoint.user.home;
+package com.ddbb.dingdong.presentation.endpoint.user.exchanges;
 
 import com.ddbb.dingdong.application.exception.APIException;
 import com.ddbb.dingdong.application.usecase.user.GetHomeLocationUseCase;

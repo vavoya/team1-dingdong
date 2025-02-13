@@ -6,7 +6,7 @@ import com.ddbb.dingdong.domain.user.entity.User;
 import com.ddbb.dingdong.domain.user.repository.UserRepository;
 import com.ddbb.dingdong.domain.user.service.HomeErrors;
 import com.ddbb.dingdong.domain.user.service.UserErrors;
-import com.ddbb.dingdong.presentation.endpoint.user.home.UpdateHomeLocationDto;
+import com.ddbb.dingdong.presentation.endpoint.user.exchanges.UpdateHomeLocationDto;
 import com.ddbb.dingdong.util.ParamValidator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
