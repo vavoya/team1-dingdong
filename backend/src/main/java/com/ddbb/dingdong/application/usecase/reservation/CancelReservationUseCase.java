@@ -2,6 +2,7 @@ package com.ddbb.dingdong.application.usecase.reservation;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
+import com.ddbb.dingdong.domain.payment.service.PaymentManagement;
 import com.ddbb.dingdong.domain.reservation.service.ReservationManagement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,13 +14,23 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CancelReservationUseCase implements UseCase<CancelReservationUseCase.Param, Void> {
     private final ReservationManagement reservationManagement;
+    private final PaymentManagement paymentManagement;
 
     @Transactional
     @Override
     public Void execute(Param param) {
-        reservationManagement.cancel(param.getUserId(), param.getReservationId());
+        cancelReservation(param);
+        refund(param);
 
         return null;
+    }
+
+    private void cancelReservation(Param param) {
+        reservationManagement.cancel(param.getUserId(), param.getReservationId());
+    }
+
+    private void refund(Param param) {
+        paymentManagement.refund(param.getUserId(), param.getReservationId());
     }
 
     @Getter

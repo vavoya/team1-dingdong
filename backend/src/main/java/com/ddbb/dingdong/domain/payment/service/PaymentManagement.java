@@ -2,12 +2,8 @@ package com.ddbb.dingdong.domain.payment.service;
 
 import com.ddbb.dingdong.domain.payment.entity.Wallet;
 import com.ddbb.dingdong.domain.payment.repository.WalletRepository;
-import com.ddbb.dingdong.domain.reservation.service.event.AllocationFailedEvent;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -26,12 +22,8 @@ public class PaymentManagement {
         walletRepository.save(wallet);
     }
 
-    @Async
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @EventListener
-    public void refund(AllocationFailedEvent event) {
-        Long userId = event.getUserId();
-        Long reservationId = event.getReservationId();
+    @Transactional
+    public void refund(Long userId, Long reservationId) {
         Wallet wallet = walletRepository.findWalletByUserIdForUpdate(userId)
                 .orElseThrow(PaymentErrors.WALLET_NOT_FOUND::toException);
         wallet.refund(PRICE, reservationId);
