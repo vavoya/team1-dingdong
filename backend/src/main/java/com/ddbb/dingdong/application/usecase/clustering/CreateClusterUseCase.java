@@ -11,7 +11,6 @@ import com.ddbb.dingdong.domain.reservation.service.ReservationManagement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +30,7 @@ public class CreateClusterUseCase implements UseCase<CreateClusterUseCase.Param,
         List<Location> allLocations = getAllLocations(param);
         cluster(allLocations, param.direction, param.dingdongTime);
         handleFail(allLocations);
+
         return null;
     }
 
