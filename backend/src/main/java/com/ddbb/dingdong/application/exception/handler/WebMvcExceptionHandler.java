@@ -17,31 +17,38 @@ public class WebMvcExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ErrorResponse> handle(Exception e) {
         if (e instanceof APIException) {
             ErrorResponse response = new ErrorResponse(
+                    ((APIException) e).error.getCode(),
                     ((APIException) e).error.getMessage(),
                     LocalDateTime.now()
             );
+
             return ResponseEntity.status(((APIException) e).status).body(response);
         } else if (e instanceof InvalidParamException) {
             ErrorResponse response = new ErrorResponse(
+                    ((InvalidParamException) e).error.getCode(),
                     ((InvalidParamException) e).error.getMessage(),
                     LocalDateTime.now()
             );
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         } else if (e instanceof DomainException) {
             ErrorResponse response = new ErrorResponse(
+                    ((DomainException) e).error.getCode(),
                     ((DomainException) e).error.getMessage(),
                     LocalDateTime.now()
             );
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         } else {
             ErrorResponse response = new ErrorResponse(
+                    "UNKNOWN_ERROR",
                     e.getMessage(),
                     LocalDateTime.now()
             );
+
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-
-    public record ErrorResponse(String message, LocalDateTime timestamp) {}
+    public record ErrorResponse(String code, String message, LocalDateTime timestamp) {}
 }
