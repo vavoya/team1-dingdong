@@ -59,7 +59,7 @@ public class AuthManagement {
     public void login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(AuthErrors.USER_NOT_FOUND::toException);
         if(!passwordEncoder.matches(password, user.getPassword())) throw AuthErrors.NOT_MATCHED_PASSWORD.toException();
-        authenticationManager.setAuthentication(new AuthUser(user.getId()));
+        authenticationManager.setAuthentication(new AuthUser(user.getId(), user.getSchool().getId()));
     }
 
     public void logout(Long userId) {
