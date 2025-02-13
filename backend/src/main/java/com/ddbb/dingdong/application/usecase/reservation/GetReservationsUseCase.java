@@ -37,12 +37,13 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
             case FAIL_ALLOCATED -> 3;
             case ENDED -> 4;
             case CANCELED -> 5;
+            case HOME -> 6;
         };
         int sort = switch (param.sort) {
             case LATEST -> 0;
             case OLDEST -> 1;
         };
-        Page<UserReservationProjection> result = reservationRepository.findFlatReservationsByUserId(param.getUserId(), category, sort, param.pageable);
+        Page<UserReservationProjection> result = reservationRepository.queryReservationsByUserId(param.getUserId(), category, sort, param.pageable);
         List<Result.ReservationInfo> reservationInfos = result.stream()
                 .map(r -> {
                     Result.ReservationInfo.OperationInfo operationInfo = null;

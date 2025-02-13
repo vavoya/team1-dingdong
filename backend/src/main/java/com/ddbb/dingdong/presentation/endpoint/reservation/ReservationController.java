@@ -100,8 +100,7 @@ public class ReservationController {
         RequestTogetherReservationUseCase.Param param = new RequestTogetherReservationUseCase.Param(
                 userId,
                 togetherReservationRequestDTO.getBusStopId(),
-                togetherReservationRequestDTO.getBusScheduleId(),
-                togetherReservationRequestDTO.getDate()
+                togetherReservationRequestDTO.getBusScheduleId()
         );
         RequestTogetherReservationUseCase.Result result;
         try {

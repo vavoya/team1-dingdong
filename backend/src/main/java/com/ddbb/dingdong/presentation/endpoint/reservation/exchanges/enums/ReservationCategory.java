@@ -7,4 +7,5 @@ public enum ReservationCategory {
     FAIL_ALLOCATED,
     ENDED,
     CANCELED,
+    HOME,
 }
