@@ -29,14 +29,22 @@ public class ApplicationInitializer {
     public void init() {
         if (userRepository.findByEmail("test@test.com").isEmpty()) {
             String password = passwordEncoder.encode("abcd1234!@");
-            Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790,"에티버스");
             School school = new School(null, "seoul", "address", 1.0, 1.0);
             school = schoolRepository.save(school);
-            User user = new User(null, "test", "test@test.com", password, LocalDateTime.now(), school, null);
-            user.associateHome(home);
-            user = userRepository.save(user);
-            Wallet wallet = new Wallet(null, user.getId(), 50000, LocalDateTime.now(), new ArrayList<>());
-            walletRepository.save(wallet);
+
+            for (int i = 0 ; i < 30; i++) {
+                autoSignUp(i, password, school);
+            }
         }
+    }
+
+    private void autoSignUp(int testId, String password, School school) {
+        Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790,"에티버스");
+        String email = testId == 0 ? "test@test.com" : "test" +testId + "@test.com";
+        User user = new User(null, "test", email, password, LocalDateTime.now(), school, null);
+        user.associateHome(home);
+        user = userRepository.save(user);
+        Wallet wallet = new Wallet(null, user.getId(), 50000, LocalDateTime.now(), new ArrayList<>());
+        walletRepository.save(wallet);
     }
 }
