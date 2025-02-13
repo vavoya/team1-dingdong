@@ -61,7 +61,7 @@ public class ReservationManagement {
 
     public void issueTicket(Reservation reservation, Ticket ticket) {
         reservation.issueTicket(ticket);
-        Reservation reservation2 = reservationRepository.save(reservation);
+        reservationRepository.save(reservation);
     }
 
     public void fail(Long reservationId) {
