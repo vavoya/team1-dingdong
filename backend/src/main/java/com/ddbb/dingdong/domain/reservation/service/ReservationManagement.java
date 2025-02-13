@@ -5,7 +5,9 @@ import com.ddbb.dingdong.domain.reservation.entity.Ticket;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationStatus;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationType;
+import com.ddbb.dingdong.domain.reservation.repository.ReservationQueryRepository;
 import com.ddbb.dingdong.domain.reservation.repository.ReservationRepository;
+import com.ddbb.dingdong.domain.reservation.repository.projection.ReservationIdProjection;
 import com.ddbb.dingdong.domain.reservation.service.event.AllocationFailedEvent;
 import com.ddbb.dingdong.domain.reservation.service.event.AllocationSuccessEvent;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.List;
 public class ReservationManagement {
     private final ReservationRepository reservationRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final ReservationQueryRepository reservationQueryRepository;
 
     public Reservation reserve(Reservation reservation) {
         if(reservation.getType().equals(ReservationType.GENERAL)) {
@@ -135,5 +138,12 @@ public class ReservationManagement {
     private Reservation reserveTogether(Reservation reservation) {
         validateDateOfTogetherReservation(reservation);
         return reservationRepository.save(reservation);
+    }
+
+    public void checkHasDuplicatedReservation(Long userId, LocalDateTime hopeTime) {
+        List<ReservationIdProjection> reservations = reservationQueryRepository.findReservationIdByUserIdAndTime(userId, hopeTime);
+        if (!reservations.isEmpty()) {
+            throw ReservationErrors.ALREADY_HAS_SAME_RESERVATION.toException();
+        }
     }
 }
