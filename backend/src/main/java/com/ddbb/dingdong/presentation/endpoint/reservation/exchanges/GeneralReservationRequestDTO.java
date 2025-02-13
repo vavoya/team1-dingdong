@@ -15,8 +15,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class GeneralReservationRequestDTO {
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private ReservationType type;
     private String direction;
     private List<ReservationInfo> dates;
 
