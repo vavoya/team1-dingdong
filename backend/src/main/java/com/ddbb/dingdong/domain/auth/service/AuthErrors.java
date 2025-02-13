@@ -4,6 +4,7 @@ import com.ddbb.dingdong.domain.common.exception.ErrorInfo;
 
 public enum AuthErrors implements ErrorInfo {
     INVALID_NAME("이름이 올바르지 않습니다."),
+    SESSION_NOT_EXISTS("이미 만료되었거나 존재하지 않는 세션입니다."),
     USER_NOT_FOUND("해당 유저를 찾을 수 없습니다"),
     EMAIL_REQUIRED("이메일이 설정되지 않았습니다."),
     EMAIL_ALREADY_EXISTS("이미 존재하는 이메일입니다."),
