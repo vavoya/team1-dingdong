@@ -9,8 +9,8 @@ public interface NotificationProjection {
     NotificationType getType();
     Boolean getIsRead();
     Long getReservationId();
-    String startStationName();
-    String endStationName();
+    String getStartStationName();
+    String getEndStationName();
     LocalDateTime getTimeStamp();
     LocalDate getStartDate();
     LocalDateTime getExpectedStartTime();

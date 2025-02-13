@@ -44,8 +44,8 @@ public class GetNotificationsUseCase implements UseCase<GetNotificationsUseCase.
                         projection.getIsRead(),
                         new Result.ReservationInfo(
                                 projection.getReservationId(),
-                                projection.startStationName(),
-                                projection.endStationName(),
+                                projection.getStartStationName(),
+                                projection.getEndStationName(),
                                 projection.getStartDate(),
                                 projection.getExpectedStartTime(),
                                 projection.getExpectedEndTime()
