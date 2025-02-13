@@ -59,7 +59,7 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         } catch (DomainException e) {
-            throw new APIException(e, HttpStatus.UNAUTHORIZED);
+            throw new APIException(e, HttpStatus.FORBIDDEN);
         }
     }
 
@@ -67,19 +67,19 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
         Home home = userManagement.load(reservationInfo.userId).getHome();
 
         for(Param.ReservationInfo.ReservationDate date : reservationInfo.reservationDates) {
-            Reservation reservation = new Reservation();
-            reservation.setUserId(reservationInfo.getUserId());
-            reservation.setType(ReservationType.GENERAL);
-            reservation.setDirection(Direction.valueOf(reservationInfo.getDirection()));
-            reservation.setStatus(ReservationStatus.PENDING);
-            reservation.setStartDate(date.date.toLocalDate());
-            if(reservation.getDirection().equals(Direction.TO_SCHOOL)) {
-                reservation.setArrivalTime(date.date);
-            }else {
-                reservation.setDepartureTime(date.date);
+            Reservation.ReservationBuilder reservationBuilder = Reservation.builder()
+                    .userId(reservationInfo.getUserId())
+                    .type(ReservationType.GENERAL)
+                    .direction(Direction.valueOf(reservationInfo.getDirection()))
+                    .status(ReservationStatus.PENDING)
+                    .startDate(date.date.toLocalDate());
+            if(Direction.valueOf(reservationInfo.getDirection()).equals(Direction.TO_SCHOOL)) {
+                reservationBuilder.arrivalTime(date.date);
+            } else {
+                reservationBuilder.departureTime(date.date);
             }
             Location location = new Location();
-            Long reservationId = reservationManagement.reserve(reservation).getId();
+            Long reservationId = reservationManagement.reserveGeneral(reservationBuilder.build()).getId();
             location.setReservationId(reservationId);
             location.setLatitude(home.getStationLatitude());
             location.setLongitude(home.getStationLongitude());
@@ -102,6 +102,7 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
         @AllArgsConstructor
         public static class ReservationInfo {
             private Long userId;
+            @JsonFormat(shape = JsonFormat.Shape.STRING)
             private String direction;
             private List<ReservationDate> reservationDates;
 

@@ -3,6 +3,7 @@ package com.ddbb.dingdong.domain.reservation.service;
 import com.ddbb.dingdong.domain.reservation.entity.Reservation;
 import com.ddbb.dingdong.domain.reservation.entity.Ticket;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
+import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationStatus;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationType;
 import com.ddbb.dingdong.domain.reservation.repository.ReservationRepository;
 import com.ddbb.dingdong.domain.reservation.service.event.AllocationFailedEvent;
@@ -21,10 +22,13 @@ public class ReservationManagement {
     private final ReservationRepository reservationRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    public Reservation reserve(Reservation reservation) {
-        if(ReservationType.GENERAL.equals(reservation.getType())){
-            validateDateOfGeneralReservation(reservation);
-        }
+    public Reservation reserveGeneral(Reservation reservation) {
+        validateDateOfGeneralReservation(reservation);
+        return reservationRepository.save(reservation);
+    }
+
+    public Reservation reserveTogether(Reservation reservation) {
+        validateDateOfTogetherReservation(reservation);
         return reservationRepository.save(reservation);
     }
 
@@ -55,6 +59,10 @@ public class ReservationManagement {
         eventPublisher.publishEvent(new AllocationSuccessEvent(reservation.getId(), reservation.getUserId()));
     }
 
+    public void issueTicket(Reservation reservation, Ticket ticket) {
+        reservation.issueTicket(ticket);
+        reservationRepository.save(reservation);
+    }
 
     public void fail(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
@@ -94,4 +102,37 @@ public class ReservationManagement {
             }
         }
     }
+
+    private void validateDateOfTogetherReservation(Reservation reservation) {
+        if (!ReservationType.TOGETHER.equals(reservation.getType())) {
+            throw ReservationErrors.INVALID_RESERVATION_TYPE.toException();
+        } else if (!ReservationStatus.ALLOCATED.equals(reservation.getStatus())) {
+            throw ReservationErrors.INVALID_RESERVATION_STATUS.toException();
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime reservationDate = reservation.getDirection().equals(Direction.TO_SCHOOL) ? reservation.getArrivalTime() : reservation.getDepartureTime();
+        LocalDateTime startDate = reservationDate.minusHours(48);
+        LocalDateTime deadLine = reservationDate;
+
+        if(now.isBefore(startDate)){
+            throw ReservationErrors.BEFORE_RESERVATION_DATE.toException();
+        }
+        if(now.isAfter(deadLine)){
+            throw ReservationErrors.EXCEEDED_RESERVATION_DATE.toException();
+        }
+        if(reservationDate.getMinute() != 0 && reservationDate.getMinute() != 30) {
+            throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
+        }
+        if(reservation.getDirection().equals(Direction.TO_SCHOOL)) {
+            if (reservationDate.toLocalTime().isBefore(LocalTime.of(8,0)) || reservationDate.toLocalTime().isAfter(LocalTime.of(18,0))) {
+                throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
+            }
+        } else {
+            if (reservationDate.toLocalTime().isBefore(LocalTime.of(11,0)) || reservationDate.toLocalTime().isAfter(LocalTime.of(21,0))) {
+                throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
+            }
+        }
+    }
+
 }
