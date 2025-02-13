@@ -10,11 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import static com.ddbb.dingdong.application.usecase.user.GetUserInfoUseCase.Param;
 import static com.ddbb.dingdong.application.usecase.user.GetUserInfoUseCase.Result;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
 public class UserController {
