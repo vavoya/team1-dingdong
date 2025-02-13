@@ -6,7 +6,7 @@ export default function SignupLayout() {
   const navigate = useNavigate();
   return (
     <>
-      <ExitHeader text="" onClick={() => navigate("/login-home")} />
+      <ExitHeader text="" onClick={() => navigate("/")} />
       <PageTitle>
         <TitleName>회원가입</TitleName>
       </PageTitle>
