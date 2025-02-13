@@ -1,5 +1,6 @@
 package com.ddbb.dingdong.infrastructure.auth.encrypt;
 
+import com.ddbb.dingdong.application.usecase.reservation.RequestTogetherReservationUseCase;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.AESEncoder;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.SHA512Encoder;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,8 +19,11 @@ public class TokenManager {
     private final SHA512Encoder sha512Encoder;
     private final AESEncoder aesEncoder;
 
-    public String generateToken(String data) {
+    public String generateToken(Object target) {
+        String data;
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            data = objectMapper.writeValueAsString(target);
             String expiredAt = LocalDateTime.now().plusMinutes(5).format(FORMATTER);
             String hash = sha512Encoder.hash(data);
             String tokenData = hash + DELIMITER + expiredAt;
@@ -31,7 +35,6 @@ public class TokenManager {
 
     public boolean validateToken(String token, Object target)  {
         String data;
-
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             data = objectMapper.writeValueAsString(target);
