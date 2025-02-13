@@ -56,7 +56,8 @@ public class CreateRouteUseCase implements UseCase<CreateRouteUseCase.Param, Voi
                 school.getId(),
                 direction,
                 dingdongTime,
-                anyReservation.getStartDate()
+                anyReservation.getStartDate(),
+                reservations.size()
         );
 
         Map<Long, Long> allocatedReservation = new HashMap<>();

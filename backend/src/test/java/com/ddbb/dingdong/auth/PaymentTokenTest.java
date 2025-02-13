@@ -1,6 +1,6 @@
 package com.ddbb.dingdong.auth;
 
-import com.ddbb.dingdong.application.usecase.reservation.RequestReservationUseCase;
+import com.ddbb.dingdong.application.usecase.reservation.RequestGeneralReservationUseCase;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.TokenManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,17 +21,17 @@ public class PaymentTokenTest {
     @Test
     @DisplayName("결제 정보가 유효한지 확인")
     public void testPaymentTokenIsValid() throws JsonProcessingException {
-        RequestReservationUseCase.Param param = new RequestReservationUseCase.Param(
+        RequestGeneralReservationUseCase.Param param = new RequestGeneralReservationUseCase.Param(
                 1L,
                 "TO_SCHOOL",
-                List.of(new RequestReservationUseCase.Param.ReservationInfo(
+                List.of(new RequestGeneralReservationUseCase.Param.ReservationInfo(
                         LocalDateTime.now()
                 ))
         );
-        RequestReservationUseCase.Param param2 = new RequestReservationUseCase.Param(
+        RequestGeneralReservationUseCase.Param param2 = new RequestGeneralReservationUseCase.Param(
                 1L,
                 "TO_SCHOOL",
-                List.of(new RequestReservationUseCase.Param.ReservationInfo(
+                List.of(new RequestGeneralReservationUseCase.Param.ReservationInfo(
                         LocalDateTime.now().plusHours(1)
                 ))
         );

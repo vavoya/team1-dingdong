@@ -8,7 +8,7 @@ public enum BusErrors implements ErrorInfo {
     NO_SOCKET_CONNECTION("연결된 소켓이 없습니다."),
     NO_SEATS("남은 좌석이 없습니다."),
     ;
-    private String desc;
+    private final String desc;
 
     BusErrors(String desc) {
         this.desc = desc;
@@ -16,7 +16,7 @@ public enum BusErrors implements ErrorInfo {
 
     @Override
     public String getDesc() {
-        return "";
+        return desc;
     }
 
     @Override

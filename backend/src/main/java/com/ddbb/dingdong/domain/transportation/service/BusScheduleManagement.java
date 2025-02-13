@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class BusScheduleManagement {
     private final BusScheduleRepository busScheduleRepository;
 
-    public BusSchedule allocateBusSchedule(Path path, Long schoolId, Direction direction, LocalDateTime dingdongTime, LocalDate startDate) {
+    public BusSchedule allocateBusSchedule(Path path, Long schoolId, Direction direction, LocalDateTime dingdongTime, LocalDate startDate, int reservationCount) {
         BusSchedule busSchedule = new BusSchedule();
         busSchedule.setPath(path);
         busSchedule.setSchoolId(schoolId);
@@ -28,9 +28,15 @@ public class BusScheduleManagement {
         } else {
             busSchedule.setDepartureTime(dingdongTime);
         }
-        busSchedule.setCount(15);
+        int remainingSeats = 15 - reservationCount;
+        if(remainingSeats < 0) {
+            throw BusErrors.NO_SEATS.toException();
+        }
+
+        busSchedule.setRemainingSeats(remainingSeats);
         busSchedule.setStartDate(startDate);
         busSchedule.setStatus(OperationStatus.READY);
+        busSchedule.setDirection(direction);
         path.setBusSchedule(busSchedule);
         return busScheduleRepository.save(busSchedule);
     }

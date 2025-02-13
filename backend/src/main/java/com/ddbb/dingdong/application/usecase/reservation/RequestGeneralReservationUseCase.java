@@ -28,14 +28,13 @@ public class RequestGeneralReservationUseCase implements UseCase<RequestGeneralR
     @Override
     public Result execute(Param param) {
         param.validate();
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String data = objectMapper.writeValueAsString(param);
-            String encryptedReservationInfo = tokenManager.generateToken(data);
-            return new Result(encryptedReservationInfo);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        String token = generateToken(param);
+
+        return new Result(token);
+    }
+
+    private String generateToken(Param param) {
+        return tokenManager.generateToken(param);
     }
 
     @Getter
@@ -91,8 +90,6 @@ public class RequestGeneralReservationUseCase implements UseCase<RequestGeneralR
                     }
             );
         }
-
-
     }
 
     @Getter
@@ -100,5 +97,4 @@ public class RequestGeneralReservationUseCase implements UseCase<RequestGeneralR
     public static class Result {
         private String token;
     }
-
 }
