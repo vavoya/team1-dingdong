@@ -42,7 +42,6 @@ public class CreateRouteUseCase implements UseCase<CreateRouteUseCase.Param, Voi
         return null;
     }
 
-    //tmap api로 버스 스케쥴 만들기.
     private void generateBusSchedule(String clusterLabel) {
         List<Reservation> reservations = reservationManagement.findByClusterLabel(clusterLabel);
         Reservation anyReservation = reservations.get(0);
