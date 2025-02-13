@@ -30,7 +30,7 @@ public class BusRouteCreationService {
         request = generateRequests(locations, school, direction);
         response = apiClient.getRouteOptimization(request);
 
-        return routeOptimizationDTOConverter.toPath(response, dingdongTime, direction);
+        return routeOptimizationDTOConverter.toPath(locations, response, dingdongTime, direction);
     }
 
     private RequestRouteOptimizationDTO generateRequests(List<Location> locations, School school, Direction direction) {

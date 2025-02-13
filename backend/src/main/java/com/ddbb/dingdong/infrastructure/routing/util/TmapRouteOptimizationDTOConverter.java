@@ -17,9 +17,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.ddbb.dingdong.infrastructure.routing.model.dto.ResponseRouteOptimizationDTO.Feature;
 import static com.ddbb.dingdong.infrastructure.routing.model.dto.ResponseRouteOptimizationDTO.Feature.Geometry.GeometryType.LINE_STRING;
@@ -85,7 +83,7 @@ public class TmapRouteOptimizationDTOConverter {
 // 첫번째 라인스트링의 1번째 coordinate의 value 1 , 0 -> 버스 출발 bus stop
 // 두번째 ~ 마지막 lineString은 원래 했던대로 가면댐
     // 마지막 lineString의 마지막 coordinate
-    public Path toPath(ResponseRouteOptimizationDTO response , LocalDateTime dingdongTime, Direction direction) {
+    public Path toPath(List<Location> locations, ResponseRouteOptimizationDTO response , LocalDateTime dingdongTime, Direction direction) {
         Path path = new Path();
         LocalDateTime now = LocalDateTime.now();
 
@@ -186,9 +184,15 @@ public class TmapRouteOptimizationDTOConverter {
             lastBusStop.setPath(path);
             busStops.add(lastBusStop);
         }
+        Map<Long, String> locationRoadNames = new HashMap<>();
+        for(Location location : locations) {
+            locationRoadNames.put(location.getId(), location.getStationName());
+        }
+
         for(int i = 1 ; i < busStops.size(); i++) {
             BusStop busStop = busStops.get(i);
             busStop.setLocationId(locationIds.get(i - 1));
+            busStop.setRoadNameAddress(locationRoadNames.get(busStop.getLocationId()));
         }
         if(direction.equals(Direction.TO_SCHOOL)) {
             BusStop lastBusStop = new BusStop();
