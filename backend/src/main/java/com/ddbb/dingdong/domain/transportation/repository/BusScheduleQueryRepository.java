@@ -22,7 +22,7 @@ public interface BusScheduleQueryRepository extends JpaRepository<BusSchedule, L
     List<ScheduleTimeProjection> findAvailableGoHomeBusTime(@Param("schoolId") Long schoolId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT b.count FROM BusSchedule b WHERE b.id = :id")
+    @Query("SELECT b.remainingSeats FROM BusSchedule b WHERE b.id = :id")
     Optional<Integer> findBusScheduleByIdForUpdate(@Param("id") Long id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)

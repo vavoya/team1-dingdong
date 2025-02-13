@@ -23,3 +23,9 @@ client:
   ip: ${CLIENT_ADDRESS}
   port: ${CLIENT_PORT}
 
+api:
+  tmap:
+    apikeys:
+      - ${API_KEY_1}
+      - ${API_KEY_2}
+      - ${API_KEY_3}

@@ -2,10 +2,8 @@ package com.ddbb.dingdong.application.usecase.reservation;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
-import com.ddbb.dingdong.application.exception.APIException;
 import com.ddbb.dingdong.domain.clustering.entity.Location;
 import com.ddbb.dingdong.domain.clustering.service.ClusteringService;
-import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.domain.payment.service.PaymentManagement;
 import com.ddbb.dingdong.domain.reservation.entity.Reservation;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
@@ -16,8 +14,6 @@ import com.ddbb.dingdong.domain.user.entity.Home;
 import com.ddbb.dingdong.domain.user.service.UserManagement;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.TokenManager;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -25,7 +21,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,26 +39,19 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
     @Transactional
     @Override
     public Void execute(Param param) {
-        validateToken(param.token, param.reservationInfo);
-        makeGeneralReservations(param.reservationInfo);
-        pay(param.getReservationInfo().userId, param.getReservationInfo().getReservationDates().size());
+        validateToken(param);
+        reserve(param);
+        pay(param);
+
         return null;
     }
 
-    private void validateToken(String token, Param.ReservationInfo reservation) {
-        String data;
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            data = objectMapper.writeValueAsString(reservation);
-            tokenManager.validateToken(token, data);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        } catch (DomainException e) {
-            throw new APIException(e, HttpStatus.FORBIDDEN);
-        }
+    private void validateToken(Param param) {
+        tokenManager.validateToken(param.token, param.reservationInfo);
     }
 
-    private void makeGeneralReservations(Param.ReservationInfo reservationInfo) {
+    private void reserve(Param param) {
+        Param.ReservationInfo reservationInfo = param.reservationInfo;
         Home home = userManagement.load(reservationInfo.userId).getHome();
 
         for(Param.ReservationInfo.ReservationDate date : reservationInfo.reservationDates) {
@@ -79,7 +67,7 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
                 reservationBuilder.departureTime(date.date);
             }
             Location location = new Location();
-            Long reservationId = reservationManagement.reserveGeneral(reservationBuilder.build()).getId();
+            Long reservationId = reservationManagement.reserve(reservationBuilder.build()).getId();
             location.setReservationId(reservationId);
             location.setLatitude(home.getStationLatitude());
             location.setLongitude(home.getStationLongitude());
@@ -88,7 +76,9 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
         }
     }
 
-    private void pay(Long userId , int quantity){
+    private void pay(Param param) {
+        Long userId = param.getReservationInfo().userId;
+        int quantity = param.getReservationInfo().getReservationDates().size();
         paymentManagement.pay(userId, quantity);
     }
 

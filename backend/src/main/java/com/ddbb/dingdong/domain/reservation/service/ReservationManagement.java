@@ -11,7 +11,6 @@ import com.ddbb.dingdong.domain.reservation.service.event.AllocationSuccessEvent
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -22,14 +21,12 @@ public class ReservationManagement {
     private final ReservationRepository reservationRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    public Reservation reserveGeneral(Reservation reservation) {
-        validateDateOfGeneralReservation(reservation);
-        return reservationRepository.save(reservation);
-    }
-
-    public Reservation reserveTogether(Reservation reservation) {
-        validateDateOfTogetherReservation(reservation);
-        return reservationRepository.save(reservation);
+    public Reservation reserve(Reservation reservation) {
+        if(reservation.getType().equals(ReservationType.GENERAL)) {
+            return reserveGeneral(reservation);
+        } else {
+            return reserveTogether(reservation);
+        }
     }
 
     public void cancel(Long userId, Long reservationId) {
@@ -57,11 +54,6 @@ public class ReservationManagement {
         reservationRepository.save(reservation);
 
         eventPublisher.publishEvent(new AllocationSuccessEvent(reservation.getId(), reservation.getUserId()));
-    }
-
-    public void issueTicket(Reservation reservation, Ticket ticket) {
-        reservation.issueTicket(ticket);
-        reservationRepository.save(reservation);
     }
 
     public void fail(Long reservationId) {
@@ -135,4 +127,13 @@ public class ReservationManagement {
         }
     }
 
+    private Reservation reserveGeneral(Reservation reservation) {
+        validateDateOfGeneralReservation(reservation);
+        return reservationRepository.save(reservation);
+    }
+
+    private Reservation reserveTogether(Reservation reservation) {
+        validateDateOfTogetherReservation(reservation);
+        return reservationRepository.save(reservation);
+    }
 }
