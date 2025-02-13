@@ -17,7 +17,6 @@ public class LogoutUseCase implements UseCase<LogoutUseCase.Param, Void> {
 
     @Override
     public Void execute(Param param) {
-        param.validate();
         authManagement.logout(param.userId);
         return null;
     }
@@ -26,11 +25,5 @@ public class LogoutUseCase implements UseCase<LogoutUseCase.Param, Void> {
     @AllArgsConstructor
     public static class Param implements Params {
         private Long userId;
-
-        @Override
-        public boolean validate() {
-            if (userId == null || userId <= 0) throw AuthParamErrors.INVALID_USER_ID.toException();
-            return true;
-        }
     }
 }

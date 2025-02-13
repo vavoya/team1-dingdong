@@ -3,7 +3,6 @@ package com.ddbb.dingdong.application.usecase.auth.errors;
 import com.ddbb.dingdong.application.exception.InvalidParamErrorInfo;
 
 public enum AuthParamErrors implements InvalidParamErrorInfo {
-    INVALID_USER_ID("유저 아이디가 올바르지 않습니다.", "userId"),
     INVALID_NAME("이름이 올바르지 않습니다.", "name"),
     USER_NOT_FOUND("해당 유저를 찾을 수 없습니다.", "email"),
     EMAIL_REQUIRED("이메일이 설정되지 않았습니다.", "email"),
