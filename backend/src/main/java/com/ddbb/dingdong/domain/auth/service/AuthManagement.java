@@ -62,6 +62,15 @@ public class AuthManagement {
         authenticationManager.setAuthentication(new AuthUser(user.getId()));
     }
 
+    public void logout(Long userId) {
+        userRepository.findById(userId).orElseThrow(AuthErrors.USER_NOT_FOUND::toException);
+        try {
+            authenticationManager.removeAuthentication();
+        } catch (IllegalStateException e) {
+            throw AuthErrors.SESSION_NOT_EXISTS.toException();
+        }
+    }
+
     public void checkEmail(String email) {
         if (userRepository.findByEmail(email).isPresent()) {
             throw AuthErrors.EMAIL_ALREADY_EXISTS.toException();

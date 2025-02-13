@@ -3,9 +3,12 @@ package com.ddbb.dingdong.presentation.endpoint.auth;
 import com.ddbb.dingdong.application.exception.APIException;
 import com.ddbb.dingdong.application.usecase.auth.CheckEmailUseCase;
 import com.ddbb.dingdong.application.usecase.auth.LoginUseCase;
+import com.ddbb.dingdong.application.usecase.auth.LogoutUseCase;
 import com.ddbb.dingdong.application.usecase.auth.SignUpUseCase;
 import com.ddbb.dingdong.domain.auth.service.AuthErrors;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
+import com.ddbb.dingdong.infrastructure.auth.AuthUser;
+import com.ddbb.dingdong.infrastructure.auth.annotation.LoginUser;
 import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.CheckEmailDto;
 import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.SignUpRequestDto;
 import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.LoginRequestDTO;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final SignUpUseCase signUpUseCase;
     private final LoginUseCase loginUseCase;
+    private final LogoutUseCase logoutUseCase;
     private final CheckEmailUseCase checkEmailUseCase;
 
     @PostMapping("/login")
@@ -36,6 +40,21 @@ public class AuthController {
             throw new APIException(e, HttpStatus.UNAUTHORIZED);
         }
 
+        return ResponseEntity.ok().build();
+    }
+
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(
+            @LoginUser AuthUser user
+    ) {
+        Long userId = user.id();
+        LogoutUseCase.Param param = new LogoutUseCase.Param(userId);
+        try {
+            logoutUseCase.execute(param);
+        } catch (DomainException e) {
+            throw new APIException(e, HttpStatus.UNAUTHORIZED);
+        }
         return ResponseEntity.ok().build();
     }
 
