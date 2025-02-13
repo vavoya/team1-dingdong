@@ -1,6 +1,7 @@
 package com.ddbb.dingdong.domain.transportation.repository;
 
 import com.ddbb.dingdong.domain.transportation.entity.BusSchedule;
+import com.ddbb.dingdong.domain.transportation.repository.projection.BusReservedSeatProjection;
 import com.ddbb.dingdong.domain.transportation.repository.projection.ScheduleTimeProjection;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,4 +28,13 @@ public interface BusScheduleQueryRepository extends JpaRepository<BusSchedule, L
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT b FROM BusSchedule b WHERE b.id = :id")
     Optional<BusSchedule> findByIdForUpdate(@Param("id") Long id);
+
+    @Query("SELECT COUNT(t.id) as reservedSeatCount , bs.id as busScheduleId " +
+            "FROM Ticket t " +
+            "JOIN BusSchedule bs ON t.busScheduleId = bs.id " +
+            "JOIN Reservation r ON t.id = r.ticket.id " +
+            "WHERE bs.id in :busScheduleIds " +
+            "AND r.status != 'CANCELED' " +
+            "GROUP BY bs.id")
+    List<BusReservedSeatProjection> findReservedSeatCount(@Param("busScheduleIds") List<Long> busScheduleIds);
 }
