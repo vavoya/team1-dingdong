@@ -22,5 +22,4 @@ public interface UserReservationProjection {
     OperationStatus getBusStatus();
     String getBusName();
     LocalDateTime getBusStopArrivalTime();
-    Integer getTotalMinutes();
 }
