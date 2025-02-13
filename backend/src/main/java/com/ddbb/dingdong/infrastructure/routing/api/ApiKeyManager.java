@@ -17,7 +17,6 @@ public abstract class ApiKeyManager {
     }
 
     public String getCurrentApiKey() {
-        System.out.println("current api key: " + apiKeys.get(index.get() % apiKeys.size()));
         return apiKeys.get(index.get() % apiKeys.size());
     }
 
