@@ -10,12 +10,14 @@ import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.SignUpRequestDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class SignUpUseCase implements UseCase<SignUpUseCase.Param, Void> {
     private final AuthManagement authManagement;
 
+    @Transactional
     @Override
     public Void execute(Param param) throws DomainException {
         param.validate();

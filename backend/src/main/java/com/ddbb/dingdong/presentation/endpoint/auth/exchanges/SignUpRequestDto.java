@@ -17,6 +17,7 @@ public class SignUpRequestDto {
         private Double stationLatitude;
         private Double stationLongitude;
         private String stationName;
+        private String stationRoadAddressName;
     }
 
     @Data

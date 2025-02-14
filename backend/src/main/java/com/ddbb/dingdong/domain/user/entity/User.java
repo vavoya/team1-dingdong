@@ -41,9 +41,10 @@ public class User {
         this.home = home;
     }
 
-    public void updateHome(Double stationLatitude, Double stationLongitude, String stationName) {
-        this.home.setStationLatitude(stationLatitude);
-        this.home.setStationLongitude(stationLongitude);
+    public void updateStation(String stationName, String roadAddressName, Double latitude, Double longitude) {
+        this.home.setStationLatitude(latitude);
+        this.home.setStationLongitude(longitude);
         this.home.setStationName(stationName);
+        this.home.setStationRoadAddressName(roadAddressName);
     }
 }

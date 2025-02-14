@@ -34,8 +34,7 @@ public class ReservationController {
             @RequestParam int page,
             @RequestParam(defaultValue = "-1") int pageSize
     ) {
-        Pageable pageable = pageSize == -1 ? Pageable.unpaged() : PageRequest.of(page, pageSize);
-
+        Pageable pageable = pageSize == -1 ? PageRequest.of(page, 1000) : PageRequest.of(page, pageSize);
         Long userId = user.id();
         GetReservationsUseCase.Param param= new GetReservationsUseCase.Param(userId, pageable, sort, category);
         GetReservationsUseCase.Result result;

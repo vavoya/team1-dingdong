@@ -29,7 +29,7 @@ public class ApplicationInitializer {
     public void init() {
         if (userRepository.findByEmail("test@test.com").isEmpty()) {
             String password = passwordEncoder.encode("abcd1234!@");
-            School school = new School(null, "서울대학교", "서울대학교 1번길", 126.9527, 37.4602);
+            School school = new School(null, "서울대학교", "서울대학교", 37.4602, 126.9527);
             school = schoolRepository.save(school);
 
             for (int i = 0 ; i < 30; i++) {
@@ -39,7 +39,7 @@ public class ApplicationInitializer {
     }
 
     private void autoSignUp(int testId, String password, School school) {
-        Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790,"에티버스");
+        Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790, "에티버스" ,"학동로 180");
         String email = testId == 0 ? "test@test.com" : "test" +testId + "@test.com";
         User user = new User(null, "test", email, password, LocalDateTime.now(), school, null);
         user.associateHome(home);

@@ -28,7 +28,6 @@ public class AuthManagement {
 
     private static final int BALANCE = 50000;
 
-    @Transactional
     public void signUp(String name, String email, String password, SignUpRequestDto.Home home, SignUpRequestDto.School school) {
         User user = User.builder()
                 .name(name)
@@ -40,7 +39,8 @@ public class AuthManagement {
                         home.getHouseLongitude(),
                         home.getStationLatitude(),
                         home.getStationLongitude(),
-                        home.getStationName()
+                        home.getStationName(),
+                        home.getStationRoadAddressName()
                 ))
                 .createdAt(LocalDateTime.now())
                 .school(new School(

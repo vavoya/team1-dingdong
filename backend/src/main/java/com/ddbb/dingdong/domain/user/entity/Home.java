@@ -27,4 +27,6 @@ public class Home {
     private Double stationLongitude;
 
     private String stationName;
+
+    private String stationRoadAddressName;
 }
