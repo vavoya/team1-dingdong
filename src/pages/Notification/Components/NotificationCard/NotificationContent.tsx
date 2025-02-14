@@ -1,4 +1,3 @@
-import { NotificationProps } from "../../model/notificationCardType";
 import { AlarmText, Description, LinkBox } from "./styles";
 
 import { colors } from "@/styles/colors";
@@ -6,15 +5,31 @@ import { colors } from "@/styles/colors";
 import ChevronRightIcon from "@/components/designSystem/Icons/ChevronRightIcon";
 import TicketCardContent from "./TicketCardContent";
 import { useNavigate } from "react-router-dom";
+import {
+  NotificationType,
+  ReservationInfo,
+} from "../../model/notificationCardType";
 
-interface NotificationContentProps {
-  notificationData: NotificationProps;
+export interface NotificationContentProps {
+  reservationInfo: ReservationInfo;
+  type: NotificationType;
+  isRead: boolean;
 }
 
 export default function NotificationContent({
-  notificationData,
+  reservationInfo,
+  type,
+  isRead,
 }: NotificationContentProps) {
-  const { type, isRead } = notificationData;
+  const {
+    reservationId,
+    refundAmount,
+    startDate,
+    startStationName,
+    endStationName,
+    expectedEndTime,
+    expectedStartTime,
+  } = reservationInfo;
   const navigate = useNavigate();
 
   const renderFailedContent = (refundAmount: number) => (
@@ -38,36 +53,28 @@ export default function NotificationContent({
   );
 
   switch (type) {
-    case "departure":
-    case "confirmed":
+    case "BUS_START":
+    case "ALLOCATION_SUCCESS":
       return (
         <TicketCardContent
+          reservationInfo={reservationInfo}
+          type={type}
           isRead={isRead}
-          departureStation={notificationData.departurePoint}
-          destination={notificationData.destination}
-          departureTime={notificationData.departureTime}
-          arrivalTime={notificationData.arrivalTime}
-          hoursUntilDeparture={notificationData.afterHour}
         />
       );
-    case "failed":
+    case "ALLOCATION_FAILED":
       return (
         <>
-          {renderFailedContent(notificationData.refundAmount)}
+          {renderFailedContent(refundAmount!)}
           <TicketCardContent
             isRead={isRead}
-            cardType="failed"
-            departureStation={notificationData.departurePoint}
-            destination={notificationData.destination}
-            departureTime={notificationData.departureTime}
-            arrivalTime={notificationData.arrivalTime}
-            bookingDate={notificationData.bookingDate}
-            refundAmount={notificationData.refundAmount}
+            type={type}
+            reservationInfo={reservationInfo}
           />
         </>
       );
-    case "welcome":
-      return renderWelcomeContent();
+    // case "welcome":
+    //   return renderWelcomeContent();
     default:
       return null;
   }

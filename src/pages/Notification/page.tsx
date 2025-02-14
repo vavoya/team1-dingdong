@@ -2,58 +2,77 @@ import PopHeader from "@/components/Headers/PopHeader";
 import { NotificationCardWrapper, NotificationLimit } from "./styles";
 // import { useLoaderData } from "react-router-dom";
 import NotificationCard from "./Components/NotificationCard";
-import { NotificationProps } from "./model/notificationCardType";
+import { NotificationCardType } from "./model/notificationCardType";
+import { useLoaderData, useNavigate } from "react-router-dom";
 
 export default function Notification() {
-  //   const data = useLoaderData();
+  const {
+    notifications: { content: notificationArray },
+  } = useLoaderData()[0];
+  console.log(notificationArray, "요청 받은 알림 내역");
 
-  const notificationData: NotificationProps[] = [
+  const navigate = useNavigate();
+  const notificationData: NotificationCardType[] = [
     {
-      type: "departure" as const,
-      time: "2025-02-13T07:57:00Z",
-      title: "탑승 안내",
-      afterHour: 2,
-      departurePoint: "학동역",
-      destination: "서울대학교",
-      departureTime: "12:00",
-      arrivalTime: "13:00",
-      isRead: false,
+      type: "BUS_START",
+      timeStamp: "2025-02-13T17:20:57.008352",
+      reservationInfo: {
+        reservationId: 2,
+        startStationName: "학동역 2번길",
+        endStationName: "서울대학교",
+        startDate: "2025-02-20",
+        expectedStartTime: "2025-02-20T10:40:18",
+        expectedEndTime: "2025-02-20T12:00:00",
+        refundAmount: null,
+      },
+      read: false,
     },
     {
-      type: "confirmed" as const,
-      time: "2025-02-14T07:57:00Z",
-      title: "배차 확정 안내",
-      afterHour: 48,
-      departurePoint: "학동역",
-      destination: "서울대학교",
-      departureTime: "12:00",
-      arrivalTime: "13:00",
-      isRead: true,
+      type: "ALLOCATION_SUCCESS",
+      timeStamp: "2025-02-13T17:20:57.008352",
+      reservationInfo: {
+        reservationId: 2,
+        startStationName: "학동역 2번길",
+        endStationName: "서울대학교",
+        startDate: "2025-02-20",
+        expectedStartTime: "2025-02-20T10:40:18",
+        expectedEndTime: "2025-02-20T12:00:00",
+        refundAmount: null,
+      },
+      read: true,
     },
     {
-      type: "failed" as const,
-      time: "2025-02-15T07:57:00Z",
-      title: "배차 실패 입금",
-      bookingDate: 11,
-      departurePoint: "우리집",
-      destination: "서울대학교",
-      departureTime: "12:00",
-      arrivalTime: "13:00",
-      refundAmount: 20000,
-      isRead: true,
-    },
-    {
-      type: "welcome" as const,
-      title: "환영해요!",
-      time: "2025-02-15T07:57:00Z",
+      type: "ALLOCATION_FAILED",
+      timeStamp: "2025-02-13T17:20:57.008352",
+      reservationInfo: {
+        reservationId: 2,
+        startStationName: "우리집",
+        endStationName: "서울대학교",
+        startDate: "2025-02-20",
+        expectedStartTime: null,
+        expectedEndTime: "2025-02-20T12:00:00",
+        refundAmount: 20000,
+      },
+      read: true,
     },
   ];
+
+  const notificationCardClick = (reservationId: number) => {
+    navigate("/reservations", {
+      state: { reservationId },
+    });
+  };
   return (
     <>
       <PopHeader text="알림"></PopHeader>
       <NotificationCardWrapper>
-        {notificationData.map((v) => (
-          <NotificationCard notificationData={v} />
+        {notificationData.map((v: NotificationCardType) => (
+          <NotificationCard
+            notificationData={v}
+            onClick={() =>
+              notificationCardClick(v.reservationInfo.reservationId)
+            }
+          />
         ))}
       </NotificationCardWrapper>
       <NotificationLimit>30일 동안의 알림만 저장됩니다.</NotificationLimit>

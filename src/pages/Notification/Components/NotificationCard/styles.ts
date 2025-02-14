@@ -9,9 +9,8 @@ export const Wrapper = styled.div<{ $isRead?: boolean }>`
   padding: 20px;
   position: relative;
 
-  background-color: ${({ $isRead }) =>
-    $isRead || "undefined" ? "white" : colors.orange50};
-
+  background-color: ${({ $isRead }) => ($isRead ? "white" : colors.orange50)};
+  cursor: pointer;
   border-bottom: 1px solid ${colors.gray20};
 `;
 

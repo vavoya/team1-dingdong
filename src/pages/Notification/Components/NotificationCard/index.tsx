@@ -1,4 +1,4 @@
-import { NotificationProps } from "../../model/notificationCardType";
+import { NotificationCardType } from "../../model/notificationCardType";
 import { Subtitle, Time, Title, TitleType, Wrapper } from "./styles";
 
 import { formatDate } from "@/utils/notification/dateFormatter";
@@ -6,22 +6,34 @@ import NotificationContent from "./NotificationContent";
 import NotificationIcon from "./NotificationIcon";
 
 interface NotificationCardProps {
-  notificationData: NotificationProps;
+  onClick: () => void;
+  notificationData: NotificationCardType;
 }
 
 export default function NotificationCard({
+  onClick,
   notificationData,
 }: NotificationCardProps) {
+  const titleMap = {
+    ALLOCATION_SUCCESS: "배차 확정 안내!",
+    ALLOCATION_FAILED: "배차 실패 입금",
+    BUS_START: "출발 안내",
+  };
+
   return (
-    <Wrapper>
+    <Wrapper $isRead={notificationData.read} onClick={onClick}>
       <Subtitle>
         <Title>
           <NotificationIcon type={notificationData.type} />
-          <TitleType>{notificationData.title}</TitleType>
+          <TitleType>{titleMap[notificationData.type]}</TitleType>
         </Title>
-        <Time>{formatDate(notificationData.time)}</Time>
+        <Time>{formatDate(notificationData.timeStamp)}</Time>
       </Subtitle>
-      <NotificationContent notificationData={notificationData} />
+      <NotificationContent
+        type={notificationData.type}
+        reservationInfo={notificationData.reservationInfo}
+        isRead={notificationData.read}
+      />
     </Wrapper>
   );
 }

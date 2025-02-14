@@ -7,3 +7,11 @@ export const formatDate = (dateString: string): string => {
 
   return `${month}월 ${day}일 ${hours}:${minutes}`;
 };
+
+export const formatTime = (dateString: string): string => {
+  const date = new Date(dateString);
+  const hours = date.getHours();
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+
+  return `${hours}:${minutes}`;
+};

@@ -1,5 +1,5 @@
 // components/NotificationCard/NotificationIcon.tsx
-import { NotificationProps } from "../../model/notificationCardType";
+import { NotificationCardType } from "../../model/notificationCardType";
 
 import { colors } from "@/styles/colors";
 import BellIcon from "@/components/designSystem/Icons/Home/BellIcon";
@@ -8,14 +8,14 @@ import BusFailIcon from "@/components/designSystem/Icons/Notification/BusFailIco
 import SmileIcon from "@/components/designSystem/Icons/Notification/SmileIcon";
 
 interface NotificationIconProps {
-  type: NotificationProps["type"];
+  type: NotificationCardType["type"];
 }
 
 export default function NotificationIcon({ type }: NotificationIconProps) {
   const iconMap = {
-    departure: <BellIcon />,
-    confirmed: <BusIcon fill={colors.gray90} width={15} height={18} />,
-    failed: <BusFailIcon />,
+    BUS_START: <BellIcon />,
+    ALLOCATION_SUCCESS: <BusIcon fill={colors.gray90} width={15} height={18} />,
+    ALLOCATION_FAILED: <BusFailIcon />,
     welcome: <SmileIcon />,
   };
 

@@ -24,7 +24,7 @@ export default function SetLocationBottomModal({
   roadAddress,
   showBottomSheet,
 }: setLocationBottomModalProps) {
-  const setToast = useToast();
+  const setToast = useToast("-500px");
 
   const [houseAndStationInfo] = useLoaderData();
   const { houseInfo, stationInfo } = houseAndStationInfo;
