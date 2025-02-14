@@ -10,9 +10,13 @@ import {
 } from "./styles";
 import { useEffect, useState } from "react";
 import { nicknameValidator } from "@/utils/validator/isValidNickname";
-// import { useHomeLocation } from "@/hooks/setHomeLocation/useHomeLocation";
+import { usePutStationLocation } from "@/hooks/setHomeLocation/useHomeLocation";
+import { useLoaderData } from "react-router-dom";
+import { LocationInfo } from "../../page";
+import useToast from "@/hooks/useToast";
 
 interface setLocationBottomModalProps {
+  stationInfo: LocationInfo;
   roadAddress: string | null;
   showBottomSheet: boolean;
 }
@@ -20,11 +24,16 @@ export default function SetLocationBottomModal({
   roadAddress,
   showBottomSheet,
 }: setLocationBottomModalProps) {
-  //   const { homeLocationInfo, putHomeLocationMutation } = useHomeLocation();
-  //   const [addressNickname, setAddressNickname] = useState(
-  //     homeLocationInfo.data?.data.addressNickname
-  //   );
-  const [addressNickname, setAddressNickname] = useState("우리집");
+  const setToast = useToast();
+
+  const [houseAndStationInfo] = useLoaderData();
+  const { houseInfo, stationInfo } = houseAndStationInfo;
+
+  const { putHomeLocationMutation } = usePutStationLocation();
+
+  const [addressNickname, setAddressNickname] = useState(
+    stationInfo ? stationInfo.name : ""
+  );
   const [isNicknameValid, setIsNicknameValid] = useState(
     nicknameValidator(addressNickname)
   ); // 유효성 검사 함수돌리기.
@@ -33,7 +42,6 @@ export default function SetLocationBottomModal({
     isNicknameValid && roadAddress !== null
   );
 
-  console.log(roadAddress, isNicknameValid, roadAddress !== null);
   useEffect(() => {
     setIsNicknameValid(nicknameValidator(addressNickname));
     setIsSetLocationDone(
@@ -41,13 +49,25 @@ export default function SetLocationBottomModal({
     );
   }, [addressNickname, roadAddress]);
 
-  console.log(isSetLocationDone, "???");
-
   const setLocationSubmit = () => {
-    // putHomeLocationMutation({
-    //   location: roadAddress!,
-    //   nickname: addressNickname,
-    // });
+    putHomeLocationMutation(
+      {
+        houseLatitude: houseInfo.latitude,
+        houseLongitude: houseInfo.longitude,
+        stationLatitude: stationInfo.latitude,
+        stationLongitude: stationInfo.longitude,
+        stationName: addressNickname,
+      },
+      {
+        onSuccess: () => {
+          setToast("주소 설정이 완료되었습니다.");
+        },
+        onError: () => {
+          setToast("!!주소 설정에 실패했습니다.");
+        },
+      }
+    );
+
     // 주소 설정 완료 토스트 메시지.
   };
   return (

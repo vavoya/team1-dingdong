@@ -1,20 +1,22 @@
 import { axiosInstance } from "@/api";
-import { HomeLocationInfo } from "@/hooks/setHomeLocation/useHomeLocation";
+import { StationLocationInfo } from "@/hooks/setHomeLocation/useHomeLocation";
 // 변동 예정.
 // 주소 값과 별칭
-export async function getHomeLocationAndNickname() {
+export async function getHomeLocationAndStation() {
   try {
-    return axiosInstance.get("/api/home");
+    const { data } = await axiosInstance.get("/api/users/home/locations");
+    return data;
   } catch (err: any) {
-    console.error("집 주소 정보 요청 실패:", err);
+    console.error("집 주소, 정류장 주소 get 실패", err);
     throw new Error(err);
   }
 }
 
-export async function updateHomeLocationAndNickname(data: HomeLocationInfo) {
+export async function updateStationLocationAndNickname(
+  data: StationLocationInfo
+) {
   try {
-    const contentData = { location: data.location, nickname: data.nickname };
-    return axiosInstance.put("/api/home", contentData);
+    return axiosInstance.put("/api/users/home", data);
   } catch (err: any) {
     console.error("집 주소 설정 변경 실패:", err);
     throw new Error(err);
