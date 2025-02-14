@@ -14,13 +14,8 @@ public enum AuthParamErrors implements InvalidParamErrorInfo {
     INVALID_STATION_INFO("정류장 정보가 제대로 설정되지 않았습니다.", "home"),
     INVALID_HOME_LATITUDE("집 위도가 올바르지 않습니다.", "home.houseLatitude"),
     INVALID_HOME_LONGITUDE("집 경도가 올바르지 않습니다.", "home.houseLongitude"),
-    INVALID_STATION_LATITUDE("정류장 위도가 올바르지 않습니다.", "home.stationLatitude"),
-    INVALID_STATION_LONGITUDE("정류장 경도가 올바르지 않습니다.", "home.stationLongitude"),
-    INVALID_STATION_NAME("정류장 이름이 올바르지 않습니다.", "home.stationName"),
-    INVALID_SCHOOL_LATITUDE("학교 위도가 올바르지 않습니다.", "school.latitude"),
-    INVALID_SCHOOL_LONGITUDE("학교 경도가 올바르지 않습니다.", "school.longitude"),
-    INVALID_SCHOOL_NAME("학교 이름이 올바르지 않습니다.", "school.name"),
-    INVALID_SCHOOL_ADDRESS("학교 주소가 올바르지 않습니다.", "school.roadNameAddress")
+    INVALID_ROAD_NAME_ADDRESS("도로명주소가 올바르지 않습니다.", "home.houseRoadNameAddress"),
+    INVALID_SCHOOL_ID("학교 ID값이 올바르지 않습니다.", "schoolId"),
     ;
 
     private final String desc;

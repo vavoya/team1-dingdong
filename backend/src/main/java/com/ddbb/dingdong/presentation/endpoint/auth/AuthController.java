@@ -84,7 +84,7 @@ public class AuthController {
                 signUpRequestDto.getEmail(),
                 signUpRequestDto.getPassword(),
                 signUpRequestDto.getHome(),
-                signUpRequestDto.getSchool()
+                signUpRequestDto.getSchoolId()
         );
         try {
             signUpUseCase.execute(param);

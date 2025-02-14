@@ -2,17 +2,19 @@ package com.ddbb.dingdong.domain.auth.service;
 
 import com.ddbb.dingdong.domain.auth.service.error.AuthErrors;
 import com.ddbb.dingdong.domain.auth.service.event.SignUpSuccessEvent;
-import com.ddbb.dingdong.util.ParamValidator;
 import com.ddbb.dingdong.domain.payment.entity.Wallet;
 import com.ddbb.dingdong.domain.payment.repository.WalletRepository;
 import com.ddbb.dingdong.domain.user.entity.Home;
 import com.ddbb.dingdong.domain.user.entity.School;
 import com.ddbb.dingdong.domain.user.entity.User;
+import com.ddbb.dingdong.domain.user.repository.SchoolRepository;
 import com.ddbb.dingdong.domain.user.repository.UserRepository;
 import com.ddbb.dingdong.infrastructure.auth.AuthUser;
 import com.ddbb.dingdong.infrastructure.auth.AuthenticationManager;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.PasswordEncoder;
 import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.SignUpRequestDto;
+import com.ddbb.dingdong.util.ParamValidator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -25,13 +27,16 @@ import java.util.ArrayList;
 public class AuthManagement {
     private final UserRepository userRepository;
     private final WalletRepository walletRepository;
+    private final SchoolRepository schoolRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
 
     private static final int WELCOME_MONEY = 50000;
 
-    public void signUp(String name, String email, String password, SignUpRequestDto.Home home, SignUpRequestDto.School school) {
+    @Transactional
+    public void signUp(String name, String email, String password, SignUpRequestDto.Home home, Long schoolId) {
+        School school = schoolRepository.findById(schoolId).orElseThrow(AuthErrors.SCHOOL_NOT_FOUND::toException);
         User user = User.builder()
                 .name(name)
                 .email(email)
@@ -40,19 +45,13 @@ public class AuthManagement {
                         null,
                         home.getHouseLatitude(),
                         home.getHouseLongitude(),
-                        home.getStationLatitude(),
-                        home.getStationLongitude(),
-                        home.getStationName(),
-                        home.getStationRoadAddressName()
+                        home.getHouseLatitude(),
+                        home.getHouseLongitude(),
+                        "우리집",
+                        home.getHouseRoadNameAddress()
                 ))
                 .createdAt(LocalDateTime.now())
-                .school(new School(
-                        null,
-                        school.getName(),
-                        school.getRoadNameAddress(),
-                        school.getLatitude(),
-                        school.getLongitude()
-                ))
+                .school(school)
                 .build();
         user = userRepository.save(user);
         Wallet wallet = new Wallet(null, user.getId(), WELCOME_MONEY, LocalDateTime.now(), new ArrayList<>());

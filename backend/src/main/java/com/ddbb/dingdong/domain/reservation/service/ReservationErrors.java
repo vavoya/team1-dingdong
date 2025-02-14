@@ -4,11 +4,13 @@ import com.ddbb.dingdong.domain.common.exception.ErrorInfo;
 
 public enum ReservationErrors implements ErrorInfo {
     NOT_FOUND("해당 예매 내역이 존재 하지 않습니다."),
+    ALREADY_HAS_SAME_RESERVATION("이미 같은 일정에 대한 예매 내역이 존재합니다."),
     INVALID_ACCESS("해당 예매에 접근 할 수 없습니다."),
 
     EXPIRED_RESERVATION_DATE("해당 예약시간이 이미 마감되었습니다."),
     EXCEEDED_RESERVATION_DATE("예약 가능 기간을 초과하였습니다."),
     BEFORE_RESERVATION_DATE("예약 가능 기간이 아닙니다."),
+    DUPLICATED_RESERVATION_DATE("예약 목록에 중복된 시간대가 존재합니다."),
     NOT_SUPPORTED_RESERVATION_TIME("해당 예약 기간은 존재하지 않습니다"),
 
     INVALID_BUS_TICKET("유효하지 않은 버스 티켓입니다."),

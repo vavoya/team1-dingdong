@@ -21,7 +21,7 @@ public class GetPathPointLine implements UseCase<GetPathPointLine.Param, GetPath
     public Response execute(Param param) {
         List<PathPointProjection> projections = pathQueryRepository.findPathPointsByPathId(param.busScheduleId);
         List<Response.Point> points = projections.stream()
-                .map(proj -> new Response.Point(proj.getLatitude(), proj.getLongitude()))
+                .map(proj -> new Response.Point(proj.getLongitude(), proj.getLatitude()))
                 .toList();
         return new Response(points);
     }

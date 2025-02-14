@@ -1,12 +1,16 @@
 package com.ddbb.dingdong.domain.reservation.repository;
 
 import com.ddbb.dingdong.domain.reservation.entity.Reservation;
+import com.ddbb.dingdong.domain.reservation.repository.projection.ReservationIdProjection;
 import com.ddbb.dingdong.domain.reservation.repository.projection.UserReservationProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public interface ReservationQueryRepository extends JpaRepository<Reservation, Long> {
     @Query("""
@@ -49,6 +53,21 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
             ORDER BY
                CASE WHEN :sort = 0 THEN r.startDate END DESC,
                CASE WHEN :sort = 1 THEN r.startDate END ASC
-    """)
+        """)
     Page<UserReservationProjection> queryReservationsByUserId(@Param("userId") Long userId, @Param("category") int category, @Param("sort") int sort, Pageable p);
+
+    @Query("""
+        SELECT r.id
+            FROM Reservation r
+        WHERE (
+         ( r.direction = 'TO_SCHOOL' AND r.arrivalTime = :time )
+         OR
+         ( r.direction = 'TO_HOME' AND r.departureTime = :time )
+        )
+        AND r.userId = :userId
+    """)
+    List<ReservationIdProjection> findReservationIdByUserIdAndTime(
+            @Param("userId") Long userId,
+            @Param("time") LocalDateTime time
+    );
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Slf4j
+@Qualifier("stub")
 @Component
 public class TMapStubRouteSegmentProvider implements RouteSegmentProvider {
 
