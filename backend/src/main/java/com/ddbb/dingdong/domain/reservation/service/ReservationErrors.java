@@ -10,7 +10,6 @@ public enum ReservationErrors implements ErrorInfo {
     EXPIRED_RESERVATION_DATE("해당 예약시간이 이미 마감되었습니다."),
     EXCEEDED_RESERVATION_DATE("예약 가능 기간을 초과하였습니다."),
     BEFORE_RESERVATION_DATE("예약 가능 기간이 아닙니다."),
-    DUPLICATED_RESERVATION_DATE("예약 목록에 중복된 시간대가 존재합니다."),
     NOT_SUPPORTED_RESERVATION_TIME("해당 예약 기간은 존재하지 않습니다"),
 
     INVALID_BUS_TICKET("유효하지 않은 버스 티켓입니다."),
@@ -24,8 +23,6 @@ public enum ReservationErrors implements ErrorInfo {
     CANCELLATION_NOT_ALLOWED("배차 대기인 상태에서만 예매를 취소할 수 있습니다."),
     ALLOCATION_NOT_ALLOWED("배차 대기인 상태에서만 버스를 배차시킬 수 있습니다."),
     ISSUE_NOT_ALLOWED("배차 완료인 상태에서만 티켓을 발급할 수 있습니다."),
-
-    TICKET_SOLD_OUT("해당 티켓이 모두 판매되었습니다."),
 
     NOT_SINGLE_RESERVATION_DATES("단일 예약일이 아닙니다."),
     ;

@@ -2,6 +2,7 @@ package com.ddbb.dingdong.application.usecase.reservation;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
+import com.ddbb.dingdong.application.usecase.reservation.error.ReservationInvalidParamErrors;
 import com.ddbb.dingdong.domain.clustering.entity.Location;
 import com.ddbb.dingdong.domain.clustering.service.ClusteringService;
 import com.ddbb.dingdong.domain.payment.service.PaymentManagement;
@@ -9,7 +10,6 @@ import com.ddbb.dingdong.domain.reservation.entity.Reservation;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationStatus;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationType;
-import com.ddbb.dingdong.domain.reservation.service.ReservationErrors;
 import com.ddbb.dingdong.domain.reservation.service.ReservationManagement;
 import com.ddbb.dingdong.domain.user.entity.Home;
 import com.ddbb.dingdong.domain.user.service.UserManagement;
@@ -41,8 +41,9 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
     @Transactional
     @Override
     public Void execute(Param param) {
+        param.validate();
         validateToken(param);
-        checkHasDuplicatedReservation(param.reservationInfo.userId, param.reservationInfo.reservationDates);
+        checkHasDuplicatedReservation(param);
         reserve(param);
         pay(param);
         saveToken(param);
@@ -54,11 +55,10 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
         tokenManager.validateToken(param.token, param.reservationInfo);
     }
 
-    private void checkHasDuplicatedReservation(Long userId, List<Param.ReservationInfo.ReservationDate> hopeTimes) {
-        boolean hasDuplicates = hopeTimes.stream()
-                .map(Param.ReservationInfo.ReservationDate::getDate)
-                .collect(Collectors.toSet()).size() < hopeTimes.size();
-        if (hasDuplicates) throw ReservationErrors.DUPLICATED_RESERVATION_DATE.toException();
+    private void checkHasDuplicatedReservation(Param param) {
+        Long userId = param.reservationInfo.userId;
+        List<Param.ReservationInfo.ReservationDate> hopeTimes = param.reservationInfo.reservationDates;
+
         for (Param.ReservationInfo.ReservationDate hopeTime : hopeTimes) {
             reservationManagement.checkHasDuplicatedReservation(userId, hopeTime.date);
         }
@@ -122,6 +122,17 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
                 @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
                 private LocalDateTime date;
             }
+        }
+
+        @Override
+        public boolean validate() {
+            List<ReservationInfo.ReservationDate> reservationDates = reservationInfo.reservationDates;
+            boolean hasDuplicates = reservationDates.stream()
+                    .map(Param.ReservationInfo.ReservationDate::getDate)
+                    .collect(Collectors.toSet()).size() < reservationDates.size();
+            if (hasDuplicates) throw ReservationInvalidParamErrors.DUPLICATED_DATES.toException();
+
+            return true;
         }
     }
 }
