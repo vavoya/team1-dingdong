@@ -23,7 +23,7 @@ public class SignUpUseCase implements UseCase<SignUpUseCase.Param, Void> {
         param.validate();
         authManagement.checkEmail(param.getEmail());
         authManagement.checkPassword(param.getPassword());
-        authManagement.signUp(param.getName(), param.getEmail(), param.getPassword(), param.getHome(), param.getSchool());
+        authManagement.signUp(param.getName(), param.getEmail(), param.getPassword(), param.getHome(), param.getSchoolId());
         return null;
     }
 
@@ -34,7 +34,7 @@ public class SignUpUseCase implements UseCase<SignUpUseCase.Param, Void> {
         private final String email;
         private final String password;
         private final SignUpRequestDto.Home home;
-        private final SignUpRequestDto.School school;
+        private final Long schoolId;
 
         @Override
         public boolean validate() {
@@ -48,22 +48,10 @@ public class SignUpUseCase implements UseCase<SignUpUseCase.Param, Void> {
                 throw AuthParamErrors.INVALID_HOME_LATITUDE.toException();
             } else if (!ParamValidator.isValidLongitude(home.getHouseLongitude())) {
                 throw AuthParamErrors.INVALID_HOME_LONGITUDE.toException();
-            } else if (ParamValidator.isStationInfoExists(home.getStationName(), home.getStationLatitude(), home.getStationLongitude())) {
-                if (!ParamValidator.isValidLatitude(home.getStationLatitude())) {
-                    throw AuthParamErrors.INVALID_STATION_LATITUDE.toException();
-                } else if (!ParamValidator.isValidLongitude(home.getStationLongitude())) {
-                    throw AuthParamErrors.INVALID_STATION_LONGITUDE.toException();
-                } else if (!ParamValidator.isValidName(home.getStationName())) {
-                    throw AuthParamErrors.INVALID_STATION_NAME.toException();
-                }
-            } if (!ParamValidator.isValidLatitude(school.getLatitude())) {
-                throw AuthParamErrors.INVALID_SCHOOL_LATITUDE.toException();
-            } else if (!ParamValidator.isValidLongitude(school.getLongitude())) {
-                throw AuthParamErrors.INVALID_SCHOOL_LONGITUDE.toException();
-            } else if (!ParamValidator.isValidName(school.getName())) {
-                throw AuthParamErrors.INVALID_SCHOOL_NAME.toException();
-            } else if (!ParamValidator.isValidName(school.getRoadNameAddress())) {
-                throw AuthParamErrors.INVALID_SCHOOL_ADDRESS.toException();
+            } else if (!ParamValidator.isValidName(home.getHouseRoadNameAddress())) {
+                throw AuthParamErrors.INVALID_ROAD_NAME_ADDRESS.toException();
+            } else if (schoolId == null) {
+                throw AuthParamErrors.INVALID_SCHOOL_ID.toException();
             }
             return true;
         }
