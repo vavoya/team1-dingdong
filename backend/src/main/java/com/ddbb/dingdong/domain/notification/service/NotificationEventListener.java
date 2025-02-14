@@ -45,7 +45,7 @@ public class NotificationEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @EventListener
     protected void sendWelcomeNotification(SignUpSuccessEvent event) {
-        notificationManagement.sendNotification(NotificationType.ALLOCATION_FAILED, event.getUserId(), null, WELCOME_MONEY);
+        notificationManagement.sendNotification(NotificationType.WELCOME, event.getUserId(), null, WELCOME_MONEY);
         sendAlarm(event.getUserId());
     }
 
