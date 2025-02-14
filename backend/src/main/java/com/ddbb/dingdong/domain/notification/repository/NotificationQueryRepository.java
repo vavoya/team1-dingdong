@@ -34,9 +34,9 @@ public interface NotificationQueryRepository extends JpaRepository<Notification,
             ELSE bs.expectedArrivalTime
         END AS expectedEndTime
     FROM Notification n
-    JOIN Reservation r ON n.reservationId = r.id
-    JOIN Location l ON l.reservationId = r.id
     JOIN User u ON n.userId = u.id
+    LEFT JOIN Reservation r ON n.reservationId = r.id
+    LEFT JOIN Location l ON l.reservationId = r.id
     LEFT JOIN BusStop bs ON bs.locationId = l.id
     WHERE n.userId = :userId
     ORDER BY n.createdAt DESC
