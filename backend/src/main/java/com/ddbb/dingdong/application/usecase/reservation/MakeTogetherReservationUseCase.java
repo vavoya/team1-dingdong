@@ -43,8 +43,13 @@ public class MakeTogetherReservationUseCase implements UseCase<MakeTogetherReser
         checkHasDuplicatedReservation(param.reservationInfo.userId, hopeTime);
         reserve(param);
         pay(param);
+        saveToken(param);
 
         return null;
+    }
+
+    private void saveToken(Param param) {
+        tokenManager.saveToken(param.token);
     }
 
     private void checkHasDuplicatedReservation(Long userId, LocalDateTime hopeTime) {

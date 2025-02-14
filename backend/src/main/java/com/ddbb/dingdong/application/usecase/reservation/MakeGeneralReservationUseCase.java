@@ -45,6 +45,7 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
         checkHasDuplicatedReservation(param.reservationInfo.userId, param.reservationInfo.reservationDates);
         reserve(param);
         pay(param);
+        saveToken(param);
 
         return null;
     }
@@ -93,6 +94,10 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
         Long userId = param.getReservationInfo().userId;
         int quantity = param.getReservationInfo().getReservationDates().size();
         paymentManagement.pay(userId, quantity);
+    }
+
+    private void saveToken(Param param) {
+        tokenManager.saveToken(param.token);
     }
 
     @Getter
