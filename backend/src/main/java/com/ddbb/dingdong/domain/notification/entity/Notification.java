@@ -32,7 +32,6 @@ public class Notification {
     @Column(nullable = false)
     private Long userId;
 
-    @Column(nullable = false)
     private Long reservationId;
 
     public void read(){
