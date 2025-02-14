@@ -6,6 +6,7 @@ export const ToastWrapper = styled.div.withConfig({
     shouldForwardProp: (prop) => prop !== 'translateY'
 })<{translateY: string}>`
     position: fixed;
+    z-index: 1000;
     left: 20px;
     right: 20px;
     bottom: 0;
