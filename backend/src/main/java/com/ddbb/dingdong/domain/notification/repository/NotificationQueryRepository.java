@@ -13,6 +13,7 @@ public interface NotificationQueryRepository extends JpaRepository<Notification,
     SELECT
         n.createdAt AS timeStamp,
         n.type AS type,
+        n.money AS money,
         n.isRead AS isRead,
         r.id AS reservationId,
         CASE

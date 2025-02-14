@@ -1,5 +1,6 @@
 package com.ddbb.dingdong.domain.notification.service;
 
+import com.ddbb.dingdong.domain.auth.service.event.SignUpSuccessEvent;
 import com.ddbb.dingdong.domain.notification.entity.vo.NotificationType;
 import com.ddbb.dingdong.domain.reservation.service.event.AllocationFailedEvent;
 import com.ddbb.dingdong.domain.reservation.service.event.AllocationSuccessEvent;
@@ -20,13 +21,14 @@ import java.io.IOException;
 public class NotificationEventListener {
     private final NotificationManagement notificationManagement;
     private final SocketRepository socketRepository;
+    private static final int TICKET_PRICE = 1000;
     private static final String ALARM_SOCKET_MSG = "alarm";
 
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @EventListener
     protected void sendAllocationSuccessNotification(AllocationSuccessEvent event) {
-        notificationManagement.sendNotification(NotificationType.ALLOCATION_SUCCESS, event.getUserId(), event.getReservationId());
+        notificationManagement.sendNotification(NotificationType.ALLOCATION_SUCCESS, event.getUserId(), event.getReservationId(), null);
         sendAlarm(event.getUserId());
     }
 
@@ -34,7 +36,15 @@ public class NotificationEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @EventListener
     protected void sendAllocationFailNotification(AllocationFailedEvent event) {
-        notificationManagement.sendNotification(NotificationType.ALLOCATION_FAILED, event.getUserId(), event.getReservationId());
+        notificationManagement.sendNotification(NotificationType.ALLOCATION_FAILED, event.getUserId(), event.getReservationId(), TICKET_PRICE);
+        sendAlarm(event.getUserId());
+    }
+
+    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @EventListener
+    protected void sendWelcomeNotification(SignUpSuccessEvent event) {
+        notificationManagement.sendNotification(NotificationType.ALLOCATION_FAILED, event.getUserId(), null, TICKET_PRICE);
         sendAlarm(event.getUserId());
     }
 
@@ -53,5 +63,4 @@ public class NotificationEventListener {
             }
         }
     }
-
 }
