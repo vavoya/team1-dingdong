@@ -23,7 +23,7 @@ export default function NotificationContent({
 }: NotificationContentProps) {
   const {
     reservationId,
-    refundAmount,
+    money,
     startDate,
     startStationName,
     endStationName,
@@ -65,7 +65,7 @@ export default function NotificationContent({
     case "ALLOCATION_FAILED":
       return (
         <>
-          {renderFailedContent(refundAmount!)}
+          {renderFailedContent(money!)}
           <TicketCardContent
             isRead={isRead}
             type={type}

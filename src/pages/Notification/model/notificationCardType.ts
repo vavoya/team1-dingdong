@@ -10,7 +10,7 @@ export interface ReservationInfo {
   startDate: string; // 2025-02-28 형식
   expectedStartTime: string | null; // ISO date-time
   expectedEndTime: string; // ISO date-time
-  refundAmount: number | null; // 환불 금액
+  money: number | null; // 환불 금액
 }
 
 export interface NotificationCardType {
