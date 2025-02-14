@@ -29,10 +29,11 @@ public class Notification {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    private Integer money;
+
     @Column(nullable = false)
     private Long userId;
 
-    @Column(nullable = false)
     private Long reservationId;
 
     public void read(){

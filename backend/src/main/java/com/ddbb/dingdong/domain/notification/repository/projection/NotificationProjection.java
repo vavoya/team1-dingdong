@@ -12,6 +12,7 @@ public interface NotificationProjection {
     String getStartStationName();
     String getEndStationName();
     LocalDateTime getTimeStamp();
+    Integer getMoney();
     LocalDate getStartDate();
     LocalDateTime getExpectedStartTime();
     LocalDateTime getExpectedEndTime();

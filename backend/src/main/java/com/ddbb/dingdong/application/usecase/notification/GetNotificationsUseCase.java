@@ -38,19 +38,20 @@ public class GetNotificationsUseCase implements UseCase<GetNotificationsUseCase.
         Page<NotificationProjection> projections = notificationQueryRepository.queryUserNotifications(userId, pageable);
 
         return projections.map(projection ->
-                new Result.NotificationInfo(
-                        projection.getType(),
-                        projection.getTimeStamp(),
-                        projection.getIsRead(),
-                        new Result.ReservationInfo(
-                                projection.getReservationId(),
-                                projection.getStartStationName(),
-                                projection.getEndStationName(),
-                                projection.getStartDate(),
-                                projection.getExpectedStartTime(),
-                                projection.getExpectedEndTime()
-                        )
-                )
+            new Result.NotificationInfo(
+                    projection.getType(),
+                    projection.getTimeStamp(),
+                    projection.getIsRead(),
+                    projection.getMoney(),
+                    new Result.ReservationInfo(
+                            projection.getReservationId(),
+                            projection.getStartStationName(),
+                            projection.getEndStationName(),
+                            projection.getStartDate(),
+                            projection.getExpectedStartTime(),
+                            projection.getExpectedEndTime()
+                    )
+            )
         );
     }
 
@@ -72,6 +73,7 @@ public class GetNotificationsUseCase implements UseCase<GetNotificationsUseCase.
             private NotificationType type;
             private LocalDateTime timeStamp;
             private boolean isRead;
+            private Integer money;
             private ReservationInfo reservationInfo;
         }
 

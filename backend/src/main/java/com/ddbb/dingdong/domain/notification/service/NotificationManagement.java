@@ -24,11 +24,12 @@ public class NotificationManagement {
         notificationRepository.saveAll(notifications);
     }
 
-    public void sendNotification(NotificationType type, Long userId, Long reservationId) {
+    public void sendNotification(NotificationType type, Long userId, Long reservationId, Integer money) {
         Notification notification = new Notification();
         notification.setUserId(userId);
         notification.setReservationId(reservationId);
         notification.setType(type);
+        notification.setMoney(money);
 
         notificationRepository.save(notification);
     }

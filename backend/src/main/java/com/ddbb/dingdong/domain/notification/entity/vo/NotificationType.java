@@ -4,5 +4,6 @@ public enum NotificationType {
     ALLOCATION_SUCCESS,
     ALLOCATION_FAILED,
     BUS_START,
+    WELCOME,
     ;
 }
