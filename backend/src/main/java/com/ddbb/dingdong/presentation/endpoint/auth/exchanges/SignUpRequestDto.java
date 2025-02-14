@@ -1,6 +1,5 @@
 package com.ddbb.dingdong.presentation.endpoint.auth.exchanges;
 
-import com.ddbb.dingdong.domain.user.entity.School;
 import lombok.Data;
 
 @Data
