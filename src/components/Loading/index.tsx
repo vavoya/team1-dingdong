@@ -1,8 +1,8 @@
-import {createRoot, Root} from "react-dom/client";
+import {createRoot} from "react-dom/client";
 import Lottie from 'react-lottie';
 import animationData from '@/assets/lottie/busLoadingAnimation.json'
 import {Backdrop, LoadingText, Modal} from "@/components/Loading/styles.ts";
-import {useEffect} from "react";
+import {ReactNode, useEffect} from "react";
 import {createPortal} from "react-dom";
 
 
@@ -57,19 +57,25 @@ export function mountModal() {
     // React 18의 createRoot를 사용하여 LoadingModal 렌더링
     const root = createRoot(modalContainer);
 
+    // 모달 언마운트 함수. 스코프 체인 활용
+    function unmountModal() {
+        root.unmount();          // 컴포넌트를 unmount
+        modalContainer.remove(); // 컨테이너를 DOM에서 제거
+    }
+
+    function render(children: ReactNode) {
+        root.render(children)
+    }
+
     // url 변경 되면 제거
     window.addEventListener(
         "popstate",
         () => {
-            unmountModal(root, modalContainer);
+            unmountModal();
         },
         { once: true }
     );
 
-    return {root, modalContainer}
-}
 
-export function unmountModal(root: Root, modalContainer: HTMLDivElement) {
-    root.unmount();          // 컴포넌트를 unmount
-    modalContainer.remove(); // 컨테이너를 DOM에서 제거
+    return {render, unmountModal}
 }

@@ -10,7 +10,21 @@ export const users_me = createQueryFactory('/api/users/me');
 
 export interface users_reservations_interface {
     reservationInfos: {
-        content: any[];
+        content: {
+            reservationId: number;
+            startDate: string;
+            busStopName: string;
+            direction: 'TO_SCHOOL' | 'TO_HOME';
+            expectedArrivalTime: string | null;
+            expectedDepartureTime: string | null;
+            reservationStatus: 'PENDING' | 'ALLOCATED' | 'FAIL_ALLOCATED' | 'CANCELED';
+            operationInfo: {
+                busScheduleId: number;
+                busStatus: 'READY' | 'RUNNING' | 'ENDED';
+                busName: string;
+                busStopArrivalTime: string;
+            } | null;
+        }[];
         empty: boolean;
         first: boolean;
         last: boolean;
@@ -25,12 +39,16 @@ export interface users_reservations_interface {
                 empty: boolean;
                 sorted: boolean;
                 unsorted: boolean;
-                unpaged: boolean
             }
         }
         size: number;
         totalElements: number;
         totalPages: number;
+        sort: {
+            empty: boolean;
+            sorted: boolean;
+            unsorted: boolean;
+        }
     }
 }
 export const users_reservations = createQueryFactory('/api/users/reservations');
@@ -52,5 +70,3 @@ export interface users_home_locations_interface {
     }
 }
 export const users_home_locations = createQueryFactory('/api/users/home/locations');
-
-export const configurations = createQueryFactory('/api/configurations')
