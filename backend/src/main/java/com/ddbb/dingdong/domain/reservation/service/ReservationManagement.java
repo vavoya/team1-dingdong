@@ -5,14 +5,13 @@ import com.ddbb.dingdong.domain.reservation.entity.Ticket;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationStatus;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationType;
-import com.ddbb.dingdong.domain.reservation.repository.ReservationQueryRepository;
 import com.ddbb.dingdong.domain.reservation.repository.ReservationRepository;
-import com.ddbb.dingdong.domain.reservation.repository.projection.ReservationIdProjection;
 import com.ddbb.dingdong.domain.reservation.service.event.AllocationFailedEvent;
 import com.ddbb.dingdong.domain.reservation.service.event.AllocationSuccessEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -22,7 +21,6 @@ import java.util.List;
 public class ReservationManagement {
     private final ReservationRepository reservationRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final ReservationQueryRepository reservationQueryRepository;
 
     public Reservation reserve(Reservation reservation) {
         if(reservation.getType().equals(ReservationType.GENERAL)) {
@@ -68,13 +66,8 @@ public class ReservationManagement {
         eventPublisher.publishEvent(new AllocationFailedEvent(reservation.getId(), reservation.getUserId()));
     }
 
-    private void validateDateOfGeneralReservation(Reservation reservation) {
-        if(!ReservationType.GENERAL.equals(reservation.getType())){
-            throw ReservationErrors.INVALID_RESERVATION_TYPE.toException();
-        }
-
+    public void validateGeneralReservationDate(LocalDateTime reservationDate , Direction direction) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reservationDate = reservation.getDirection().equals(Direction.TO_SCHOOL) ? reservation.getArrivalTime() : reservation.getDepartureTime();
         LocalDateTime deadLine = reservationDate.minusHours(48).minusMinutes(5);
         LocalDateTime maxDate = reservationDate.plusMonths(2);
 
@@ -87,7 +80,7 @@ public class ReservationManagement {
         if(reservationDate.getMinute() != 0 && reservationDate.getMinute() != 30) {
             throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
         }
-        if(reservation.getDirection().equals(Direction.TO_SCHOOL)) {
+        if(direction.equals(Direction.TO_SCHOOL)) {
             if (reservationDate.toLocalTime().isBefore(LocalTime.of(8,0)) || reservationDate.toLocalTime().isAfter(LocalTime.of(18,0))) {
                 throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
             }
@@ -98,15 +91,15 @@ public class ReservationManagement {
         }
     }
 
-    private void validateDateOfTogetherReservation(Reservation reservation) {
-        if (!ReservationType.TOGETHER.equals(reservation.getType())) {
-            throw ReservationErrors.INVALID_RESERVATION_TYPE.toException();
-        } else if (!ReservationStatus.ALLOCATED.equals(reservation.getStatus())) {
-            throw ReservationErrors.INVALID_RESERVATION_STATUS.toException();
+    public void checkHasDuplicatedReservation(Long userId, LocalDateTime hopeTime) {
+        if (reservationRepository.existsActiveReservation(hopeTime, userId)) {
+            throw ReservationErrors.ALREADY_HAS_SAME_RESERVATION.toException();
         }
+    }
+
+    public void validateTogetherReservationDate(LocalDateTime reservationDate , Direction direction) {
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reservationDate = reservation.getDirection().equals(Direction.TO_SCHOOL) ? reservation.getArrivalTime() : reservation.getDepartureTime();
         LocalDateTime startDate = reservationDate.minusHours(48);
         LocalDateTime deadLine = reservationDate;
 
@@ -119,7 +112,7 @@ public class ReservationManagement {
         if(reservationDate.getMinute() != 0 && reservationDate.getMinute() != 30) {
             throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
         }
-        if(reservation.getDirection().equals(Direction.TO_SCHOOL)) {
+        if(direction.equals(Direction.TO_SCHOOL)) {
             if (reservationDate.toLocalTime().isBefore(LocalTime.of(8,0)) || reservationDate.toLocalTime().isAfter(LocalTime.of(18,0))) {
                 throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
             }
@@ -128,22 +121,33 @@ public class ReservationManagement {
                 throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
             }
         }
+
     }
 
     private Reservation reserveGeneral(Reservation reservation) {
-        validateDateOfGeneralReservation(reservation);
+        validateGeneralReservation(reservation);
         return reservationRepository.save(reservation);
     }
 
     private Reservation reserveTogether(Reservation reservation) {
-        validateDateOfTogetherReservation(reservation);
+        validateTogetherReservation(reservation);
         return reservationRepository.save(reservation);
     }
 
-    public void checkHasDuplicatedReservation(Long userId, LocalDateTime hopeTime) {
-        List<ReservationIdProjection> reservations = reservationQueryRepository.findReservationIdByUserIdAndTime(userId, hopeTime);
-        if (!reservations.isEmpty()) {
-            throw ReservationErrors.ALREADY_HAS_SAME_RESERVATION.toException();
+    private void validateGeneralReservation(Reservation reservation) {
+        if(!ReservationType.GENERAL.equals(reservation.getType())){
+            throw ReservationErrors.INVALID_RESERVATION_TYPE.toException();
         }
+        LocalDateTime reservationDate = reservation.getDirection().equals(Direction.TO_SCHOOL) ? reservation.getArrivalTime() : reservation.getDepartureTime();
+        validateGeneralReservationDate(reservationDate , reservation.getDirection());
+    }
+
+    private void validateTogetherReservation(Reservation reservation) {
+        if (!ReservationType.TOGETHER.equals(reservation.getType())) {
+            throw ReservationErrors.INVALID_RESERVATION_TYPE.toException();
+        } else if (!ReservationStatus.ALLOCATED.equals(reservation.getStatus())) {
+            throw ReservationErrors.INVALID_RESERVATION_STATUS.toException();
+        }
+        validateTogetherReservationDate(reservation.getArrivalTime(), reservation.getDirection());
     }
 }
