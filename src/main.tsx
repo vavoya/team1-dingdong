@@ -32,7 +32,6 @@ import TimetableManagementPage from "@/pages/TimetableManagement/page.tsx";
 import PaymentReservationPage from "@/pages/Payment/Reservation/page.tsx";
 import PaymentPurchasePage from "@/pages/Payment/Purchase/page.tsx";
 import SuccessPage from "@/pages/Payment/Success/page.tsx";
-import RechargePage from "@/pages/Wallet/page.tsx";
 import Wallet from "@/pages/Wallet/page.tsx";
 import LoginHomeScreen from "./pages/Auth/LoginHome/index.tsx";
 import Login from "./pages/Auth/Login/index.tsx";
@@ -41,8 +40,10 @@ import PasswordSignup from "./pages/Auth/Signup/Password/index.tsx";
 import UserInfoSignup from "./pages/Auth/Signup/UserInfo/index.tsx";
 import SchoolAuthSignUp from "./pages/Auth/Signup/SchoolAuth/index.tsx";
 import Notification from "./pages/Notification/page.tsx";
-import {createLoader} from "@/createLoader.tsx";
-import {users_home_locations, users_me, users_notifications_checkUnread, users_reservations} from "@/api/query";
+import {createLoader} from "@/loader/createLoader.tsx";
+import {users_home_locations, users_me, users_notifications_checkUnread, users_reservations} from "@/api/query/users";
+import {middleware} from "@/middleware.tsx";
+import Loader from "@/loader/payment/reservation/loader.ts";
 // import { notificationLoader } from "./hooks/Notification/useNotification.ts";
 
 export const router = createBrowserRouter([
@@ -50,6 +51,8 @@ export const router = createBrowserRouter([
     path: "/",
     Component: Layout,
     errorElement: <></>,
+    loader: middleware,
+    shouldRevalidate: () => true,
     children: [
       {
         index: true,
@@ -59,17 +62,23 @@ export const router = createBrowserRouter([
         // 홈
         path: "home",
         Component: Home,
-          loader: createLoader([
-              users_me(),
-              users_reservations({
-                  page: '0',
-                  pageSize: '3',
-                  category: 'ALLOCATED',
-                  sort: 'LATEST'
-              }),
-              users_notifications_checkUnread(),
-              users_home_locations(),
-          ])
+          loader: createLoader(
+              () => ([
+                  users_me(),
+                users_reservations({
+                    page: 0,
+                    category: 'HOME',
+                    sort: 'LATEST'
+                }),
+                users_notifications_checkUnread(),
+                users_home_locations(),]),
+              /*
+              () => ([
+                  async () => axiosInstance.post('')
+              ])
+
+               */
+          )
       },
       {
         path: "notification",
@@ -127,11 +136,28 @@ export const router = createBrowserRouter([
         // 예매 내역
         path: "reservations",
         Component: ReservationsPage,
+        loader: createLoader(() => ([
+          users_reservations({
+            page: '0',
+            pageSize: '60',
+            category: 'ALL',
+            sort: 'LATEST'
+          }),
+          users_reservations({
+            page: '0',
+            pageSize: '60',
+            category: 'ALLOCATED',
+            sort: 'OLDEST'
+          }),
+        ]))
       },
       {
         // 마이 페이지
         path: "my-page",
         Component: MyPage,
+        loader: createLoader(() => ([
+          users_me()
+        ]))
       },
       {
         // 시간표 관리 페이지
@@ -145,6 +171,7 @@ export const router = createBrowserRouter([
             // 배차 예약
             path: "reservation",
             Component: PaymentReservationPage,
+            loader: Loader
           },
           {
             // 확정 예매
@@ -160,10 +187,6 @@ export const router = createBrowserRouter([
       },
       {
         // 충전 페이지
-        path: "recharge",
-        Component: RechargePage,
-      },
-      {
         path: "wallet",
         Component: Wallet,
       },
