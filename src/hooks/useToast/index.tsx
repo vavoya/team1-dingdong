@@ -80,6 +80,15 @@ function mountToastContainer()  {
     // React 18의 createRoot를 사용하여 LoadingModal 렌더링
     const root = createRoot(toastContainer);
 
+    // url 변경 되면 제거
+    window.addEventListener(
+        "popstate",
+        () => {
+            unmountToastContainer(root, toastContainer);
+        },
+        { once: true }
+    );
+
     return {root, toastContainer}
 }
 
@@ -122,23 +131,25 @@ interface UpdateToastProps {
 }
 function updateToast({toastSet, root, toastContainer, bottom}: UpdateToastProps) {
     requestAnimationFrame(() => {
-        let totalHeight = 0;
+        requestAnimationFrame(() => {
+            let totalHeight = 0;
 
-        const toastElementList = Array.from(toastContainer.childNodes);
-        const toastList = Array.from(toastSet)
-        toastList.forEach((toast, index) => {
-            // 언마운트 예약된 녀석이면 무시
-            if (toast.reserveUnmount) return;
+            const toastElementList = Array.from(toastContainer.childNodes);
+            const toastList = Array.from(toastSet)
+            toastList.forEach((toast, index) => {
+                // 언마운트 예약된 녀석이면 무시
+                if (toast.reserveUnmount) return;
 
-            toast.bottom = `calc(${bottom} - ${totalHeight}px)`
+                toast.bottom = `calc(${bottom} - ${totalHeight}px)`
 
-            const height = (toastElementList[index] as HTMLElement).offsetHeight
-            totalHeight += height
+                const height = (toastElementList[index] as HTMLElement).offsetHeight
+                totalHeight += height
 
-            // 이거는 토스트 간격
-            totalHeight += 10
+                // 이거는 토스트 간격
+                totalHeight += 10
+            })
+            renderToast({toastSet, root})
         })
-        renderToast({toastSet, root})
     })
 }
 
