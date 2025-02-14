@@ -27,7 +27,7 @@ public class NotificationEventListener {
     @EventListener
     protected void sendAllocationSuccessNotification(AllocationSuccessEvent event) {
         notificationManagement.sendNotification(NotificationType.ALLOCATION_SUCCESS, event.getUserId(), event.getReservationId());
-        sendSocketMessage(event.getUserId());
+        sendAlarm(event.getUserId());
     }
 
     @Async
@@ -35,10 +35,10 @@ public class NotificationEventListener {
     @EventListener
     protected void sendAllocationFailNotification(AllocationFailedEvent event) {
         notificationManagement.sendNotification(NotificationType.ALLOCATION_FAILED, event.getUserId(), event.getReservationId());
-        sendSocketMessage(event.getUserId());
+        sendAlarm(event.getUserId());
     }
 
-    private void sendSocketMessage(Long userId) {
+    private void sendAlarm(Long userId) {
         WebSocketSession socket = socketRepository.get(userId);
 
         if(socket != null && socket.isOpen()) {
