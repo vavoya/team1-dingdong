@@ -37,21 +37,27 @@ public class GetNotificationsUseCase implements UseCase<GetNotificationsUseCase.
     private Page<Result.NotificationInfo> getNotifications(Long userId, Pageable pageable) {
         Page<NotificationProjection> projections = notificationQueryRepository.queryUserNotifications(userId, pageable);
 
-        return projections.map(projection ->
-            new Result.NotificationInfo(
-                    projection.getType(),
-                    projection.getTimeStamp(),
-                    projection.getIsRead(),
-                    projection.getMoney(),
-                    new Result.ReservationInfo(
-                            projection.getReservationId(),
-                            projection.getStartStationName(),
-                            projection.getEndStationName(),
-                            projection.getStartDate(),
-                            projection.getExpectedStartTime(),
-                            projection.getExpectedEndTime()
-                    )
-            )
+        return projections.map(projection -> {
+            Result.ReservationInfo reservationInfo  = null;
+            if(!projection.getType().equals(NotificationType.WELCOME)) {
+                reservationInfo = new Result.ReservationInfo(
+                        projection.getReservationId(),
+                        projection.getStartStationName(),
+                        projection.getEndStationName(),
+                        projection.getStartDate(),
+                        projection.getExpectedStartTime(),
+                        projection.getExpectedEndTime()
+                );
+            }
+            return
+                    new Result.NotificationInfo(
+                            projection.getType(),
+                            projection.getTimeStamp(),
+                            projection.getIsRead(),
+                            projection.getMoney(),
+                            reservationInfo
+                    );
+                }
         );
     }
 
