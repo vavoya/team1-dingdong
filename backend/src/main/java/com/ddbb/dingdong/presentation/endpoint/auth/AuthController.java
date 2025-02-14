@@ -5,7 +5,7 @@ import com.ddbb.dingdong.application.usecase.auth.CheckEmailUseCase;
 import com.ddbb.dingdong.application.usecase.auth.LoginUseCase;
 import com.ddbb.dingdong.application.usecase.auth.LogoutUseCase;
 import com.ddbb.dingdong.application.usecase.auth.SignUpUseCase;
-import com.ddbb.dingdong.domain.auth.service.AuthErrors;
+import com.ddbb.dingdong.domain.auth.service.error.AuthErrors;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.infrastructure.auth.AuthUser;
 import com.ddbb.dingdong.infrastructure.auth.annotation.LoginUser;
