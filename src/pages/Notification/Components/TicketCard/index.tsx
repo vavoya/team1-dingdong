@@ -11,68 +11,64 @@ import {
 import ChevronRightIcon from "@/components/designSystem/Icons/ChevronRightIcon";
 import { colors } from "@/styles/colors";
 import { Body1SemiBold, Body2SemiBold } from "@/styles/typography";
-
-interface TicketCardProps {
-  isRead?: boolean;
-  cardType?: "confirmed" | "failed" | "welcome";
-  departureStation?: string;
-  destination?: string;
-  departureTime?: string;
-  arrivalTime?: string;
-  hoursUntilDeparture?: number;
-  bookingDate?: number;
-  refundAmount?: number;
-}
+import { NotificationContentProps } from "../NotificationCard/NotificationContent";
+import { formatTime } from "@/utils/notification/dateFormatter";
 
 export default function TicketCard({
+  reservationInfo,
+  type,
   isRead,
-  cardType = "confirmed",
-  departureStation,
-  destination,
-  departureTime,
-  arrivalTime,
-  hoursUntilDeparture,
-  bookingDate,
-}: TicketCardProps) {
+}: NotificationContentProps) {
   return (
     <CardContainer>
       <EmptyCircle
         $isRead={isRead}
         $direction="right"
-        $cardType={cardType}
+        $cardType={type}
       ></EmptyCircle>
-      <Banner $cardType={cardType}>
-        {cardType === "confirmed" ? (
+      <Banner $cardType={type}>
+        {type === "ALLOCATION_SUCCESS" ? (
           <>
-            <HighlightText>{hoursUntilDeparture}시간 후</HighlightText>
+            <HighlightText>{reservationInfo.startDate}</HighlightText>
             <Body1SemiBold>에 타야해요!</Body1SemiBold>
+          </>
+        ) : type === "BUS_START" ? (
+          <>
+            {/* <HighlightText>{reservationInfo.startDate}</HighlightText> */}
+            <HighlightText>버스가 출발 했어요!</HighlightText>
           </>
         ) : (
           <>
-            <Body2SemiBold>{bookingDate}일 예정내역 </Body2SemiBold>
+            <Body2SemiBold>
+              {reservationInfo.startDate}일 예정내역{" "}
+            </Body2SemiBold>
           </>
         )}
       </Banner>
       <Content>
         <StationInfo>
-          <StationName>{departureStation}</StationName>
+          <StationName>{reservationInfo.startStationName}</StationName>
 
-          {cardType === "failed" ? (
+          {type === "ALLOCATION_SUCCESS" ? (
             <Time>-</Time>
           ) : (
-            <Time>{departureTime} 탑승</Time>
+            <Time>
+              {reservationInfo.expectedStartTime === null
+                ? "-"
+                : `${formatTime(reservationInfo.expectedStartTime)} 탑승`}{" "}
+            </Time>
           )}
         </StationInfo>
         <ChevronRightIcon size={32} fill={colors.gray30} />
         <StationInfo>
-          <StationName>{destination}</StationName>
-          <Time>{arrivalTime} 하차</Time>
+          <StationName>{reservationInfo.endStationName}</StationName>
+          <Time>{formatTime(reservationInfo.expectedEndTime)} 하차</Time>
         </StationInfo>
       </Content>
       <EmptyCircle
         $isRead={isRead}
         $direction="left"
-        $cardType={cardType}
+        $cardType={type}
       ></EmptyCircle>
     </CardContainer>
   );

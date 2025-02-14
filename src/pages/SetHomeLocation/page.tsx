@@ -26,7 +26,10 @@ export default function SetHomeLocation() {
   const { houseInfo, stationInfo: stationInfoServer } = houseAndStationInfo;
 
   const [roadAddress, setRoadAddress] = useState<string | null>("");
-  const [stationInfo, setStationInfo] = useState<LocationInfo>({
+  const [stationInfo, setStationInfo] = useState<{
+    latitude: number;
+    longitude: number;
+  }>({
     latitude: 0,
     longitude: 0,
   });

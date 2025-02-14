@@ -52,10 +52,9 @@ export default function SetLocationBottomModal({
   const setLocationSubmit = () => {
     putHomeLocationMutation(
       {
-        houseLatitude: houseInfo.latitude,
-        houseLongitude: houseInfo.longitude,
-        stationLatitude: stationInfo.latitude,
-        stationLongitude: stationInfo.longitude,
+        stationRoadAddressName: roadAddress!,
+        latitude: stationInfo.latitude,
+        longitude: stationInfo.longitude,
         stationName: addressNickname,
       },
       {
