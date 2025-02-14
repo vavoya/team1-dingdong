@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/bus")
@@ -41,10 +41,10 @@ public class BusController {
     public ResponseEntity<GetAvailableBusLine.Response> getBusSchedules(
             @LoginUser AuthUser authUser,
             @RequestParam("direction") Direction direction,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("time") ZonedDateTime time
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) @RequestParam("time") LocalDateTime time
     ) {
         try {
-            GetAvailableBusLine.Param param = new GetAvailableBusLine.Param(authUser.id(), time.toLocalDateTime(), direction);
+            GetAvailableBusLine.Param param = new GetAvailableBusLine.Param(authUser.id(), time, direction);
             GetAvailableBusLine.Response result = getAvailableBusLine.execute(param);
             return ResponseEntity.ok(result);
         } catch (DomainException e) {

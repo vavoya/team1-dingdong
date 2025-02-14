@@ -1,0 +1,11 @@
+services:
+  app:
+    image: shortboy710/dingdong:latest
+    container_name: dingdong
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env

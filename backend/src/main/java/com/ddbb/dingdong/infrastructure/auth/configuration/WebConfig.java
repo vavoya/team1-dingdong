@@ -1,7 +1,7 @@
 package com.ddbb.dingdong.infrastructure.auth.configuration;
 
-import com.ddbb.dingdong.infrastructure.auth.annotation.LoginUserArgumentResolver;
-import com.ddbb.dingdong.infrastructure.auth.filter.SessionInterceptor;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -9,7 +9,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.List;
+import com.ddbb.dingdong.infrastructure.auth.annotation.LoginUserArgumentResolver;
+import com.ddbb.dingdong.infrastructure.auth.filter.SessionInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -32,7 +33,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(sessionInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/api/auth/login", "/api/auth/signup", "/api/auth/check-email", "/api/school");
+                .excludePathPatterns("/api/auth/login", "/api/auth/signup", "/api/auth/check-email",
+                        "/api/school", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**");
     }
 
     @Override
@@ -48,8 +50,8 @@ public class WebConfig implements WebMvcConfigurer {
                         String.format("%s://%s:%s",CLIENT_SCHEMA, CLIENT_ADDRESS, CLIENT_PORT)
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("Content-Type", "credentials", "cookie")
-                .exposedHeaders("")
+                .allowedHeaders("Cookie", "credentials", "Content-Type")
+                .exposedHeaders("Set-Cookie")
                 .allowCredentials(true)
                 .maxAge(3600); // 1시간 동안 pre-flight 요청 결과를 캐시
     }

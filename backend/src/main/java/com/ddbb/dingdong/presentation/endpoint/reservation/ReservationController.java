@@ -78,7 +78,9 @@ public class ReservationController {
                 userId,
                 generalReservationRequestDTO.getDirection(),
                 generalReservationRequestDTO.getDates().stream().map(
-                        reservationInfo -> new RequestGeneralReservationUseCase.Param.ReservationInfo(reservationInfo.getDate())
+                        reservationInfo -> new RequestGeneralReservationUseCase.Param.ReservationInfo(
+                                reservationInfo.getDate()
+                        )
                 ).toList()
         );
         RequestGeneralReservationUseCase.Result result;
@@ -124,7 +126,9 @@ public class ReservationController {
                         userId,
                         generalReservationConfirmDTO.getDirection(),
                         generalReservationConfirmDTO.getDates().stream().map(
-                                reservationInfo -> new MakeGeneralReservationUseCase.Param.ReservationInfo.ReservationDate(reservationInfo.getDate())
+                                reservationInfo -> new MakeGeneralReservationUseCase.Param.ReservationInfo.ReservationDate(
+                                        reservationInfo.getDate()
+                                )
                         ).toList()
                 )
         );
