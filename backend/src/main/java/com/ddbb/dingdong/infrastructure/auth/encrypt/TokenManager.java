@@ -18,6 +18,7 @@ public class TokenManager {
     private static final String DELIMITER = "$";
     private final SHA512Encoder sha512Encoder;
     private final AESEncoder aesEncoder;
+    private final TokenRepository tokenRepository;
 
     public String generateToken(Object target) {
         String data;
@@ -34,6 +35,10 @@ public class TokenManager {
     }
 
     public boolean validateToken(String token, Object target)  {
+        if(tokenRepository.existsByToken(token)) {
+            throw TokenErrors.ALREADY_USED.toException();
+        }
+
         String data;
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -60,7 +65,14 @@ public class TokenManager {
 
         String newHashedParam = sha512Encoder.hash(data);
         if (!newHashedParam.equals(originalHashedParam)) throw TokenErrors.INCORRECT_SIGNATURE.toException();
+
         return true;
+    }
+
+    public void saveToken(String token) {
+        Token newToken = new Token();
+        newToken.setToken(token);
+        tokenRepository.save(newToken);
     }
 
 }
