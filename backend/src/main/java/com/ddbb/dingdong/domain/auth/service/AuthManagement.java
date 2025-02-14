@@ -1,5 +1,7 @@
 package com.ddbb.dingdong.domain.auth.service;
 
+import com.ddbb.dingdong.domain.auth.service.error.AuthErrors;
+import com.ddbb.dingdong.domain.auth.service.event.SignUpSuccessEvent;
 import com.ddbb.dingdong.util.ParamValidator;
 import com.ddbb.dingdong.domain.payment.entity.Wallet;
 import com.ddbb.dingdong.domain.payment.repository.WalletRepository;
@@ -11,8 +13,8 @@ import com.ddbb.dingdong.infrastructure.auth.AuthUser;
 import com.ddbb.dingdong.infrastructure.auth.AuthenticationManager;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.PasswordEncoder;
 import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.SignUpRequestDto;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -25,8 +27,9 @@ public class AuthManagement {
     private final WalletRepository walletRepository;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationEventPublisher eventPublisher;
 
-    private static final int BALANCE = 50000;
+    private static final int WELCOME_MONEY = 50000;
 
     public void signUp(String name, String email, String password, SignUpRequestDto.Home home, SignUpRequestDto.School school) {
         User user = User.builder()
@@ -52,8 +55,10 @@ public class AuthManagement {
                 ))
                 .build();
         user = userRepository.save(user);
-        Wallet wallet = new Wallet(null, user.getId(), BALANCE, LocalDateTime.now(), new ArrayList<>());
+        Wallet wallet = new Wallet(null, user.getId(), WELCOME_MONEY, LocalDateTime.now(), new ArrayList<>());
         walletRepository.save(wallet);
+
+        eventPublisher.publishEvent(new SignUpSuccessEvent(user.getId()));
     }
 
     public void login(String email, String password) {

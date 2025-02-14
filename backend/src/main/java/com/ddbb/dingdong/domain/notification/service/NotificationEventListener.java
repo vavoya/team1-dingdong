@@ -22,6 +22,7 @@ public class NotificationEventListener {
     private final NotificationManagement notificationManagement;
     private final SocketRepository socketRepository;
     private static final int TICKET_PRICE = 1000;
+    private static final int WELCOME_MONEY = 10000;
     private static final String ALARM_SOCKET_MSG = "alarm";
 
     @Async
@@ -44,7 +45,7 @@ public class NotificationEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @EventListener
     protected void sendWelcomeNotification(SignUpSuccessEvent event) {
-        notificationManagement.sendNotification(NotificationType.ALLOCATION_FAILED, event.getUserId(), null, TICKET_PRICE);
+        notificationManagement.sendNotification(NotificationType.ALLOCATION_FAILED, event.getUserId(), null, WELCOME_MONEY);
         sendAlarm(event.getUserId());
     }
 
