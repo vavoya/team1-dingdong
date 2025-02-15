@@ -1,12 +1,16 @@
-import {useLocation, useNavigate as originUseNavigate} from "react-router-dom";
+import {
+  useLocation,
+  useNavigate as originUseNavigate,
+} from "react-router-dom";
 
-function useNavigate(href: string, state?: any) {
-    const location = useLocation();
-    const navigate = originUseNavigate();
+export function useCustomNavigate() {
+  const location = useLocation();
+  const navigate = originUseNavigate();
 
+  return (href: string, state?: any) => {
     if (state != null) {
-        sessionStorage.setItem(location.pathname, JSON.stringify(state))
+      sessionStorage.setItem(location.pathname, JSON.stringify(state));
     }
-
-    return navigate(href)
+    return navigate(href);
+  };
 }
