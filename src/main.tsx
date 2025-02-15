@@ -46,7 +46,7 @@ import {
 } from "@/api/query/users";
 import { middleware } from "@/middleware.tsx";
 
-// import { notificationLoader } from "./hooks/Notification/useNotification.ts";
+import { notificationLoader } from "./hooks/Notification/useNotification.ts";
 
 export const router = createBrowserRouter([
   {
@@ -86,7 +86,8 @@ export const router = createBrowserRouter([
       {
         path: "notification",
         Component: Notification,
-        // loader: createLoader([notificationLoader]),
+
+        loader: createLoader(() => [notificationLoader]),
       },
       {
         path: "login",
@@ -119,16 +120,19 @@ export const router = createBrowserRouter([
         // 버스 예매하기
         path: "custom-bus-booking",
         Component: CustomRouteBooking,
+        loader: createLoader(() => [users_me(), users_home_locations()]),
       },
       {
         // 함께 타기 버스 선택하기
         path: "fixed-bus-select-bus",
         Component: FixedRouteBookingSelectBus,
+        loader: createLoader(() => [users_me(), users_home_locations()]),
       },
       {
         // 함께 타기 예매하기
         path: "fixed-bus-booking",
         Component: FixedRouteBooking,
+        loader: createLoader(() => [users_me(), users_home_locations()]),
       },
       {
         // 실시간 버스 위치
