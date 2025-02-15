@@ -15,6 +15,7 @@ import { CommuteType } from "@/pages/BusBooking/types/commuteType";
 import { SelectedDateType } from "../../page";
 
 interface FixedBookingCalendarViewProps {
+  busTimeSchedule: string[];
   selectedDate: SelectedDateType | null;
   setSelectedDate: React.Dispatch<
     React.SetStateAction<SelectedDateType | null>
@@ -23,6 +24,7 @@ interface FixedBookingCalendarViewProps {
 }
 
 export default function FixedBookingCalendarView({
+  busTimeSchedule,
   selectedDate,
   setSelectedDate,
   commuteType,
@@ -46,7 +48,6 @@ export default function FixedBookingCalendarView({
   console.log(shouldIncludeNextMonth, "??");
 
   const months = useRef(daysArray);
-  console.log(shouldIncludeNextMonth.current, "넘어가하니?!!!!!");
 
   useEffect(() => {
     const screenWidth = window.innerWidth;
@@ -76,6 +77,15 @@ export default function FixedBookingCalendarView({
     return isSelected;
   };
 
+  const isHaveSchedule = (date: Date) => {
+    return busTimeSchedule.some(
+      (schedule) =>
+        date.getFullYear() === new Date(schedule).getFullYear() &&
+        date.getMonth() === new Date(schedule).getMonth() &&
+        date.getDate() === new Date(schedule).getDate()
+    );
+  };
+
   return (
     <S.CalendarWrapper>
       <S.CalendarHeader>
@@ -91,7 +101,8 @@ export default function FixedBookingCalendarView({
                   return;
                 }
                 setCurrentMonthIndex(currentMonthIndex - 1);
-              }}>
+              }}
+            >
               <ChevronLeftIcon size={24} fill={colors.gray50} />
             </S.IconWrapper>
 
@@ -101,7 +112,8 @@ export default function FixedBookingCalendarView({
                   return;
                 }
                 setCurrentMonthIndex(currentMonthIndex + 1);
-              }}>
+              }}
+            >
               <ChevronRightIcon size={24} fill={colors.gray50} />
             </S.IconWrapper>
           </S.IconBox>
@@ -129,6 +141,7 @@ export default function FixedBookingCalendarView({
                   commuteType,
                   "fixedBusBooking"
                 );
+
                 return (
                   <S.DayButton
                     onClick={() => {
@@ -139,13 +152,14 @@ export default function FixedBookingCalendarView({
                       });
                     }}
                     $width={dateButtonWidth}
-                    disabled={disabledDate}
+                    disabled={disabledDate || !isHaveSchedule(date)}
                     key={`${day}-${dayIndex}`}
                     $isHighlighted={isDateHighlighted(
                       currentDate.year,
                       currentDate.month + 1,
                       day
-                    )}>
+                    )}
+                  >
                     {day}
                   </S.DayButton>
                 );
@@ -154,7 +168,8 @@ export default function FixedBookingCalendarView({
                   <S.DayButton
                     $width={dateButtonWidth}
                     key={`${day}-${dayIndex}`}
-                    $isHighlighted={false}>
+                    $isHighlighted={false}
+                  >
                     {day}
                   </S.DayButton>
                 );

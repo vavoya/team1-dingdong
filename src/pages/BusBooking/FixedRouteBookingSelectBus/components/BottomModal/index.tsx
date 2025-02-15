@@ -22,28 +22,54 @@ import OutlineButton from "@/components/designSystem/Button/OutlineButton";
 import { useNavigate } from "react-router-dom";
 import BusIcon from "@/components/designSystem/Icons/Home/BusIcon";
 // import { useGetBusRouteCoordinates } from "@/hooks/BusBooking/useFixedBooking";
-type RouteInfo = {
-  busId: number;
-  time: string;
-  departure: string;
-  location: string;
-  busNumber: string;
-  remainSeat: string;
-  totalPeople: string;
-};
 
+interface BusStop {
+  name: string;
+  time: string; // ISO 날짜 문자열
+  longitude: number;
+  latitude: number;
+}
+
+interface BusInfo {
+  name: string;
+  reservedSeat: number;
+  totalSeat: number;
+}
+
+interface RouteInfo {
+  busScheduleId: number;
+  busStop: BusStop;
+  busInfo: BusInfo;
+}
+type Points = { lat: number; lng: number };
 interface BusSelectBottomModalProps {
+  busPathPoints: Points[];
   busInfoArray: RouteInfo[];
-  selectedBusCardId: number;
-  setSelectedBusCardId: React.Dispatch<React.SetStateAction<number>>;
+  selectedBusCardIndex: number;
+  setSelectedBusCardIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 export default function BusSelectBottomModal({
+  busPathPoints,
   busInfoArray,
-  selectedBusCardId,
-  setSelectedBusCardId,
+  selectedBusCardIndex,
+  setSelectedBusCardIndex,
 }: BusSelectBottomModalProps) {
   const navigate = useNavigate();
 
+  const convertISOToHourMinute = (ISODate: string) => {
+    const date = new Date(ISODate);
+    return `${date.getHours().toString().padStart(2, "0")}:${date
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}`;
+  };
+  const { direction } = JSON.parse(
+    sessionStorage.getItem("/fixed-bus-booking")!
+  );
+  // 출발, 도착
+  const departOrArrival = direction === "TO_SCHOOL" ? "출발" : "도착";
+  // 탑승, 하차
+  const boardingOrGetOff = direction === "TO_SCHOOL" ? "탑승" : "하차";
   return (
     <BottomModal showBottomSheet={true}>
       <BusCardTitle>
@@ -51,24 +77,30 @@ export default function BusSelectBottomModal({
       </BusCardTitle>
 
       <BusCardWrapper>
-        {busInfoArray.map((data) => (
+        {busInfoArray.map((schedule, cardIndex) => (
           <BusSelectionCard
-            key={data.departure}
-            onClick={() => setSelectedBusCardId(data.busId)}
-            $isSelected={selectedBusCardId === data.busId}>
+            key={schedule.busScheduleId}
+            onClick={() => setSelectedBusCardIndex(cardIndex)}
+            $isSelected={cardIndex === selectedBusCardIndex}
+          >
             <Time>
-              <TimeValue>{data.time}</TimeValue>
-              <DepartOrArrival>{data.departure}</DepartOrArrival>
+              <TimeValue>
+                {convertISOToHourMinute(schedule.busStop.time)}
+              </TimeValue>
+              <DepartOrArrival>{departOrArrival}</DepartOrArrival>
             </Time>
-            <LocationText>{data.location}</LocationText>
+            <LocationText>
+              {schedule.busStop.name} {boardingOrGetOff}
+            </LocationText>
+
             <BusInfo>
               <BusNo>
                 <BusIcon />
-                <BusNumber>{data.busNumber}</BusNumber>
+                <BusNumber>버스{schedule.busInfo.name}</BusNumber>
               </BusNo>
               <PeopleInfo>
-                <RemainSeat>{data.remainSeat}</RemainSeat>
-                <TotalSeat>/{data.totalPeople}명</TotalSeat>
+                <RemainSeat>{schedule.busInfo.reservedSeat}</RemainSeat>
+                <TotalSeat>/{schedule.busInfo.totalSeat}명</TotalSeat>
               </PeopleInfo>
             </BusInfo>
           </BusSelectionCard>

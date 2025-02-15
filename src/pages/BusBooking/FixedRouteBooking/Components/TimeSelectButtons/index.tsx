@@ -1,5 +1,6 @@
 import { SelectionWrapper, TimeSelectButton } from "./styles";
 import { timeType } from "../../page";
+import { useEffect, useState } from "react";
 
 interface TimeSelectButtonsProps {
   decidedSchedule: timeType[];
@@ -13,6 +14,7 @@ export default function TimeSelectButtons({
   setSelectedHourMinute,
 }: TimeSelectButtonsProps) {
   console.log(selectedHourMinute, "버튼 누름");
+
   return (
     <SelectionWrapper>
       {decidedSchedule.map(({ hour, minute }: timeType) => (
@@ -22,7 +24,8 @@ export default function TimeSelectButtons({
           $isHighlighted={
             hour === selectedHourMinute?.hour &&
             minute === selectedHourMinute.minute
-          }>
+          }
+        >
           {hour}:{minute.toString().padStart(2, "0")}
         </TimeSelectButton>
       ))}
