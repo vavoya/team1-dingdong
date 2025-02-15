@@ -3,6 +3,7 @@ package com.ddbb.dingdong.presentation.endpoint.bus;
 import com.ddbb.dingdong.application.exception.APIException;
 import com.ddbb.dingdong.application.usecase.bus.GetAvailableBusLine;
 import com.ddbb.dingdong.application.usecase.bus.GetBusSchedulesUseCase;
+import com.ddbb.dingdong.application.usecase.bus.GetBusStopLocationUseCase;
 import com.ddbb.dingdong.application.usecase.bus.GetPathPointLine;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
@@ -23,6 +24,7 @@ public class BusController {
     private final GetBusSchedulesUseCase getBusSchedulesUseCase;
     private final GetAvailableBusLine getAvailableBusLine;
     private final GetPathPointLine getPathPointLine;
+    private final GetBusStopLocationUseCase getBusStopLocationUseCase;
 
     @GetMapping("/schedule/time")
     public ResponseEntity<GetBusSchedulesUseCase.Response> getBusSchedules(
@@ -61,6 +63,19 @@ public class BusController {
             GetPathPointLine.Param param = new GetPathPointLine.Param(busScheduleId);
             GetPathPointLine.Response result = getPathPointLine.execute(param);
             return ResponseEntity.ok(result);
+        } catch (DomainException e) {
+            throw new APIException(e, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/bus-stop/location/{busScheduleId}")
+    public ResponseEntity<GetBusStopLocationUseCase.Response> getBusStopLocation(
+            @LoginUser AuthUser authUser,
+            @PathVariable("busScheduleId") Long busScheduleId
+    ) {
+        try {
+            GetBusStopLocationUseCase.Param param = new GetBusStopLocationUseCase.Param(authUser.id(), busScheduleId);
+            return ResponseEntity.ok(getBusStopLocationUseCase.execute(param));
         } catch (DomainException e) {
             throw new APIException(e, HttpStatus.NOT_FOUND);
         }
