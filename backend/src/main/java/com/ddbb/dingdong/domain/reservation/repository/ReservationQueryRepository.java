@@ -55,19 +55,4 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
                CASE WHEN :sort = 1 THEN r.startDate END ASC
         """)
     Page<UserReservationProjection> queryReservationsByUserId(@Param("userId") Long userId, @Param("category") int category, @Param("sort") int sort, Pageable p);
-
-    @Query("""
-        SELECT r.id
-            FROM Reservation r
-        WHERE (
-         ( r.direction = 'TO_SCHOOL' AND r.arrivalTime = :time )
-         OR
-         ( r.direction = 'TO_HOME' AND r.departureTime = :time )
-        )
-        AND r.userId = :userId
-    """)
-    List<ReservationIdProjection> findReservationIdByUserIdAndTime(
-            @Param("userId") Long userId,
-            @Param("time") LocalDateTime time
-    );
 }

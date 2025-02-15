@@ -2,8 +2,6 @@ package com.ddbb.dingdong.application.usecase.reservation;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
-import com.ddbb.dingdong.application.exception.APIException;
-import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.domain.payment.service.PaymentManagement;
 import com.ddbb.dingdong.domain.reservation.entity.Reservation;
 import com.ddbb.dingdong.domain.reservation.entity.Ticket;
@@ -39,25 +37,32 @@ public class MakeTogetherReservationUseCase implements UseCase<MakeTogetherReser
     @Override
     public Void execute(Param param) {
         validateToken(param);
-        LocalDateTime hopeTime = extractTimeFromBusSchedule(param);
-        checkHasDuplicatedReservation(param.reservationInfo.userId, hopeTime);
+        checkHasDuplicatedReservation(param);
         reserve(param);
         pay(param);
+        saveToken(param);
 
         return null;
     }
 
-    private void checkHasDuplicatedReservation(Long userId, LocalDateTime hopeTime) {
+    private void saveToken(Param param) {
+        tokenManager.saveToken(param.token);
+    }
+
+    private void checkHasDuplicatedReservation(Param param) {
+        Long userId = param.getReservationInfo().userId;
+        LocalDateTime hopeTime = extractTimeFromBusSchedule(param);
+
         reservationManagement.checkHasDuplicatedReservation(userId, hopeTime);
     }
 
     private LocalDateTime extractTimeFromBusSchedule(MakeTogetherReservationUseCase.Param param) {
         Long busScheduleId = param.reservationInfo.busScheduleId;
         BusSchedule schedule = busScheduleRepository.findById(busScheduleId).orElseThrow(ReservationErrors.BUS_SCHEDULE_NOT_FOUND::toException);
-        LocalDateTime hopeTime = schedule.getDirection().equals(Direction.TO_SCHOOL)
+
+        return schedule.getDirection().equals(Direction.TO_SCHOOL)
                 ? schedule.getArrivalTime()
                 : schedule.getDepartureTime();
-        return hopeTime;
     }
 
     private void validateToken(Param param) {

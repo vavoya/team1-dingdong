@@ -30,8 +30,10 @@ public class RequestGeneralReservationUseCase implements UseCase<RequestGeneralR
     @Override
     public Result execute(Param param) {
         param.validate();
-        checkHasDuplicatedReservation(param.userId, param.reservationDates);
+        checkHasDuplicatedReservation(param);
+        validateReservationDates(param);
         String token = generateToken(param);
+
         return new Result(token);
     }
 
@@ -39,13 +41,18 @@ public class RequestGeneralReservationUseCase implements UseCase<RequestGeneralR
         return tokenManager.generateToken(param);
     }
 
-    private void checkHasDuplicatedReservation(Long userId, List<RequestGeneralReservationUseCase.Param.ReservationInfo> hopeTimes) {
-        boolean hasDuplicates = hopeTimes.stream()
-                .map(Param.ReservationInfo::getDate)
-                .collect(Collectors.toSet()).size() < hopeTimes.size();
-        if (hasDuplicates) throw ReservationErrors.DUPLICATED_RESERVATION_DATE.toException();
+    private void checkHasDuplicatedReservation(Param param) {
+        Long userId = param.userId;
+        List<Param.ReservationInfo> hopeTimes = param.reservationDates;
         for (RequestGeneralReservationUseCase.Param.ReservationInfo hopeTime : hopeTimes) {
-            reservationManagement.checkHasDuplicatedReservation(userId, hopeTime.date);
+           reservationManagement.checkHasDuplicatedReservation(userId, hopeTime.date);
+        }
+    }
+
+    private void validateReservationDates(Param param) {
+        List<LocalDateTime> reservationDates = param.getReservationDates().stream().map(Param.ReservationInfo::getDate).toList();
+        for(LocalDateTime date : reservationDates) {
+            reservationManagement.validateGeneralReservationDate(date, param.getDirection());
         }
     }
 
@@ -53,8 +60,7 @@ public class RequestGeneralReservationUseCase implements UseCase<RequestGeneralR
     @AllArgsConstructor
     public static class Param implements Params {
         private Long userId;
-        @JsonFormat(shape = JsonFormat.Shape.STRING)
-        private String direction;
+        private Direction direction;
         private List<ReservationInfo> reservationDates;
 
         @Getter
@@ -73,39 +79,14 @@ public class RequestGeneralReservationUseCase implements UseCase<RequestGeneralR
 
         @Override
         public boolean validate() {
-            if(!validateDirection(direction)) throw ReservationInvalidParamErrors.INVALID_DIRECTION.toException();
-            if(!validateReservationsDate(reservationDates)) throw ReservationInvalidParamErrors.INVALID_DATE.toException();
-
-            return true;
-        }
-
-        private static boolean validateDirection(String direction) {
-            try {
-                Direction.valueOf(direction);
-            } catch (Exception e) {
-                return false;
+            boolean hasDuplicates = reservationDates.stream()
+                    .map(Param.ReservationInfo::getDate)
+                    .collect(Collectors.toSet()).size() < reservationDates.size();
+            if (hasDuplicates) {
+                throw ReservationInvalidParamErrors.DUPLICATED_DATES.toException();
             }
 
             return true;
-        }
-
-        private static boolean validateReservationsDate(List<ReservationInfo> reservations) {
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime minDate, maxDate;
-            minDate = now.plusHours(48);
-            maxDate = now.plusMonths(2);
-
-            return reservations.stream().anyMatch(
-                    reservationInfo -> {
-                        if (reservationInfo.date.isBefore(minDate) || reservationInfo.date.isAfter(maxDate)) {
-                            return false;
-                        }
-                        if (reservationInfo.date.getMinute() != 0 && reservationInfo.date.getMinute() != 30) {
-                            return false;
-                        }
-                        return true;
-                    }
-            );
         }
     }
 
