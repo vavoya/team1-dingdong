@@ -2,6 +2,7 @@ package com.ddbb.dingdong.domain.transportation.repository;
 
 import com.ddbb.dingdong.domain.transportation.entity.BusSchedule;
 import com.ddbb.dingdong.domain.transportation.repository.projection.BusReservedSeatProjection;
+import com.ddbb.dingdong.domain.transportation.repository.projection.BusStopLocationProjection;
 import com.ddbb.dingdong.domain.transportation.repository.projection.ScheduleTimeProjection;
 import jakarta.persistence.LockModeType;
 import com.ddbb.dingdong.domain.transportation.repository.projection.UserBusStopProjection;
@@ -47,4 +48,16 @@ public interface BusScheduleQueryRepository extends JpaRepository<BusSchedule, L
             "WHERE bs.id = :busScheduleId " +
             "ORDER BY busStop.sequence")
     List<UserBusStopProjection> findUserBusStops(@Param("busScheduleId") Long busScheduleId);
+
+    @Query("SELECT busStop.longitude as longitude, busStop.latitude as latitude " +
+            "FROM Ticket ticket " +
+            "JOIN BusSchedule busSchedule ON busSchedule.id = ticket.busScheduleId " +
+            "JOIN Reservation reservation ON reservation.id = ticket.reservation.id " +
+            "JOIN BusStop busStop ON busStop.id = ticket.busStopId " +
+            "WHERE reservation.userId = :userId AND busSchedule.id = :busScheduleId"
+    )
+    Optional<BusStopLocationProjection> findBusStopLocation(
+            @Param("userId") Long userId,
+            @Param("busScheduleId") Long busScheduleId
+    );
 }
