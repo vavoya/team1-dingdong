@@ -149,6 +149,7 @@ function handleAxiosError(
       }
     } else {
       // 로그인되지 않은 상태에서 보호된 페이지 접근 → 로그인 페이지로 이동
+      if (status === 401 && currentUrl.startsWith("/")) return;
       if (status === 401) {
         renderErrorModal2(
           render,
