@@ -1,32 +1,31 @@
-// import { getAIRecommendationTime } from "@/api/BusBooking/customBusBooking";
 import {
+  getBusTimeScheduleArray,
+  getBusPath,
   getAvailableBusInfoArray,
-  getBusRouteCoordinates,
 } from "@/api/BusBooking/fixedBusBooking";
-import { CommuteType } from "@/pages/BusBooking/types/commuteType";
 
 import { useQuery } from "@tanstack/react-query";
 
-export const useGetAvailableBusInfo = (
-  commuteType: CommuteType,
-  year: number,
-  month: number,
-  day: number
-) => {
-  const data = useQuery({
-    queryKey: ["fixedRouteBooking", year, month, day],
-    queryFn: () => getAvailableBusInfoArray(commuteType, year, month, day),
+export const useGetBusTimeSchedule = (direction: string) => {
+  const { data } = useQuery({
+    queryKey: ["busTimeSchedule", direction],
+    queryFn: () => getBusTimeScheduleArray(direction),
   });
-
-  return {
-    data,
-  };
+  return { data };
 };
 
-export const useGetBusRouteCoordinates = (busId: number) => {
+export const useGetAvailableBusInfo = (direction: string, time: string) => {
+  const { data } = useQuery({
+    queryKey: ["availableBusInfo", direction, time],
+    queryFn: () => getAvailableBusInfoArray(direction, time),
+  });
+  return { data };
+};
+
+export const useGetBusPath = (busScheduleId: number) => {
   const data = useQuery({
-    queryKey: ["fixedRouteBusCoordinates", busId],
-    queryFn: () => getBusRouteCoordinates(busId),
+    queryKey: ["busPath", busScheduleId],
+    queryFn: () => getBusPath(busScheduleId),
   });
 
   return {

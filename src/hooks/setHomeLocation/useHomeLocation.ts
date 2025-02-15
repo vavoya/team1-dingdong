@@ -5,14 +5,10 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export interface StationLocationInfo {
-  // location: string;
-  // nickname: string;
-
-  houseLatitude: number; // double
-  houseLongitude: number; // double
-  stationLatitude: number; // double
-  stationLongitude: number; // double
-  stationName: "우리집"; // string
+  latitude: number;
+  longitude: number;
+  stationName: string;
+  stationRoadAddressName: string;
 }
 
 export const useGetHomeLocation = () => {
