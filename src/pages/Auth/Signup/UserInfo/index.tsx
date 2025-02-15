@@ -34,10 +34,10 @@ export default function UserInfoSignup() {
 
   useEffect(() => {
     // 직접 링크 접속시, 데이터가 없다면 다시 이동.
-    if (!location.state) {
-      navigate("/signup");
-      return;
-    }
+    // if (!location.state) {
+    //   navigate("/signup");
+    //   return;
+    // }
     userInfoFromPreviousStep.current = location.state;
   }, []);
 
@@ -64,6 +64,7 @@ export default function UserInfoSignup() {
 
   const handleComplete = (data: any) => {
     let fullAddress = data.address;
+
     let extraAddress = "";
 
     if (data.addressType === "R") {
@@ -102,14 +103,14 @@ export default function UserInfoSignup() {
       ...userInfoFromPreviousStep.current,
       ...formData,
     };
-    postUserInfoMutation(finalUserInfo, {
-      onSuccess: () => {
-        navigate("/home");
-      },
-      onError: () => {
-        // 에러 핸들링. 회원 가입 실패 에러 모달
-      },
-    });
+    // postUserInfoMutation(finalUserInfo, {
+    //   onSuccess: () => {
+    //     navigate("/home");
+    //   },
+    //   onError: () => {
+    //     // 에러 핸들링. 회원 가입 실패 에러 모달
+    //   },
+    // });
   };
   return (
     <>

@@ -2,7 +2,7 @@ import {
   postSendUserSchoolEmail,
   postUserVerificationCode,
   postUserInfo,
-  UserInfo,
+  SignUpRequestType,
 } from "@/api/SignUp/signUp";
 import { useMutation } from "@tanstack/react-query";
 
@@ -26,7 +26,7 @@ export const usePostUserVerificationCode = () => {
 
 export const usePostUserInfo = () => {
   const { mutateAsync: postUserInfoMutation } = useMutation({
-    mutationFn: (userInfo: UserInfo) => {
+    mutationFn: (userInfo: SignUpRequestType) => {
       return postUserInfo(userInfo);
     },
   });
