@@ -1,12 +1,26 @@
 import { axiosInstance } from "@/api";
 
-export interface UserInfo {
+interface HomeLocation {
+  houseLatitude: number;
+  houseLongitude: number;
+  stationLatitude?: number;
+  stationLongitude?: number;
+  stationName?: string;
+}
+
+interface SchoolLocation {
+  name: string;
+  roadNameAddress: string;
+  latitude: number;
+  longitude: number;
+}
+
+export interface SignUpRequestType {
+  name: string;
   email: string;
   password: string;
-  name: string;
-  address: string;
-  addressNickname: string;
-  phoneNumber: string;
+  home: HomeLocation;
+  school: SchoolLocation;
 }
 
 export async function postSendUserSchoolEmail(email: string) {
@@ -31,11 +45,9 @@ export async function postUserVerificationCode(code: string) {
   }
 }
 
-export async function postUserInfo(userInfo: UserInfo) {
+export async function postUserInfo(userInfo: SignUpRequestType) {
   try {
-    return axiosInstance.post("/api/signup", {
-      userInfo,
-    });
+    return axiosInstance.post("/api/auth/signup", userInfo);
   } catch (err: any) {
     console.error("회원가입 실패:", err);
     throw new Error(err);
