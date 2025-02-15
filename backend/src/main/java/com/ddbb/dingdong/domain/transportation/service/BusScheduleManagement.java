@@ -75,7 +75,6 @@ public class BusScheduleManagement {
     }
 
     // TODO:: bulk update
-    @Transactional
     public void updateBusStopTimes(List<UserBusStopTime> userBusStopTimes, List<UserBusStopTime> oldUserBusStopTimes) {
         for (int i = 0; i < userBusStopTimes.size(); i++) {
             UserBusStopTime oldUserBusStopTime = oldUserBusStopTimes.get(i);
@@ -89,7 +88,6 @@ public class BusScheduleManagement {
         }
     }
 
-    @Transactional
     public void updateBusSchedule(Long busScheduleId, OperationStatus status) {
         int result = busScheduleRepository.updateBusScheduleStats(busScheduleId, status);
         if (result == 0) {
