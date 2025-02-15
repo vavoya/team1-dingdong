@@ -26,6 +26,8 @@ public class GetUserInfoUseCase implements UseCase<GetUserInfoUseCase.Param, Get
                 .email(staticInfo.getEmail())
                 .userName(staticInfo.getUserName())
                 .schoolName(staticInfo.getSchoolName())
+                .schoolLongitude(staticInfo.getSchoolLongitude())
+                .schoolLatitude(staticInfo.getSchoolLatitude())
                 .build();
     }
 
@@ -42,5 +44,7 @@ public class GetUserInfoUseCase implements UseCase<GetUserInfoUseCase.Param, Get
         private String userName;
         private String email;
         private String schoolName;
+        private double schoolLongitude;
+        private double schoolLatitude;
     }
 }
