@@ -4,4 +4,6 @@ public interface UserStaticOnly {
     String getUserName();
     String getEmail();
     String getSchoolName();
+    double getSchoolLongitude();
+    double getSchoolLatitude();
 }
