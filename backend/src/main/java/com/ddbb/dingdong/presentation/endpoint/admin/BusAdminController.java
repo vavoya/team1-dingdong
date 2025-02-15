@@ -17,11 +17,14 @@ public class BusAdminController {
     private final StartBusUseCase startBusUseCase;
     private final StopBusUseCase stopBusUseCase;
 
-    @PostMapping("/start")
-    public ResponseEntity<Void> startBus(@RequestBody BusStartRequestDTO busStartRequestDTO) {
+    @PostMapping("/{busScheduleId}")
+    public ResponseEntity<Void> startBus(
+            @PathVariable("busScheduleId") Long busScheduleId,
+            @RequestBody BusStartRequestDTO busStartRequestDTO
+    ) {
         try {
             startBusUseCase.execute(new StartBusUseCase.Param(
-                    busStartRequestDTO.getBusScheduleId(),
+                    busScheduleId,
                     busStartRequestDTO.getInterval(),
                     busStartRequestDTO.getDelay(),
                     busStartRequestDTO.getTimeUnit()
