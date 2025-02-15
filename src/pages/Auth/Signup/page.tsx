@@ -4,6 +4,7 @@ import { PageTitle, TitleName } from "./styles";
 
 export default function SignupLayout() {
   const navigate = useNavigate();
+
   return (
     <>
       <ExitHeader text="" onClick={() => navigate("/")} />

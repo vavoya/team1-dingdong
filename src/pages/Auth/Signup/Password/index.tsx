@@ -17,12 +17,15 @@ export default function PasswordSignup() {
   const location = useLocation();
   const navigate = useNavigate();
   const userEmail = useRef();
+  const userSchoolId = useRef();
+
   useEffect(() => {
     if (!location.state) {
       navigate("/signup");
       return;
     }
     userEmail.current = location.state.email;
+    userSchoolId.current = location.state.selectdSchoolId;
   }, []);
 
   const [password, setPassword] = useState("");
@@ -43,7 +46,13 @@ export default function PasswordSignup() {
   };
 
   useEffect(() => {
-    if (password.length <= 0) return;
+    if (password.length <= 0) {
+      setPasswordGuideText({
+        passwordGuideText: SIGNUP_TEXT.passwordGuideText,
+        color: colors.gray50,
+      });
+      return;
+    }
     if (isValidatePassword(password)) {
       setPasswordGuideText({
         passwordGuideText: SIGNUP_TEXT.passwordGuideText,
@@ -97,7 +106,11 @@ export default function PasswordSignup() {
           text="다음"
           onClick={() =>
             navigate("/signup/user-info", {
-              state: { email: userEmail.current, password },
+              state: {
+                email: userEmail.current,
+                password,
+                schoolId: userSchoolId.current,
+              },
             })
           }
         />
