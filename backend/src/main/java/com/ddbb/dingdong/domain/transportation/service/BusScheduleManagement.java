@@ -89,6 +89,14 @@ public class BusScheduleManagement {
         }
     }
 
+    @Transactional
+    public void updateBusSchedule(Long busScheduleId, OperationStatus status) {
+        int result = busScheduleRepository.updateBusScheduleStats(busScheduleId, status);
+        if (result == 0) {
+            throw BUS_UPDATE_ERROR.toException();
+        }
+    }
+
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void publishDepartureEvent(List<UserBusStopTime> userBusStopTimes) {
         for (UserBusStopTime userBusStopTime : userBusStopTimes) {
