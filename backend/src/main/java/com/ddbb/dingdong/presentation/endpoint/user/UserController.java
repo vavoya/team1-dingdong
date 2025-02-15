@@ -9,6 +9,7 @@ import com.ddbb.dingdong.infrastructure.auth.annotation.LoginUser;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,11 +37,13 @@ public class UserController {
     }
 
     @GetMapping("/wallet/balance")
-    public GetWalletBalanceUseCase.Response getWalletBalance(
+    public ResponseEntity<GetWalletBalanceUseCase.Response> getWalletBalance(
             @LoginUser AuthUser authUser
     ) {
         try {
-            return getWalletBalanceUseCase.execute(new GetWalletBalanceUseCase.Param(authUser.id()));
+            GetWalletBalanceUseCase.Param param = new GetWalletBalanceUseCase.Param(authUser.id());
+            GetWalletBalanceUseCase.Response result = getWalletBalanceUseCase.execute(param);
+            return ResponseEntity.ok(result);
         } catch (DomainException e) {
             throw new APIException(e, HttpStatus.NOT_FOUND);
         }
