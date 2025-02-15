@@ -66,3 +66,7 @@ export const NextButtonWrapper = styled.div`
   display: flex;
   padding: 20px;
 `;
+
+export const SchoolSelectWrapper = styled.div`
+  width: 100%;
+`;

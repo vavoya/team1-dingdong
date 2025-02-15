@@ -8,13 +8,24 @@ import FixedBookingCommuteSwitcher from "./Components/FixedBookingCommuteSwitche
 import FixedBookingCalendarView from "./Components/FixedBookingCalendarView";
 import TimeSelectButtons from "./Components/TimeSelectButtons";
 import {
+  DescriptionText,
   Info,
   NextButtonContainer,
   ShowSelectedSchedule,
   Subtitle,
 } from "./styles";
 import { convertInfoToText } from "@/utils/calendar/fixedBusBookingUtils";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import {
+  useGetAvailableBusInfo,
+  useGetBusTimeSchedule,
+} from "@/hooks/BusBooking/useFixedBooking";
+import { convertToISOStringArray } from "@/utils/fixedBusBooking/timeObjectToString";
+import { useCustomNavigate } from "@/hooks/useNavigate";
+import { mountModal } from "@/components/Loading";
+import Modal from "@/components/Modal";
+import { transformSchedules } from "@/utils/fixedBusBooking/busTimeScheduleStringToObject";
+import { TEMP_DATE } from "@/constants/busTimeScheduleTempData";
 // import { useGetAvailableBusInfo } from "@/hooks/BusBooking/useFixedBooking";
 
 export interface SelectedTimeType {
@@ -38,6 +49,7 @@ export type timeType = {
 
 export default function FixedRouteBooking() {
   // 예매 나가기 모달 상태관리
+
   const navigate = useNavigate();
 
   const [selectedHourMinute, setSelectedHourMinute] = useState<timeType | null>(
@@ -49,122 +61,96 @@ export default function FixedRouteBooking() {
 
   const [commuteType, setCommuteType] = useState<CommuteType>("등교");
 
+  // get 요청 정보
+  const busTimeResponse = useGetBusTimeSchedule(
+    commuteType === "등교" ? "TO_SCHOOL" : "TO_HOME"
+  );
+
+  const busTimeSchedule =
+    busTimeResponse?.data?.data?.schedules.length > 0
+      ? busTimeResponse?.data?.data?.schedules
+      : TEMP_DATE;
+
+  const busTimeScheduleObjectArray = transformSchedules(busTimeSchedule);
+
+  const { render } = mountModal();
+
   const exitButtonHandler = () => {
     // 모달 오픈. ( 예매를 취소 하시겠어요 ?)
+
+    render(
+      <Modal
+        title={["다음에 다시 예약할까요?"]}
+        text={["예매 내역이 저장되지 않습니다."]}
+        isError={false}
+        leftButton={{ text: "취소", onClick: () => render(null) }}
+        rightButton={{ text: "나가기", onClick: () => navigate(-1) }}
+      />
+    );
   };
+  console.log(selectedDate, selectedHourMinute, commuteType);
 
   const [showInfo, setShowInfo] = useState("-");
 
-  // 해당 년도, 월, 일자에 따른 확정된 버스 시간 정보 hooks 호출.
-  //   const decidedSchedule = useFixedBusRoute(selectedDate?.year,selectedDate?.month,selectedDate?.day)
-  const decidedSchedule = [
-    {
-      hour: 12,
-      minute: 0,
-    },
-    {
-      hour: 12,
-      minute: 30,
-    },
-    {
-      hour: 13,
-      minute: 0,
-    },
-    {
-      hour: 14,
-      minute: 30,
-    },
-    {
-      hour: 15,
-      minute: 0,
-    },
-    {
-      hour: 16,
-      minute: 0,
-    },
-    {
-      hour: 17,
-      minute: 0,
-    },
-    {
-      hour: 18,
-      minute: 0,
-    },
-  ];
+  const [timeArrayDependOnDate, setTimeArrayDependOnDate] = useState<
+    timeType[]
+  >(busTimeScheduleObjectArray[JSON.stringify(selectedDate)] ?? []);
+
+  useEffect(() => {
+    setTimeArrayDependOnDate(
+      busTimeScheduleObjectArray[JSON.stringify(selectedDate)] ?? []
+    );
+  }, [selectedDate]);
+
+  
 
   useEffect(() => {
     if (selectedDate && selectedHourMinute) {
       setShowInfo(convertInfoToText(selectedDate, selectedHourMinute));
+    } else {
+      setShowInfo("-");
     }
   }, [selectedDate, selectedHourMinute]);
 
+  const navigateCustom = useCustomNavigate();
+
   const nextButtonHandler = async () => {
-    if (selectedDate) {
-      //   const data = useGetAvailableBusInfo(
-      //     commuteType,
-      //     selectedDate.year,
-      //     selectedDate.month,
-      //     selectedDate.day
-      //   );
-      const busInfoArray = [
-        {
-          busId: 1,
-          time: "12:00",
-          departure: "출발",
-          location: "학동역 탑승",
-          busNumber: "버스01",
-          remainSeat: "5",
-          totalPeople: "25",
-          //   각 경로 정보가 존재함.
-        },
-        {
-          busId: 2,
-          time: "12:10",
-          departure: "출발",
-          location: "신사역 탑승",
-          busNumber: "버스01",
-          remainSeat: "5",
-          totalPeople: "25",
-        },
-        {
-          busId: 3,
-          time: "12:10",
-          departure: "출발",
-          location: "신사역 탑승",
-          busNumber: "버스01",
-          remainSeat: "5",
-          totalPeople: "25",
-        },
-      ];
-      navigate("/fixed-bus-select-bus", {
-        state: {
-          busInfoArray,
-          commuteType,
-          selectedDate,
-          selectedHourMinute,
-        },
-      });
-    }
+    const selectTimeScheduleArray = convertToISOStringArray(
+      // ISOString으로 변환
+      selectedDate!,
+      selectedHourMinute!
+    );
+    const direction = commuteType === "등교" ? "TO_SCHOOL" : "TO_HOME";
+
+    navigateCustom("/fixed-bus-select-bus", {
+      direction,
+      timeSchedule: selectTimeScheduleArray[0],
+    });
   };
+  const [{ schoolName }] = useLoaderData();
+
   return (
     <>
       <ExitHeader text="함께타기" onClick={exitButtonHandler} />
       {/* 출퇴근 스위치역할 뷰.  */}
       <FixedBookingCommuteSwitcher
+        schoolName={schoolName}
         setSelectedHourMinute={setSelectedHourMinute}
         setSelectedDate={setSelectedDate}
         commuteType={commuteType}
         setCommuteType={setCommuteType}
       />
 
+      <DescriptionText>일자를 선택해 시각을 선택해주세요</DescriptionText>
       <FixedBookingCalendarView
+        busTimeSchedule={busTimeSchedule}
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
         commuteType={commuteType}
       />
 
       <TimeSelectButtons
-        decidedSchedule={decidedSchedule}
+        decidedSchedule={timeArrayDependOnDate}
         selectedHourMinute={selectedHourMinute}
         setSelectedHourMinute={setSelectedHourMinute}
       />

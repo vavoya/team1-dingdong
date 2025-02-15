@@ -12,91 +12,186 @@ import {
   HeaderText,
   RouteMarkHeader,
 } from "./styles";
-import { useLocation } from "react-router-dom";
-import { convertInfoToText } from "@/utils/calendar/fixedBusBookingUtils";
 import LocateMeButton from "@/pages/BusTracker/components/LocateMeButton";
 import useCurrentLocation from "@/hooks/useCurrentLoaction/useCurrentLocation";
+import {
+  useGetAvailableBusInfo,
+  useGetBusPath,
+} from "@/hooks/BusBooking/useFixedBooking";
+import { useLoaderData } from "react-router-dom";
+import { ISOStringToDateDayFormat } from "@/utils/fixedBusBooking/ISOStringToDateDay";
 
-export default function FixedRouteBookingSelectBus() {
-  const location = useLocation();
-  const data = location.state; // A페이지에서 전달받은 데이터
-  console.log(data, "바뀐 것");
-
-  const [selectedBusCardId, setSelectedBusCardId] = useState(1); // 첫번째 버스의 id넣기.
-  const busTicketInfo = convertInfoToText(
-    data.selectedDate,
-    data.selectedHourMinute
-  );
-
-  const userLocation = useCurrentLocation();
-
-  const [mapCenterLocation, setMapCenterLocation] = useState({
-    // 지도의 초기 위치
-    center: {
-      lat: 37.123, //학동역
-      lng: 127.123,
+const BUS_INFO_ARRAY = [
+  // 임시 값.
+  {
+    busScheduleId: 1,
+    busStop: {
+      name: "학동역",
+      time: "2025-02-15T03:00:00Z",
+      longitude: 127.0316881,
+      latitude: 37.514298092, // 위도
     },
-    // 지도 위치 변경시 panto를 이용할지에 대해서 정의
-    isPanto: false,
-  });
-  const mapJitter = useRef<number>(0.00000001);
+    busInfo: {
+      name: "01",
+      reservedSeat: 12,
+      totalSeat: 15,
+    },
+  },
+  {
+    busScheduleId: 2,
+    busStop: {
+      name: "신사역",
+      time: "2025-02-15T04:30:00Z",
+      longitude: 127.02059,
+      latitude: 37.5165612,
+    },
+    busInfo: {
+      name: "42",
+      reservedSeat: 10,
+      totalSeat: 15,
+    },
+  },
+];
 
-  const startPoint = {
-    lat: 37.514219, //학동역
-    lng: 127.031746,
-  };
-
-  const endPoint = {
-    lat: 37.4602, //서울대
-    lng: 126.9517,
-  };
-  const busPath = [
+const BUS_PATH = [
+  [
     {
-      lat: 37.123, //학동역
-      lng: 127.123,
+      lat: 37.514298092, //학동역
+      lng: 127.0316881,
     },
+    {
+      lat: 37.50583, // 고터역
+      lng: 127.00444,
+    },
+    { lat: 37.4770008, lng: 126.9816814 }, // 사당역
+
     {
       lat: 37.4602, //서울대
       lng: 126.9517,
     },
-  ];
+  ],
+  [
+    {
+      lat: 37.5165612, //신사역
+      lng: 127.02059,
+    },
+    {
+      lat: 37.50583, // 고터역
+      lng: 127.00444,
+    },
+    { lat: 37.4770008, lng: 126.9816814 }, // 사당역
+    {
+      lat: 37.4602, //서울대
+      lng: 126.9517,
+    },
+  ],
+];
+
+export default function FixedRouteBookingSelectBus() {
+  const userLocation = useCurrentLocation();
+
+  // const { schoolLocation } = useLoaderData()[0]; // 집...(즉 탑승지)
+
+  const { stationInfo: originalUserStation } = useLoaderData()[1]; // 집...(즉 탑승지)
+
+  const schoolLocation = { latitue: 37.4602, longitude: 126.9517 }; // 임시 값. 서울대
+
+  const { direction, timeSchedule } = JSON.parse(
+    sessionStorage.getItem("/fixed-bus-booking")!
+  ); // 이전 예약 정보.
+  const commuteType = direction === "TO_SCHOOL" ? "등교" : "하교";
+
+  // 버스 정보 불러오기.
+  const busInfo = useGetAvailableBusInfo(direction, timeSchedule);
+  const busInfoArray =
+    busInfo.data?.data.result.length > 0
+      ? busInfo.data?.data.result
+      : BUS_INFO_ARRAY;
+
+  const [selectedBusCardIndex, setSelectedBusCardIndex] = useState(0); // 첫번째 버스의 id넣기.
+  const [mapCenterLocation, setMapCenterLocation] = useState({
+    // 지도의 초기 위치
+    center: {
+      lat: busInfoArray[selectedBusCardIndex].busStop.latitude, //학동역
+      lng: busInfoArray[selectedBusCardIndex].busStop.longitude,
+    },
+    // 지도 위치 변경시 panto를 이용할지에 대해서 정의
+    isPanto: false,
+  });
+
+  const [busStopName, setBusStopName] = useState(
+    busInfoArray[selectedBusCardIndex].busStop.name
+  ); // 버스 카드를 누르면서 바뀌는 승차지,하차지 이름.
+
+  const mapJitter = useRef<number>(0.00000001);
+
+  const [startPoint, setStartPoint] = useState({
+    lat: originalUserStation.latitude as number,
+    lng: originalUserStation.longitude as number,
+  });
+  const [endPoint, setEndPoint] = useState({
+    lat: schoolLocation.latitue,
+    lng: schoolLocation.longitude,
+  });
+
   const userBusStop = {
     // 유저 승차지 또는 하자치 위치
-    lat: 37.514219, //학동역
-    lng: 127.031746,
+    lat: busInfoArray[selectedBusCardIndex].busStop.latitude,
+    lng: busInfoArray[selectedBusCardIndex].busStop.longitude,
   };
   const locationToMarkOnMap = {
     startPoint,
     endPoint,
-    busPath,
+    busPath: BUS_PATH[selectedBusCardIndex],
     userBusStop,
   };
   useEffect(() => {
     // 현재 버스카드 id를 가지고 값을 fetch한다.
     // ex) startPoint, endPoint, busPath, 승차지, 하차지 이름 3가지 받기.
-    setMapCenterLocation({ center: { ...startPoint }, isPanto: false });
-  }, [selectedBusCardId]);
+    setMapCenterLocation({ center: { ...userBusStop }, isPanto: false });
+  }, [selectedBusCardIndex]);
 
-  const locationName = "학동역"; // 버스 카드를 누르면서 바뀌는 승차지,하차지 이름.
+  //path 부분.
+  const selectedBusPath = useGetBusPath(
+    busInfoArray[selectedBusCardIndex].busScheduleId
+  );
+
+  const selectedBusPathPoints =
+    selectedBusPath.data?.data?.points.length > 0
+      ? selectedBusPath.data?.data.points
+      : BUS_PATH[selectedBusCardIndex];
+
+  const [busPathPoints, setBusPathPoints] = useState(selectedBusPathPoints);
+
+  useEffect(() => {
+    setBusPathPoints(selectedBusPathPoints);
+    setBusStopName(busInfoArray[selectedBusCardIndex].busStop.name);
+  }, [selectedBusCardIndex]);
+
+  useEffect(() => {
+    setStartPoint(busPathPoints[0]);
+    setEndPoint(busPathPoints[busPathPoints.length - 1]);
+  }, [busPathPoints]);
+
   return (
     <>
       <ExitHeader text="함께 타기" />
       <RouteMarkHeader>
         <HeaderText>
-          <Departure>{data.commuteType === "등교" ? "집" : "학교"}</Departure>
+          <Departure>{commuteType === "등교" ? "집" : "학교"}</Departure>
           <ArrowRightIcon />
-          <Arrival>{data.commuteType === "등교" ? "학교" : "집"}</Arrival>
+          <Arrival>{commuteType === "등교" ? "학교" : "집"}</Arrival>
         </HeaderText>
         <BusTicketInfo>
-          {busTicketInfo}
-          {data.commuteType === "등교" ? " 도착" : " 출발"}
+          {ISOStringToDateDayFormat(timeSchedule)}
+          {commuteType === "등교" ? "도착" : "출발"}
         </BusTicketInfo>
       </RouteMarkHeader>
       <BusSelectMap
-        commuteType={data.commuteType}
+        commuteType={commuteType}
         mapCenterLocation={mapCenterLocation}
         locationToMarkOnMap={locationToMarkOnMap}
-        locationName={locationName}
+        locationName={busStopName}
       />
       <BusSelectSection>
         <LocateMeButton
@@ -114,9 +209,10 @@ export default function FixedRouteBookingSelectBus() {
           }}
         />
         <BusSelectBottomModal
-          busInfoArray={data.busInfoArray}
-          selectedBusCardId={selectedBusCardId}
-          setSelectedBusCardId={setSelectedBusCardId}
+          busPathPoints={busPathPoints}
+          busInfoArray={busInfoArray}
+          selectedBusCardIndex={selectedBusCardIndex}
+          setSelectedBusCardIndex={setSelectedBusCardIndex}
         />
       </BusSelectSection>
     </>

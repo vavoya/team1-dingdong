@@ -15,6 +15,7 @@ import EndPointPinMarkIcon from "@/components/designSystem/Icons/FixedRouteBusBo
 import useCurrentLocation from "@/hooks/useCurrentLoaction/useCurrentLocation";
 import UserOverlay from "@/pages/BusTracker/components/UserOverlay";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
+import BusRoute from "@/pages/BusTracker/components/BusRoute";
 
 interface SetLocationHomeMapProps {
   commuteType: CommuteType;
@@ -26,6 +27,7 @@ interface SetLocationHomeMapProps {
     startPoint: { lat: number; lng: number };
     endPoint: { lat: number; lng: number };
     userBusStop: { lat: number; lng: number };
+    busPath: { lat: number; lng: number }[];
   };
   locationName: string;
 }
@@ -39,6 +41,11 @@ export default function BusSelectMap({
   const { startPoint, endPoint } = locationToMarkOnMap;
   const userLocation = useCurrentLocation();
   const mapRef = useRef<kakao.maps.Map | null>(null);
+
+  const { direction } = JSON.parse(
+    sessionStorage.getItem("/fixed-bus-booking")!
+  ); // 이전 예약 정보.
+  const departureOrArrivalPinText = direction === "TO_SCHOOL" ? "도착" : "출발";
 
   // 📌 **onCreate를 사용해 mapRef 설정**
   const handleMapCreate = (map: kakao.maps.Map) => {
@@ -81,7 +88,9 @@ export default function BusSelectMap({
         id="map"
         center={mapCenterLocation.center}
         style={{ width: "100%", height: "100%" }}
-        onCreate={handleMapCreate}>
+        onCreate={handleMapCreate}
+      >
+        <BusRoute path={locationToMarkOnMap.busPath} />
         <CustomOverlayMap position={locationToMarkOnMap.userBusStop}>
           <HomePinContainer>
             <HomePinMark>
@@ -93,7 +102,7 @@ export default function BusSelectMap({
         </CustomOverlayMap>
 
         <CustomOverlayMap position={locationToMarkOnMap.endPoint}>
-          <EndPointText>도착</EndPointText>
+          <EndPointText>{departureOrArrivalPinText}</EndPointText>
           <EndPointPinMarkIcon />
         </CustomOverlayMap>
 

@@ -10,8 +10,9 @@ export const EmptyCircle = styled.div<{
   position: absolute;
 
   border: 1px solid ${colors.gray30};
-  top: ${({ $cardType }) => ($cardType === "failed" ? "150px" : "90px")};
-  left: ${({ $direction }) => ($direction === "right" ? "20px" : "358px")};
+  top: ${({ $cardType }) =>
+    $cardType === "ALLOCATION_FAILED" ? "146px" : "94px"};
+  left: ${({ $direction }) => ($direction === "right" ? "20px" : "343px")};
   width: 12px;
   height: 24px;
   ${({ $direction }) =>
@@ -31,16 +32,20 @@ export const CardContainer = styled.div`
 `;
 
 export const Banner = styled(Body2SemiBold).attrs({ as: "div" })<{
-  $cardType: "confirmed" | "failed" | "welcome";
+  $cardType: "ALLOCATION_SUCCESS" | "ALLOCATION_FAILED" | "BUS_START";
 }>`
   background-color: ${({ $cardType }) =>
-    $cardType === "confirmed" ? colors.orange100 : colors.gray30};
+    $cardType === "ALLOCATION_SUCCESS" || "BUS_START"
+      ? colors.orange100
+      : colors.gray30};
   text-align: center;
   padding: 14px 0px;
   border-bottom: 1px solid ${colors.gray30};
   font-size: 14px;
   font-weight: 500;
   color: #4f4f4f;
+  background-color: ${({ $cardType }) =>
+    $cardType === "ALLOCATION_FAILED" && colors.gray30};
 `;
 
 export const HighlightText = styled(Body1SemiBold)`

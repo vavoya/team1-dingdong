@@ -7,24 +7,24 @@ import {
   VerificationTimeText,
   NextButtonWrapper,
   EmailFormWrapper,
+  SchoolSelectWrapper,
 } from "./styles";
 import SolidButton from "@/components/designSystem/Button/SolidButton";
 import { Star } from "@/pages/SetHomeLocation/components/BottomModal/styles";
 import CustomInput from "../../Components/Input";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import CustomFormWrapper from "../../Components/FormWrapper";
-import {
-  usePostUserSchoolEmail,
-  usePostUserVerificationCode,
-} from "@/hooks/SignUp/useSignUp";
-import { useTimer } from "@/hooks/SignUp/useTimer";
+
 import { isValidEmailFormat } from "@/utils/login/emailValidation";
+import Dropdown from "../../Components/Dropdown";
 
 export default function SchoolAuthSignUp() {
+  const { schools: schoolList } = useLoaderData()[0];
+  console.log(schoolList, "학교 목록");
+
   const [email, setEmail] = useState("");
   const [emailFormatHasError, setEmailFormatHasError] = useState(false);
-  const [verificationCode, setVerificationCode] = useState("");
-  const [sendEmailButtonClicked, setSendEmailButtonClicked] = useState(false);
+
   const [nextButtonActive, setNextButtonActive] = useState(false);
 
   const [emailErrorText, setEmailErrorText] = useState("");
@@ -32,74 +32,35 @@ export default function SchoolAuthSignUp() {
 
   const [verificationCodeErrorText, setVerificationCodeErrorText] =
     useState("");
-  const [hasErrorCode, setHasErrorCode] = useState(
-    false && verificationCode.length > 0
-  );
+
+  const [selectdSchoolId, setSelectedSchoolId] = useState<number>(0);
 
   const navigate = useNavigate();
 
-  const { formattedTime, isExpired } = useTimer(5); // 인증코드 타이머.
-
-  const { postUserSchoolEmailMutation } = usePostUserSchoolEmail();
-  const { postUserVerificationCodeMutation } = usePostUserVerificationCode();
-
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-  };
-
-  const handleVerificationCodeChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setVerificationCode(e.target.value);
   };
 
   const certifiedEmail = () => {
     setEmailErrorText("");
     setHasErrorEmail(false);
   };
-  const notCertifiedEmail = () => {
-    setEmailErrorText("제휴 대학이 아닙니다");
-    setHasErrorEmail(true);
-    setTimeout(() => {
-      setEmailErrorText(""); // emailFormatError와 겹치기 피하기.
-    }, 3000);
-  };
-  const clickedEmailSendButton = () => {
-    setSendEmailButtonClicked(true);
-    postUserSchoolEmailMutation(email, {
-      onSuccess: () => {
-        certifiedEmail();
-      },
-      onError: () => {
-        notCertifiedEmail();
-      },
-    });
-  };
 
   const checkVerificationCodeHandler = () => {
-    postUserVerificationCodeMutation(verificationCode, {
-      onSuccess: () => {
-        setVerificationCodeErrorText("");
-        setHasErrorCode(false);
-        navigate("password", {
-          state: {
-            email,
-          },
-        });
-      },
-      onError: () => {
-        setVerificationCodeErrorText("올바른 인증 코드가 아닙니다.");
-        setHasErrorCode(true);
+    setVerificationCodeErrorText("");
+
+    navigate("password", {
+      state: {
+        email,
+        selectdSchoolId,
       },
     });
   };
   useEffect(() => {
-    if (
-      email.length > 0 &&
-      verificationCode.length > 0 &&
-      sendEmailButtonClicked
-    ) {
+    if (isValidEmailFormat(email) && selectdSchoolId > 0) {
       setNextButtonActive(true);
     } else setNextButtonActive(false);
-  }, [email, verificationCode, sendEmailButtonClicked]);
+  }, [email, selectdSchoolId]);
 
   useEffect(() => {
     if (email.length === 0 || isValidEmailFormat(email)) {
@@ -108,12 +69,13 @@ export default function SchoolAuthSignUp() {
     }
     setEmailFormatHasError(true);
   }, [email]);
+
   return (
     <>
       <CustomFormWrapper>
         <EmailFormWrapper>
           <Label>
-            학교 이메일 <Star>*</Star>
+            이메일 <Star>*</Star>
           </Label>
           <EmailInputWrapper>
             <EmailInput
@@ -121,39 +83,20 @@ export default function SchoolAuthSignUp() {
               value={email}
               onChange={handleEmailChange}
             />
-            <VerifyButton
-              disabled={emailFormatHasError}
-              $active={!emailFormatHasError && email.length > 0}
-              onClick={clickedEmailSendButton}
-            >
-              전송
-            </VerifyButton>
           </EmailInputWrapper>
           {emailFormatHasError && (
             <VerificationTimeText $hasError={emailFormatHasError}>
               올바른 이메일 형식이 아닙니다.
             </VerificationTimeText>
           )}
-          {!hasErrorEmail && sendEmailButtonClicked && !isExpired ? (
-            <VerificationTimeText $hasError={hasErrorEmail}>
-              인증 코드 유효 시간: {formattedTime}
-            </VerificationTimeText>
-          ) : (
-            <>
-              <VerificationTimeText $hasError={hasErrorEmail}>
-                {emailErrorText}
-              </VerificationTimeText>
-            </>
-          )}
         </EmailFormWrapper>
 
-        <CustomInput
-          hasError={hasErrorCode}
-          label="인증 코드를 입력해주세요"
-          value={verificationCode}
-          onChange={handleVerificationCodeChange}
-          placeholder="6자리 코드"
-        />
+        <SchoolSelectWrapper>
+          <Label>
+            학교를 선택해주세요<Star>*</Star>
+          </Label>
+          <Dropdown schoolList={schoolList} setSchoolId={setSelectedSchoolId} />
+        </SchoolSelectWrapper>
 
         {/* 인증코드 에러. */}
         {verificationCodeErrorText.length > 0 && (

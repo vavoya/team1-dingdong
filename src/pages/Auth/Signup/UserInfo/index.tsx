@@ -15,15 +15,23 @@ import {
   phoneNumberFormat,
 } from "@/utils/signUp/userInfoFormatValidation";
 import { usePostUserInfo } from "@/hooks/SignUp/useSignUp";
+import {
+  GeoLocationType,
+  useGeoLocationAddress,
+} from "../../hooks/useAddressToCoordinate";
+
+import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader";
 
 // 예시 타입들
 
 export default function UserInfoSignup() {
   const location = useLocation();
+  useKakaoLoader();
   const userInfoFromPreviousStep = useRef<{
     email: string;
     password: string;
-  }>({ email: "", password: "" });
+    schoolId: number;
+  }>({ email: "", password: "", schoolId: 1 });
 
   const [formData, setFormData] = useState({
     name: "",
@@ -31,13 +39,15 @@ export default function UserInfoSignup() {
     addressNickname: "",
     phoneNumber: "",
   });
+  const [homeGeoLocation, setHomeGeoLocation] =
+    useState<GeoLocationType | null>(null);
 
   useEffect(() => {
     // 직접 링크 접속시, 데이터가 없다면 다시 이동.
-    if (!location.state) {
-      navigate("/signup");
-      return;
-    }
+    // if (!location.state) {
+    //   navigate("/signup");
+    //   return;
+    // }
     userInfoFromPreviousStep.current = location.state;
   }, []);
 
@@ -63,25 +73,16 @@ export default function UserInfoSignup() {
   const open = useDaumPostcodePopup(SCRIPT_URLS.daumPostCode);
 
   const handleComplete = (data: any) => {
-    let fullAddress = data.address;
-    let extraAddress = "";
-
-    if (data.addressType === "R") {
-      if (data.bname !== "") {
-        extraAddress += data.bname;
-      }
-      if (data.buildingName !== "") {
-        extraAddress +=
-          extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
-      }
-      fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
-    }
+    let fullAddress = data.roadAddress;
 
     setFormData((prev) => ({
       ...prev,
       ["address"]: fullAddress,
     }));
   };
+
+  useGeoLocationAddress(formData.address, setHomeGeoLocation);
+  console.log(homeGeoLocation, "w위도 경도");
   const handleClick = () => {
     open({ onComplete: handleComplete });
   };
@@ -97,11 +98,22 @@ export default function UserInfoSignup() {
     formData.addressNickname.length > 0 &&
     isValidPhoneNumber(formData.phoneNumber);
 
+  console.log(userInfoFromPreviousStep.current, formData, "회원정보~");
   const submitUserInfoHandler = () => {
+    if (!homeGeoLocation) return;
+
     const finalUserInfo = {
-      ...userInfoFromPreviousStep.current,
-      ...formData,
+      email: userInfoFromPreviousStep.current.email,
+      password: userInfoFromPreviousStep.current.password,
+      name: formData.name,
+      home: {
+        houseLatitude: homeGeoLocation.latitude,
+        houseLongitude: homeGeoLocation.longitude,
+        houseRoadNameAddress: formData.address,
+      },
+      schoolId: userInfoFromPreviousStep.current.schoolId,
     };
+    console.log(finalUserInfo);
     postUserInfoMutation(finalUserInfo, {
       onSuccess: () => {
         navigate("/home");

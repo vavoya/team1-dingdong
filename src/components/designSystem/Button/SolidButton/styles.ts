@@ -10,7 +10,7 @@ export const ButtonContainer = styled(Body1SemiBold).attrs({ as: "button" })<{
     props.$active ? colors.orange900 : colors.gray40};
 
   &:hover {
-    background-color: ${colors.orangeHover};
+    background-color: ${(props) => props.$active && colors.orangeHover};
   }
   color: ${colors.white};
   flex: 1;

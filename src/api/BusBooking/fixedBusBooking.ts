@@ -1,30 +1,35 @@
 import { axiosInstance } from "@/api";
-import { CommuteType } from "@/pages/BusBooking/types/commuteType";
 
-export async function getAvailableBusInfoArray(
-  commuteType: CommuteType,
-  year: number,
-  month: number,
-  day: number
-) {
+export async function getBusTimeScheduleArray(direction: string) {
   try {
     const { data } = await axiosInstance.get(
-      `/api/availableBus?status=${
-        commuteType === "등교" ? "school" : "home"
-      }&year=${year}&month=${month}&day=${day}`
+      `/api/bus/schedule/time?direction=${direction}`
     );
-    return data;
+    return { data };
   } catch (err: any) {
-    console.error("배차 확정된 버스 카드 정보 get 실패", err);
+    console.error("함께 타기 예매 가능한 시간대 get 요청 실패", err);
     throw new Error(err);
   }
 }
 
-export async function getBusRouteCoordinates(busId: number) {
+export async function getAvailableBusInfoArray(
+  direction: string,
+  time: string
+) {
   try {
     const { data } = await axiosInstance.get(
-      `/api/availableBus?busId=${busId}`
+      `/api/bus/available?direction=${direction}&time=${time}`
     );
+    return { data };
+  } catch (err: any) {
+    console.error("함께 타기 버스 정류장 정보 get 실패", err);
+    throw new Error(err);
+  }
+}
+
+export async function getBusPath(busScheduleId: number) {
+  try {
+    const { data } = await axiosInstance.get(`/api/bus/path/${busScheduleId}`);
     return data;
   } catch (err: any) {
     console.error("해당 버스에 대한 경로 좌표 get 실패", err);

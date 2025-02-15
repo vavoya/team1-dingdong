@@ -8,7 +8,7 @@ import * as S from "./styles";
 import ChevronRightIcon from "@/components/designSystem/Icons/ChevronRightIcon";
 import CancelButton from "@/components/designSystem/Button/OutlineButton";
 import SolidButton from "@/components/designSystem/Button/SolidButton";
-import { useNavigate } from "react-router-dom";
+import { useCustomNavigate } from "@/hooks/useNavigate";
 import {
   convertIsoToDateObject,
   convertToFormattedTime,
@@ -41,8 +41,7 @@ export default function TimeViewBottomModal({
   modalType,
   selectedTimeSchduleArray,
 }: TimeViewBottomModalProps) {
-  const navigate = useNavigate();
-
+  const navigateCustom = useCustomNavigate();
   const editIconHandler = (timeScheduleIndex: number) => {
     setSelectedDate(
       convertIsoToDateObject(selectedTimeSchduleArray[timeScheduleIndex])
@@ -52,12 +51,25 @@ export default function TimeViewBottomModal({
     // 해당 시간에 해당하는 모달 open.
   };
 
+  const paymentButtonHandler = () => {
+    // 결제 페이지로 이동
+    const direction = commuteType === "등교" ? "TO_SCHOOL" : "TO_HOME";
+    // 올바른 사용 방식
+    navigateCustom("/payment/reservation", {
+      direction,
+      timeSchedule: selectedTimeSchduleArray,
+    });
+    // 세션에 저장.
+    console.log(selectedTimeSchduleArray, "지금까지의 데이터 배열");
+  };
+
   return (
     <BottomOverlayModal
       isOpen={isEditablTimeViewModalOpen}
       onClose={() => {
         setIsEditablTimeViewModalOpen(false);
-      }}>
+      }}
+    >
       <S.ModalHeader>
         선택한 일정
         <S.SelectedCount>{selectedTimeSchduleArray.length}</S.SelectedCount>
@@ -78,7 +90,8 @@ export default function TimeViewBottomModal({
                 <S.Time>{time.toString().padStart(2, "0")}</S.Time>
                 {modalType === "editable" && (
                   <S.EditIconWrapper
-                    onClick={() => editIconHandler(timeScheduleIndex)}>
+                    onClick={() => editIconHandler(timeScheduleIndex)}
+                  >
                     <ChevronRightIcon size={20} />
                   </S.EditIconWrapper>
                 )}
@@ -94,10 +107,7 @@ export default function TimeViewBottomModal({
             text="이전"
             onClick={() => setIsEditablTimeViewModalOpen(false)}
           />
-          <SolidButton
-            text="결제하기"
-            onClick={() => navigate("/payment/reservation")}
-          />
+          <SolidButton text="결제하기" onClick={paymentButtonHandler} />
         </S.ButtonBox>
       )}
     </BottomOverlayModal>

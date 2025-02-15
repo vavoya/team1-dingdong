@@ -15,6 +15,7 @@ import { CommuteType } from "@/pages/BusBooking/types/commuteType";
 import { SelectedDateType, timeType } from "../../page";
 
 interface CommuteSwitcherProps {
+  schoolName: string;
   setSelectedHourMinute: React.Dispatch<React.SetStateAction<timeType | null>>;
   setSelectedDate: React.Dispatch<
     React.SetStateAction<SelectedDateType | null>
@@ -24,6 +25,7 @@ interface CommuteSwitcherProps {
 }
 
 export default function FixedBookingCommuteSwitcher({
+  schoolName,
   setSelectedHourMinute,
   setSelectedDate,
   commuteType,
@@ -42,7 +44,8 @@ export default function FixedBookingCommuteSwitcher({
           width="24"
           height="24"
           viewBox="0 0 24 24"
-          fill="none">
+          fill="none"
+        >
           <path
             d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"
             stroke="#FF6F00"
@@ -62,7 +65,7 @@ export default function FixedBookingCommuteSwitcher({
           </PointTitle>
 
           <LocationName>
-            {commuteType === "등교" ? "-" : "서울대학교"}
+            {commuteType === "등교" ? "-" : schoolName}
           </LocationName>
         </DeparturePoint>
 
@@ -72,7 +75,7 @@ export default function FixedBookingCommuteSwitcher({
             <TitleText>{commuteType === "하교" ? "집" : "학교"}</TitleText>
           </PointTitle>
           <LocationName>
-            {commuteType === "하교" ? "-" : "서울대학교"}
+            {commuteType === "하교" ? "-" : schoolName}
           </LocationName>
         </Destination>
       </CommuteViewBox>

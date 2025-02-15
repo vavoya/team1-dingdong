@@ -167,7 +167,8 @@ export default function CalendarView({
               if (currentMonthIndex === 0) return;
               setCurrentMonthIndex(currentMonthIndex - 1);
               goToPreviousMonth(commuteType);
-            }}>
+            }}
+          >
             <ChevronLeftIcon size={24} fill={colors.gray50} />
           </S.IconWrapper>
 
@@ -179,7 +180,8 @@ export default function CalendarView({
               if (currentMonthIndex === 2) return;
               goToNextMonth(commuteType);
               setCurrentMonthIndex(currentMonthIndex + 1);
-            }}>
+            }}
+          >
             <ChevronRightIcon size={24} fill={colors.gray50} />
           </S.IconWrapper>
         </S.MonthNavigator>
@@ -223,7 +225,8 @@ export default function CalendarView({
                       currentDate.year,
                       currentDate.month + 1,
                       day
-                    )}>
+                    )}
+                  >
                     {day}
                   </S.DayButton>
                 );
@@ -232,7 +235,8 @@ export default function CalendarView({
                   <S.DayButton
                     $width={dateButtonWidth}
                     key={`${day}-${dayIndex}`}
-                    $isHighlighted={false}>
+                    $isHighlighted={false}
+                  >
                     {day}
                   </S.DayButton>
                 );

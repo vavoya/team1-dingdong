@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { colors } from "@/styles/colors";
-import { Body1Medium, Body2Medium } from "@/styles/typography";
+import { Body1Medium, Body2Regular } from "@/styles/typography";
 
 export const PageWrapper = styled.div``;
 export const RouteMarkHeader = styled.div`
@@ -41,7 +41,7 @@ export const ArrowRightIcon = styled.div`
   }
 `;
 
-export const BusTicketInfo = styled(Body2Medium)`
+export const BusTicketInfo = styled(Body2Regular)`
   color: ${colors.gray70};
 `;
 export const LocationBtnWrapper = styled.div<{ $screenHeight: number }>`

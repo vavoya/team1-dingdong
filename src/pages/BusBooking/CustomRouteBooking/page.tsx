@@ -24,14 +24,34 @@ import { getSelectedDaysCount } from "@/utils/calendar/calendarUtils";
 import { timeScheduleSelectors } from "../store/selectors";
 import SelectTimeBottomModal from "./components/SelectTimeBottomModal";
 import { convertIsoToDateObject } from "@/utils/calendar/timeViewBottomModalUtil";
+import { mountModal } from "@/components/Loading";
+import Modal from "@/components/Modal";
+import { useLoaderData, useNavigate } from "react-router-dom";
 
 export default function CustomRouteBooking() {
-  // 예매 나가기 모달 상태관리
-
   const [selectedTimeSchedule, dispatch] = useReducer(timeScheduleReducer, {});
+  const navigate = useNavigate();
+  const { render } = mountModal();
+  const [
+    { schoolName },
+    {
+      stationInfo: { name: stationName },
+    },
+  ] = useLoaderData();
+
+  console.log(stationName, "역 이름");
 
   const exitButtonHandler = () => {
-    // 모달 오픈. ( 예매를 취소 하시겠어요 ?)
+    // 모달 오픈
+    render(
+      <Modal
+        title={["다음에 다시 예약할까요?"]}
+        text={["예매 내역이 저장되지 않습니다."]}
+        isError={false}
+        leftButton={{ text: "취소", onClick: () => render(null) }}
+        rightButton={{ text: "나가기", onClick: () => navigate(-1) }}
+      />
+    );
   };
   const [commuteType, setCommuteType] = useState<CommuteType>("등교");
   const [overlayBottomModalType, setOverlayBottomModalType] =
@@ -58,6 +78,7 @@ export default function CustomRouteBooking() {
       <ExitHeader text="버스예매" onClick={exitButtonHandler} />
       {/* 출퇴근 스위치역할 뷰.  */}
       <CommuteSwitcher
+        boardingInfo={{ schoolName, stationName }}
         commuteType={commuteType}
         setCommuteType={setCommuteType}
         dispatch={dispatch}
@@ -82,7 +103,8 @@ export default function CustomRouteBooking() {
             onClick={() => {
               setTimeViewModalOpen(true);
               setOverlayBottomModalType("editable");
-            }}>
+            }}
+          >
             {/* 전체 일정을 들고오기. 그 중 빠른 일자를 앞으로. 없으면- */}
             <ScheduleCount>
               {cachedSelectedTimeSchedules.length > 0
