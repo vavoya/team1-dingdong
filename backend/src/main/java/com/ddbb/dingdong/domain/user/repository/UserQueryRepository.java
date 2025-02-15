@@ -12,7 +12,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface UserQueryRepository extends JpaRepository<User, Long> {
-    @Query("SELECT u.name as userName, s.name as schoolName, u.email as email  FROM User u JOIN u.school s WHERE u.id = :id")
+    @Query("SELECT u.name as userName, s.name as schoolName, u.email as email,  " +
+            "s.latitude as schoolLatitude, s.longitude as schoolLongitude " +
+            "FROM User u JOIN u.school s WHERE u.id = :id")
     Optional<UserStaticOnly> findUserStaticInfoById(Long id);
 
     @Query("SELECT h.houseLatitude AS houseLatitude, h.houseLongitude AS houseLongitude, " +
