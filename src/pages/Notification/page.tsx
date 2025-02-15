@@ -12,6 +12,7 @@ export default function Notification() {
   console.log(notificationArray, "요청 받은 알림 내역");
 
   const navigate = useNavigate();
+
   const notificationData: NotificationCardType[] = [
     {
       type: "BUS_START",
@@ -23,7 +24,7 @@ export default function Notification() {
         startDate: "2025-02-20",
         expectedStartTime: "2025-02-20T10:40:18",
         expectedEndTime: "2025-02-20T12:00:00",
-        refundAmount: null,
+        money: null,
       },
       read: false,
     },
@@ -37,7 +38,7 @@ export default function Notification() {
         startDate: "2025-02-20",
         expectedStartTime: "2025-02-20T10:40:18",
         expectedEndTime: "2025-02-20T12:00:00",
-        refundAmount: null,
+        money: null,
       },
       read: true,
     },
@@ -51,7 +52,7 @@ export default function Notification() {
         startDate: "2025-02-20",
         expectedStartTime: null,
         expectedEndTime: "2025-02-20T12:00:00",
-        refundAmount: 20000,
+        money: 20000,
       },
       read: true,
     },
@@ -62,11 +63,13 @@ export default function Notification() {
       state: { reservationId },
     });
   };
+  const notificationsServerData =
+    notificationArray?.length > 0 ? notificationArray : notificationData;
   return (
     <>
       <PopHeader text="알림"></PopHeader>
       <NotificationCardWrapper>
-        {notificationData.map((v: NotificationCardType) => (
+        {notificationsServerData.map((v: NotificationCardType) => (
           <NotificationCard
             notificationData={v}
             onClick={() =>

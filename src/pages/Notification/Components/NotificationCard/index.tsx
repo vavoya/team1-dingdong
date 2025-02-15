@@ -14,7 +14,7 @@ export default function NotificationCard({
   onClick,
   notificationData,
 }: NotificationCardProps) {
-  const titleMap = {
+  const titleType = {
     ALLOCATION_SUCCESS: "배차 확정 안내!",
     ALLOCATION_FAILED: "배차 실패 입금",
     BUS_START: "출발 안내",
@@ -25,7 +25,7 @@ export default function NotificationCard({
       <Subtitle>
         <Title>
           <NotificationIcon type={notificationData.type} />
-          <TitleType>{titleMap[notificationData.type]}</TitleType>
+          <TitleType>{titleType[notificationData.type]}</TitleType>
         </Title>
         <Time>{formatDate(notificationData.timeStamp)}</Time>
       </Subtitle>
