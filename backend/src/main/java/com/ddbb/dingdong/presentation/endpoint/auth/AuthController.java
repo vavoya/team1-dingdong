@@ -95,7 +95,7 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/login/check")
+    @GetMapping("/status")
     public ResponseEntity<Void> check(
             @LoginUser AuthUser user
     ) {
