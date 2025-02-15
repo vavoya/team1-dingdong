@@ -47,6 +47,7 @@ import {
 import { middleware } from "@/middleware.tsx";
 
 import { notificationLoader } from "./hooks/Notification/useNotification.ts";
+import { school } from "./api/query/signUp/index.ts";
 
 export const router = createBrowserRouter([
   {
@@ -100,6 +101,7 @@ export const router = createBrowserRouter([
           {
             index: true,
             Component: SchoolAuthSignUp,
+            loader: createLoader(() => [school()]),
           },
           {
             path: "password",
