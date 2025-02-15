@@ -1,11 +1,15 @@
 package com.ddbb.dingdong.domain.payment.repository;
 
-import com.ddbb.dingdong.domain.payment.entity.Wallet;
-import com.ddbb.dingdong.domain.payment.repository.projection.FailedRefundProjection;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.util.List;
+import com.ddbb.dingdong.domain.payment.entity.Wallet;
+import com.ddbb.dingdong.domain.payment.repository.projection.FailedRefundProjection;
+import com.ddbb.dingdong.domain.payment.repository.projection.BalanceProjection;
 
 public interface WalletProjectionRepository extends JpaRepository<Wallet, Long> {
     @Query("""
@@ -21,4 +25,7 @@ public interface WalletProjectionRepository extends JpaRepository<Wallet, Long> 
         AND history.id IS NULL
     """)
     List<FailedRefundProjection> queryAllFailedRefund();
+
+    @Query("SELECT wallet.balance as balance FROM Wallet wallet WHERE wallet.userId = :userId")
+    Optional<BalanceProjection> getBalance(@Param("userId") Long userId);
 }
