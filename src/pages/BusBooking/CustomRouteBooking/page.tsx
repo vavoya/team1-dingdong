@@ -27,11 +27,11 @@ import { convertIsoToDateObject } from "@/utils/calendar/timeViewBottomModalUtil
 import { mountModal } from "@/components/Loading";
 import Modal from "@/components/Modal";
 import { useLoaderData, useNavigate } from "react-router-dom";
-
+const { render } = mountModal();
 export default function CustomRouteBooking() {
   const [selectedTimeSchedule, dispatch] = useReducer(timeScheduleReducer, {});
   const navigate = useNavigate();
-  const { render } = mountModal();
+
   const [
     { schoolName },
     {
