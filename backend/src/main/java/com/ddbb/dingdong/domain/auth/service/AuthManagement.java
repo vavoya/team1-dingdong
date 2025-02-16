@@ -7,6 +7,7 @@ import com.ddbb.dingdong.domain.payment.repository.WalletRepository;
 import com.ddbb.dingdong.domain.user.entity.Home;
 import com.ddbb.dingdong.domain.user.entity.School;
 import com.ddbb.dingdong.domain.user.entity.User;
+import com.ddbb.dingdong.domain.user.entity.vo.Role;
 import com.ddbb.dingdong.domain.user.repository.SchoolRepository;
 import com.ddbb.dingdong.domain.user.repository.UserRepository;
 import com.ddbb.dingdong.infrastructure.auth.AuthUser;
@@ -52,6 +53,7 @@ public class AuthManagement {
                 ))
                 .createdAt(LocalDateTime.now())
                 .school(school)
+                .role(Role.USER)
                 .build();
         user = userRepository.save(user);
         Wallet wallet = new Wallet(null, user.getId(), WELCOME_MONEY, LocalDateTime.now(), new ArrayList<>());
@@ -63,7 +65,7 @@ public class AuthManagement {
     public void login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(AuthErrors.USER_NOT_FOUND::toException);
         if(!passwordEncoder.matches(password, user.getPassword())) throw AuthErrors.NOT_MATCHED_PASSWORD.toException();
-        authenticationManager.setAuthentication(new AuthUser(user.getId(), user.getSchool().getId()));
+        authenticationManager.setAuthentication(new AuthUser(user.getId(), user.getSchool().getId(), user.getRole()));
     }
 
     public void logout(Long userId) {

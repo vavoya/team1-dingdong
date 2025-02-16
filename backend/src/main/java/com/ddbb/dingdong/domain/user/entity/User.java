@@ -1,5 +1,6 @@
 package com.ddbb.dingdong.domain.user.entity;
 
+import com.ddbb.dingdong.domain.user.entity.vo.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,10 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
