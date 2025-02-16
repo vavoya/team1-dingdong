@@ -21,6 +21,7 @@ import {
 import OutlineButton from "@/components/designSystem/Button/OutlineButton";
 import { useNavigate } from "react-router-dom";
 import BusIcon from "@/components/designSystem/Icons/Home/BusIcon";
+import { useCustomNavigate } from "@/hooks/useNavigate";
 // import { useGetBusRouteCoordinates } from "@/hooks/BusBooking/useFixedBooking";
 
 interface BusStop {
@@ -55,6 +56,7 @@ export default function BusSelectBottomModal({
   setSelectedBusCardIndex,
 }: BusSelectBottomModalProps) {
   const navigate = useNavigate();
+  const navigateCustom = useCustomNavigate();
 
   const convertISOToHourMinute = (ISODate: string) => {
     const date = new Date(ISODate);
@@ -70,6 +72,20 @@ export default function BusSelectBottomModal({
   const departOrArrival = direction === "TO_SCHOOL" ? "출발" : "도착";
   // 탑승, 하차
   const boardingOrGetOff = direction === "TO_SCHOOL" ? "탑승" : "하차";
+
+  console.log(busInfoArray[selectedBusCardIndex], "정보정보");
+  // navigateCustom("/fixed-bus-select-bus", {
+  //   direction,
+  //   timeSchedule: selectTimeScheduleArray[0],
+  // });
+  const nextClickHandler = () => {
+    navigateCustom("/payment/purchase", {
+      direction,
+      timeSchedule: busInfoArray[selectedBusCardIndex].busStop.time,
+      busId: busInfoArray[selectedBusCardIndex].busScheduleId,
+      busStopName: busInfoArray[selectedBusCardIndex].busStop.name,
+    });
+  };
   return (
     <BottomModal showBottomSheet={true}>
       <BusCardTitle>
@@ -108,10 +124,7 @@ export default function BusSelectBottomModal({
       </BusCardWrapper>
       <BusSelectButtonStepWrapper>
         <OutlineButton text="이전" onClick={() => navigate(-1)} />
-        <SolidButton
-          text="다음"
-          onClick={() => navigate("/payment/purchase")}
-        />
+        <SolidButton text="다음" onClick={nextClickHandler} />
       </BusSelectButtonStepWrapper>
     </BottomModal>
   );
