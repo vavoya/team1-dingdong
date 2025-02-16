@@ -2,6 +2,7 @@ package com.ddbb.dingdong.application.usecase.bus;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
+import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.domain.transportation.repository.BusScheduleQueryRepository;
 import com.ddbb.dingdong.domain.transportation.repository.projection.UserBusStopProjection;
 import com.ddbb.dingdong.domain.transportation.service.BusErrors;
@@ -34,6 +35,7 @@ public class StartBusUseCase implements UseCase<StartBusUseCase.Param, Void> {
         if (projections.isEmpty()) {
             throw BusErrors.NO_BUS_FOUND.toException();
         }
+        busScheduleManagement.updateBusSchedule(param.busScheduleId, OperationStatus.RUNNING);
         Map<Long, UserBusStopTime> busStopTimeMap = new LinkedHashMap<>();
         for (UserBusStopProjection proj : projections) {
             if (!busStopTimeMap.containsKey(proj.getBusStopId())) {
