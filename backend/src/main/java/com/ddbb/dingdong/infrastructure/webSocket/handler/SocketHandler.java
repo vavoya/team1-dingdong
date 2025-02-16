@@ -1,6 +1,6 @@
 package com.ddbb.dingdong.infrastructure.webSocket.handler;
 
-import com.ddbb.dingdong.infrastructure.auth.AuthUser;
+import com.ddbb.dingdong.infrastructure.auth.security.AuthUser;
 import com.ddbb.dingdong.infrastructure.webSocket.CustomCloseStatus;
 import com.ddbb.dingdong.infrastructure.webSocket.repository.SocketRepository;
 import lombok.RequiredArgsConstructor;

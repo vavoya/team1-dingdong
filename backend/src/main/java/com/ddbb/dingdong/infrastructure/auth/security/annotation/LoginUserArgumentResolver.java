@@ -1,7 +1,7 @@
-package com.ddbb.dingdong.infrastructure.auth.annotation;
+package com.ddbb.dingdong.infrastructure.auth.security.annotation;
 
-import com.ddbb.dingdong.infrastructure.auth.AuthUser;
-import com.ddbb.dingdong.infrastructure.auth.AuthenticationManager;
+import com.ddbb.dingdong.infrastructure.auth.security.AuthUser;
+import com.ddbb.dingdong.infrastructure.auth.security.AuthenticationManager;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;

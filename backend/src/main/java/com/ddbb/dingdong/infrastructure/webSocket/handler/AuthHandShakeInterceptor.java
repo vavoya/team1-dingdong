@@ -1,7 +1,7 @@
 package com.ddbb.dingdong.infrastructure.webSocket.handler;
 
-import com.ddbb.dingdong.infrastructure.auth.AuthUser;
-import com.ddbb.dingdong.infrastructure.auth.AuthenticationManager;
+import com.ddbb.dingdong.infrastructure.auth.security.AuthUser;
+import com.ddbb.dingdong.infrastructure.auth.security.AuthenticationManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;

@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.infrastructure.auth;
+package com.ddbb.dingdong.infrastructure.auth.security;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

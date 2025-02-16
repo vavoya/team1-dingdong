@@ -1,7 +1,5 @@
 package com.ddbb.dingdong.infrastructure.webSocket.repository;
 
-import com.ddbb.dingdong.infrastructure.auth.AuthUser;
-import com.ddbb.dingdong.infrastructure.auth.AuthenticationManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
