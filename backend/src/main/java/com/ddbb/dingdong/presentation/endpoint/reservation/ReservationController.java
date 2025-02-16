@@ -47,13 +47,12 @@ public class ReservationController {
         return ResponseEntity.ok(result);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{reservationId}")
     public ResponseEntity<Void> cancelReservation(
             @LoginUser AuthUser user,
-            @RequestBody ReservationCancelDTO reservationCancelDTO
+            @PathVariable Long reservationId
     ) {
         Long userId = user.id();
-        Long reservationId = reservationCancelDTO.getReservationId();
         CancelReservationUseCase.Param param = new CancelReservationUseCase.Param(
                 userId,
                 reservationId
