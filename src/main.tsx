@@ -117,6 +117,7 @@ export const router = createBrowserRouter([
         // 탑승지 위치 설정
         path: "set-home-location",
         Component: SetHomeLocation,
+        loader: createLoader(() => [users_home_locations()]),
       },
       {
         // 버스 예매하기
