@@ -46,7 +46,7 @@ export type timeType = {
   hour: number;
   minute: number;
 };
-
+const { render } = mountModal();
 export default function FixedRouteBooking() {
   // 예매 나가기 모달 상태관리
 
@@ -72,8 +72,6 @@ export default function FixedRouteBooking() {
       : TEMP_DATE;
 
   const busTimeScheduleObjectArray = transformSchedules(busTimeSchedule);
-
-  const { render } = mountModal();
 
   const exitButtonHandler = () => {
     // 모달 오픈. ( 예매를 취소 하시겠어요 ?)
@@ -102,8 +100,6 @@ export default function FixedRouteBooking() {
     );
   }, [selectedDate]);
 
-  
-
   useEffect(() => {
     if (selectedDate && selectedHourMinute) {
       setShowInfo(convertInfoToText(selectedDate, selectedHourMinute));
@@ -120,6 +116,7 @@ export default function FixedRouteBooking() {
       selectedDate!,
       selectedHourMinute!
     );
+    console.log(selectTimeScheduleArray, "이게 뭐징?");
     const direction = commuteType === "등교" ? "TO_SCHOOL" : "TO_HOME";
 
     navigateCustom("/fixed-bus-select-bus", {
