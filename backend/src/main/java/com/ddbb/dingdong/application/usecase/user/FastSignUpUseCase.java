@@ -8,6 +8,7 @@ import com.ddbb.dingdong.domain.payment.repository.WalletRepository;
 import com.ddbb.dingdong.domain.user.entity.Home;
 import com.ddbb.dingdong.domain.user.entity.School;
 import com.ddbb.dingdong.domain.user.entity.User;
+import com.ddbb.dingdong.domain.user.entity.vo.Role;
 import com.ddbb.dingdong.domain.user.repository.SchoolRepository;
 import com.ddbb.dingdong.domain.user.repository.UserRepository;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.PasswordEncoder;
@@ -41,7 +42,7 @@ public class FastSignUpUseCase implements UseCase<FastSignUpUseCase.Param, Void>
                 param.houseRoadNameAddress
         );
         User user = new User(
-                null, param.name, param.email, password, LocalDateTime.now(),
+                null, param.name, param.email, password, Role.USER, LocalDateTime.now(),
                 school,
                 home
         );
