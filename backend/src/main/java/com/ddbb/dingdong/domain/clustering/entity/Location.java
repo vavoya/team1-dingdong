@@ -18,7 +18,7 @@ public class Location {
 
     private String clusterLabel;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long reservationId;
 
     @Column(nullable = false)
