@@ -21,6 +21,7 @@ import {
 } from "../../hooks/useAddressToCoordinate";
 
 import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader";
+import { handleAllowNotification } from "@/webPushNotification/handleAllowNotification";
 
 // 예시 타입들
 
@@ -117,6 +118,7 @@ export default function UserInfoSignup() {
     postUserInfoMutation(finalUserInfo, {
       onSuccess: () => {
         navigate("/home");
+        handleAllowNotification(); // 웹 푸시 알림 셋팅을 위한 요청.
       },
       onError: () => {
         // 에러 핸들링. 회원 가입 실패 에러 모달
