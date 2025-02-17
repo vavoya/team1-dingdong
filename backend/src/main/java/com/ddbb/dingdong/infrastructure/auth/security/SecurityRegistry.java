@@ -56,6 +56,6 @@ public class SecurityRegistry {
     }
 
     public Map<String, Set<Role>> build() {
-        return rules;
+        return Collections.unmodifiableMap(rules);
     }
 }
