@@ -26,13 +26,15 @@ public class ApplicationInitializer {
     private final PasswordEncoder passwordEncoder;
     private final WalletRepository walletRepository;
     private static final String adminEmail = "admin@admin.com";
-
+    private static School school;
     @PostConstruct
     public void init() {
-        School school = new School();
-        school.setId(1L);
 
-        if(userRepository.findByEmail(adminEmail).isEmpty()) {
+        school = schoolRepository.findByName("서울대학교").orElse(null);
+
+        if(school == null) {
+            school = new School(null, "서울대학교", "서울대학교", 37.4602, 126.9527);
+            school = schoolRepository.save(school);
             adminSignUp();
         }
 
@@ -41,14 +43,12 @@ public class ApplicationInitializer {
             school = schoolRepository.save(school);
 
             for (int i = 0 ; i < 30; i++) {
-                autoSignUp(i, password, school);
+                autoSignUp(i, password);
             }
         }
     }
 
     private void adminSignUp() {
-        School school = new School();
-        school.setId(1L);
         Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790, "에티버스" ,"학동로 180");
         User user = new User(null, "admin", "admin@admin.com", "abcd1234!@", Role.ADMIN, LocalDateTime.now(), school, null);
         user.associateHome(home);
@@ -57,7 +57,7 @@ public class ApplicationInitializer {
         walletRepository.save(wallet);
     }
 
-    private void autoSignUp(int testId, String password, School school) {
+    private void autoSignUp(int testId, String password) {
         Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790, "에티버스" ,"학동로 180");
         String email = testId == 0 ? "test@test.com" : "test" +testId + "@test.com";
         User user = new User(null, "test", email, password, Role.USER, LocalDateTime.now(), school, null);
