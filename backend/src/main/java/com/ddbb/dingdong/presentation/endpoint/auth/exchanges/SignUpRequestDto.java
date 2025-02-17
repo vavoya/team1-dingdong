@@ -2,6 +2,7 @@ package com.ddbb.dingdong.presentation.endpoint.auth.exchanges;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 public class SignUpRequestDto {
@@ -12,6 +13,7 @@ public class SignUpRequestDto {
     private Long schoolId;
 
     @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class Home {
         private Double houseLatitude;
