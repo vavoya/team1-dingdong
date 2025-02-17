@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.infrastructure.auth.configuration;
+package com.ddbb.dingdong.infrastructure.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

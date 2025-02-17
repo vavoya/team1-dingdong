@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
-    @Query("SELECT bst.roadNameAddress as busStopName, bst.latitude as latitude, bst.longitude as longitude, " +
+    @Query("SELECT bst.id as busStopId, bst.roadNameAddress as busStopName, bst.latitude as latitude, bst.longitude as longitude, " +
             "bst.expectedArrivalTime as busStopTime, b.name as busName, bs.id as busScheduleId " +
             "FROM BusStop bst " +
             "JOIN Ticket t ON t.busStopId = bst.id " +
@@ -25,7 +25,7 @@ public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
             @Param("schoolId") Long schoolId
     );
 
-    @Query("SELECT bst.roadNameAddress as busStopName, bst.latitude as latitude, bst.longitude as longitude, " +
+    @Query("SELECT bst.id as busStopId, bst.roadNameAddress as busStopName, bst.latitude as latitude, bst.longitude as longitude, " +
             "bst.expectedArrivalTime as busStopTime, b.name as busName, bs.id as busScheduleId " +
             "FROM BusStop bst " +
             "JOIN Ticket t ON t.busStopId = bst.id " +
@@ -33,7 +33,7 @@ public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
             "JOIN Bus b ON b.id = bs.bus.id " +
             "WHERE bs.arrivalTime = :arrivalTime AND bs.schoolId = :schoolId " +
             "AND bs.status = 'READY'")
-    List<AvailableBusStopProjection>  findAvailableGoSchoolBusStop(
+    List<AvailableBusStopProjection> findAvailableGoSchoolBusStop(
             @Param("arrivalTime") LocalDateTime arrivalTime,
             @Param("schoolId") Long schoolId
     );

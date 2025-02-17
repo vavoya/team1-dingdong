@@ -59,7 +59,7 @@ public class GetAvailableBusLine implements UseCase<GetAvailableBusLine.Param, G
                     .reservedSeat(count)
                     .totalSeat(15)
                     .build();
-            return new Response.Item(busStop.getBusScheduleId(), busStopInfo, busInfo);
+            return new Response.Item(busStop.getBusScheduleId(), busStop.getBusStopId(), busStopInfo, busInfo);
         })
         .toList();
         return new Response(items);
@@ -82,6 +82,7 @@ public class GetAvailableBusLine implements UseCase<GetAvailableBusLine.Param, G
         @AllArgsConstructor
         public static class Item {
             private Long busScheduleId;
+            private Long busStopId;
             private BusStopInfo busStop;
             private BusInfo busInfo;
         }
