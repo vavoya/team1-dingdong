@@ -175,7 +175,6 @@ CREATE TABLE IF NOT EXISTS ticket (
                                       reservation_id BIGINT,
                                       PRIMARY KEY (id)
 ) ENGINE=InnoDB;
-ALTER TABLE ticket ADD CONSTRAINT UK_ticket_unique1 UNIQUE (bus_schedule_id, bus_stop_id);
 ALTER TABLE ticket ADD CONSTRAINT UK_ticket_unique2 UNIQUE (reservation_id);
 ALTER TABLE ticket ADD CONSTRAINT FK_ticket_reservation FOREIGN KEY (reservation_id) REFERENCES reservation(id);
 
