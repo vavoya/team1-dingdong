@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.infrastructure.auth.annotation;
+package com.ddbb.dingdong.infrastructure.auth.security.annotation;
 
 import java.lang.annotation.*;
 
@@ -18,7 +18,7 @@ import java.lang.annotation.*;
  * }
  * </pre>
  *
- * @see com.ddbb.dingdong.infrastructure.auth.annotation.LoginUserArgumentResolver
+ * @see LoginUserArgumentResolver
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)

@@ -1,5 +1,6 @@
-package com.ddbb.dingdong.infrastructure.auth.configuration;
+package com.ddbb.dingdong.infrastructure.configuration;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,8 +10,8 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.ddbb.dingdong.infrastructure.auth.annotation.LoginUserArgumentResolver;
-import com.ddbb.dingdong.infrastructure.auth.filter.SessionInterceptor;
+import com.ddbb.dingdong.infrastructure.auth.security.annotation.LoginUserArgumentResolver;
+import com.ddbb.dingdong.infrastructure.auth.security.filter.SessionInterceptor;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -32,9 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(sessionInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/api/auth/login", "/api/auth/signup", "/api/auth/check-email",
-                        "/api/school", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**");
+                .addPathPatterns("/**");
     }
 
     @Override

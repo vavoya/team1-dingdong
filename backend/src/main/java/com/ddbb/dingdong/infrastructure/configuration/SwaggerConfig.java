@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.infrastructure.swagger;
+package com.ddbb.dingdong.infrastructure.configuration;
 
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;

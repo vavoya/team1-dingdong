@@ -4,14 +4,12 @@ import com.ddbb.dingdong.application.exception.APIException;
 import com.ddbb.dingdong.application.usecase.bus.SubscribeBusUseCase;
 import com.ddbb.dingdong.application.usecase.bus.UnsubscribeBusUseCase;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
-import com.ddbb.dingdong.infrastructure.auth.AuthUser;
-import com.ddbb.dingdong.infrastructure.auth.annotation.LoginUser;
+import com.ddbb.dingdong.infrastructure.auth.security.AuthUser;
+import com.ddbb.dingdong.infrastructure.auth.security.annotation.LoginUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.concurrent.Flow;
 
 @RequestMapping("/api/bus/subscription")
 @RestController

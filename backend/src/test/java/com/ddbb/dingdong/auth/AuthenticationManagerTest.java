@@ -1,7 +1,7 @@
 package com.ddbb.dingdong.auth;
 
-import com.ddbb.dingdong.infrastructure.auth.AuthUser;
-import com.ddbb.dingdong.infrastructure.auth.AuthenticationManager;
+import com.ddbb.dingdong.infrastructure.auth.security.AuthUser;
+import com.ddbb.dingdong.infrastructure.auth.security.AuthenticationManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
