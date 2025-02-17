@@ -64,7 +64,6 @@ export default function CustomRouteBooking() {
     () => timeScheduleSelectors.getAllTimeScheduleToArray(selectedTimeSchedule),
     [selectedTimeSchedule] // selectedTimeSchedule 값이 변경될 때만 재계산
   );
-  console.log(cachedSelectedTimeSchedules, "배열로");
 
   const [selectedDate, setSelectedDate] = useState<{
     year: number;

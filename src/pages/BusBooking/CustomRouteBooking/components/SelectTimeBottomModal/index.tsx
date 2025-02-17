@@ -86,6 +86,7 @@ export default function SelectTimeBottomModal({
           timeAvailability.reset,
           timeAvailability.morningOrNoon!,
           timeAvailability.hour, // 스크롤 셋팅시 index방식이라 + 1
+          timeAvailability.minute,
           timeWheelRef
         );
       }
@@ -141,10 +142,17 @@ export default function SelectTimeBottomModal({
 
       return { initHour: hour, initMinute: minute }; // 저장된 값.
     }
+    // 모달을 열었을 때, 초기값.
 
-    return commuteType === "등교"
-      ? { initHour: GOING_TO_SCHOOL_BUS_START_TIME, initMinute: 0 }
-      : { initHour: GOING_TO_HOME_BUS_START_TIME, initMinute: 0 };
+    const time24Hours = parseAndCreateTime(selectedDate, "오전", "8", "0");
+
+    const initTimeResult = handleTimeAvailability(time24Hours, commuteType);
+    if (!initTimeResult) {
+      return { initHour: 8, initMinute: 0 };
+    }
+    const { hour, minute } = initTimeResult!;
+
+    return { initHour: hour, initMinute: minute };
   }, [selectedTimeSchedule, selectedDate, commuteType]); // 의존성 배열에 필요한 값들 추가
 
   console.log(selectedTimeSchedule, "지금까지의 데이터");

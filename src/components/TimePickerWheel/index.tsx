@@ -11,6 +11,7 @@ import { TIME_WHEEL_ITEM_BOX_HEIGHT } from "@/constants/timeWheelView";
 import { convertTimeToScrollPosition } from "@/utils/calendar/timeWheelUtils";
 
 interface TimeWheelDataType {
+  // 24시간제.
   initHour: number;
   initMinute: number;
 }
