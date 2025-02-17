@@ -1,6 +1,6 @@
 package com.ddbb.dingdong.domain.payment.service;
 
-import com.ddbb.dingdong.domain.payment.repository.WalletProjectionRepository;
+import com.ddbb.dingdong.domain.payment.repository.WalletQueryRepository;
 import com.ddbb.dingdong.domain.payment.repository.projection.FailedRefundProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,14 +13,14 @@ import java.util.concurrent.Executors;
 @Component
 @RequiredArgsConstructor
 public class RetryScheduler {
-    private final WalletProjectionRepository walletProjectionRepository;
+    private final WalletQueryRepository walletQueryRepository;
     private static final int THREAD_SIZE = 3;
     private final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_SIZE);
     private final PaymentManagement paymentManagement;
 
     @Scheduled(fixedRate = 1800000, initialDelay = 10000)
     public void retryFailedRefund() {
-        List<FailedRefundProjection> projections = walletProjectionRepository.queryAllFailedRefund();
+        List<FailedRefundProjection> projections = walletQueryRepository.queryAllFailedRefund();
 
         int batchSize = (int) Math.ceil((double) projections.size() / THREAD_SIZE);
 
