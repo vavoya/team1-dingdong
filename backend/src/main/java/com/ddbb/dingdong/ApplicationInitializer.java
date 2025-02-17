@@ -29,6 +29,8 @@ public class ApplicationInitializer {
 
     @PostConstruct
     public void init() {
+        School school = new School();
+        school.setId(1L);
 
         if(userRepository.findByEmail(adminEmail).isEmpty()) {
             adminSignUp();
@@ -36,7 +38,6 @@ public class ApplicationInitializer {
 
         if (userRepository.findByEmail("test@test.com").isEmpty()) {
             String password = passwordEncoder.encode("abcd1234!@");
-            School school = new School(null, "서울대학교", "서울대학교", 37.4602, 126.9527);
             school = schoolRepository.save(school);
 
             for (int i = 0 ; i < 30; i++) {
