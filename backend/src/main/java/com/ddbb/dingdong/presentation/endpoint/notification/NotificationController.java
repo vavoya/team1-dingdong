@@ -27,10 +27,10 @@ public class NotificationController {
     public ResponseEntity<GetNotificationsUseCase.Result> getUserNotifications(
             @LoginUser AuthUser user,
             @RequestParam("page") int page,
-            @RequestParam("pageSize") int pageSize
+            @RequestParam(value = "pageSize", defaultValue = "-1") int pageSize
     ) {
         Long userid = user.id();
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = pageSize == -1 ? Pageable.unpaged() : PageRequest.of(page, pageSize);
         GetNotificationsUseCase.Param param = new GetNotificationsUseCase.Param(userid, pageable);
         GetNotificationsUseCase.Result result;
         try {
