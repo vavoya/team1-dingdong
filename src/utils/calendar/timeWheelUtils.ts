@@ -18,7 +18,7 @@ export const convertTimeToScrollPosition = ({
   initMinute,
 }: TimeInput): ScrollPosition => {
   // AM/PM 결정 (0: AM, 1: PM)
-  const initAmPmScrollTop = initHour >= 12 ? 1 : 0;
+  const initAmPmScrollTop = initHour >= 11 ? 1 : 0; // 인덱스 형식이라 11부터가 12시(오후)
 
   // 12시간제로 변환 (1-12)
   let hour12 = initHour % 12;

@@ -16,10 +16,7 @@ import {
 } from "@/pages/BusBooking/store/types";
 import { formatDate, parseTime } from "@/utils/calendar/calendarUtils";
 import { timeScheduleActions } from "@/pages/BusBooking/store/actions";
-import {
-  GOING_TO_HOME_BUS_START_TIME,
-  GOING_TO_SCHOOL_BUS_START_TIME,
-} from "@/constants/timeWheelView";
+
 import { timeScheduleSelectors } from "@/pages/BusBooking/store/selectors";
 import { allSameTimeOnSameWeekday } from "@/utils/calendar/selectTimeBottomModalUtils";
 import { selectedDateType } from "../../types/selectedDateType";
@@ -28,6 +25,8 @@ import {
   parseAndCreateTime,
   updateScrollPosition,
 } from "@/utils/calendar/timeWheelUtils";
+import Modal from "@/components/Modal";
+import { mountModal } from "@/components/Loading";
 
 interface SelectTimeBottomModalProps {
   selectedDate: selectedDateType; // 모달에서 현재 선택된 시간
@@ -38,6 +37,13 @@ interface SelectTimeBottomModalProps {
   setIsTimeSelectModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+interface SelectedTime {
+  amPm: string;
+  hour: string;
+  minute: string;
+}
+
+const INIT_GO_SCHOOL_TIME = 7; // 오전 8시.
 export default function SelectTimeBottomModal({
   selectedTimeSchedule,
   dispatch,
@@ -94,12 +100,53 @@ export default function SelectTimeBottomModal({
     2000
   );
 
+  const checkIsAvailableTime = (selectedTime: SelectedTime) => {
+    const newTime = parseAndCreateTime(
+      selectedDate,
+      selectedTime.amPm,
+      selectedTime.hour,
+      selectedTime.minute
+    );
+    const timeAvailability = handleTimeAvailability(newTime, commuteType);
+
+    if (timeAvailability) {
+      const { render, unmountModal } = mountModal();
+
+      const { hour, minute, morningOrNoon } = timeAvailability;
+      // 오전 hour: minute ~ 오후 6시나 9시. 버스 예매 가능 시간대를 선택해 주세요.
+      const noonOrNot = morningOrNoon === 1 ? "오후" : "오전";
+      const lastTime = commuteType === "등교" ? 6 : 9;
+      const minMinute = minute <= 0 ? "" : `${minute}분`;
+      const des = `${noonOrNot} ${hour}시 ${minMinute} ~ 오후 ${lastTime}시 까지 가능해요`;
+      render(
+        <Modal
+          title={[`버스 예약 시간을\n 조정해주세요.`]}
+          text={[`${des}`]}
+          isError={false}
+          leftButton={{
+            text: "확인",
+            onClick: () => {
+              render(<></>);
+              unmountModal();
+            },
+          }}
+        />
+      );
+
+      return false; // 불가능 시간.
+    }
+    return true;
+  };
   const handleConfirm = () => {
     if (timeWheelRef.current) {
       const selectedTime = timeWheelRef.current.getSelectedTime();
       console.log(
         `${selectedTime.amPm} ${selectedTime.hour}:${selectedTime.minute}`
       );
+      if (!checkIsAvailableTime(selectedTime)) {
+        // 선택한 시간이 불가능한 시간대라면. 모달
+        return;
+      }
 
       dispatch(
         timeScheduleActions.setSingleTime({
@@ -140,7 +187,7 @@ export default function SelectTimeBottomModal({
         ...selectedDate,
       });
 
-      return { initHour: hour, initMinute: minute }; // 저장된 값.
+      return { initHour: hour - 1, initMinute: minute }; // 저장된 값. 스크롤은 -1 해주고, 보여주는 데이터 값은 그대로 필수.
     }
     // 모달을 열었을 때, 초기값.
 
@@ -148,11 +195,11 @@ export default function SelectTimeBottomModal({
 
     const initTimeResult = handleTimeAvailability(time24Hours, commuteType);
     if (!initTimeResult) {
-      return { initHour: 8, initMinute: 0 };
+      return { initHour: INIT_GO_SCHOOL_TIME, initMinute: 0 };
     }
     const { hour, minute } = initTimeResult!;
 
-    return { initHour: hour, initMinute: minute };
+    return { initHour: hour - 1, initMinute: minute };
   }, [selectedTimeSchedule, selectedDate, commuteType]); // 의존성 배열에 필요한 값들 추가
 
   console.log(selectedTimeSchedule, "지금까지의 데이터");
@@ -218,14 +265,14 @@ export default function SelectTimeBottomModal({
             <>
               {/* hour, minute을 가지고 오전인지 오후인지 반환 &  */}
               <S.DayTime>
-                {getInitTime.initHour > 12 ? "오후" : "오전"}
+                {getInitTime.initHour >= 11 ? "오후" : "오전"}
               </S.DayTime>
               <S.TimeText>
-                {getInitTime.initHour > 12
-                  ? `${getInitTime.initHour - 12}:${getInitTime.initMinute
+                {getInitTime.initHour + 1 > 12
+                  ? `${getInitTime.initHour + 1 - 12}:${getInitTime.initMinute
                       .toString()
                       .padStart(2, "0")}`
-                  : `${getInitTime.initHour}:${getInitTime.initMinute
+                  : `${getInitTime.initHour + 1}:${getInitTime.initMinute
                       .toString()
                       .padStart(2, "0")}`}
               </S.TimeText>
