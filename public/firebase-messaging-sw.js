@@ -21,7 +21,7 @@ self.addEventListener("push", function (e) {
   );
 });
 
-// push 이벤트의 객체가 notificationclick 이벤트 객체에 부모이다.
+// push 이벤트의 객체가 notificationclick 이벤트 객체에 부모.
 // 즉, 여기서 notificationclick 이벤트 객체에 값이 전이된다.
 
 self.addEventListener("notificationclick", (event) => {
