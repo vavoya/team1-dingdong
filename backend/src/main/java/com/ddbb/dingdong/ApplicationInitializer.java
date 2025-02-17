@@ -26,40 +26,38 @@ public class ApplicationInitializer {
     private final PasswordEncoder passwordEncoder;
     private final WalletRepository walletRepository;
     private static final String adminEmail = "admin@admin.com";
-    private static Long schoolId;
+    private static School school;
     @PostConstruct
     public void init() {
 
-        String password = passwordEncoder.encode("abcd1234!@");
+        school = schoolRepository.findByName("서울대학교").orElse(null);
 
-        if(userRepository.findByEmail(adminEmail).isEmpty()) {
-            School school = new School(null, "서울대학교", "서울대학교", 37.4602, 126.9527);
-            schoolId = schoolRepository.save(school).getId();
-            adminSignUp(password);
+        if(school == null) {
+            school = new School(null, "서울대학교", "서울대학교", 37.4602, 126.9527);
+            school = schoolRepository.save(school);
+            adminSignUp();
         }
 
         if (userRepository.findByEmail("test@test.com").isEmpty()) {
-            School school = new School();
-            school.setId(schoolId);
-            for (int i = 0 ; i < 30; i++) {
+            String password = passwordEncoder.encode("abcd1234!@");
+            school = schoolRepository.save(school);
 
-                autoSignUp(i, password, school);
+            for (int i = 0 ; i < 30; i++) {
+                autoSignUp(i, password);
             }
         }
     }
 
-    private void adminSignUp(String password) {
-        School school = new School();
-        school.setId(schoolId);
+    private void adminSignUp() {
         Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790, "에티버스" ,"학동로 180");
-        User user = new User(null, "admin", "admin@admin.com", password, Role.ADMIN, LocalDateTime.now(), school, null);
+        User user = new User(null, "admin", "admin@admin.com", "abcd1234!@", Role.ADMIN, LocalDateTime.now(), school, null);
         user.associateHome(home);
         user = userRepository.save(user);
         Wallet wallet = new Wallet(null, user.getId(), 1000000, LocalDateTime.now(), new ArrayList<>());
         walletRepository.save(wallet);
     }
 
-    private void autoSignUp(int testId, String password, School school) {
+    private void autoSignUp(int testId, String password) {
         Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790, "에티버스" ,"학동로 180");
         String email = testId == 0 ? "test@test.com" : "test" +testId + "@test.com";
         User user = new User(null, "test", email, password, Role.USER, LocalDateTime.now(), school, null);

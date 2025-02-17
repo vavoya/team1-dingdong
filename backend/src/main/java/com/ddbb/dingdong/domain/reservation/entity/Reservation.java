@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "dingdong_time", "direction"})})
 @Getter
 @Builder
 @NoArgsConstructor
@@ -34,6 +35,9 @@ public class Reservation {
     private LocalDateTime departureTime;
 
     private LocalDateTime arrivalTime;
+
+    @Column(updatable = false, insertable = false)
+    private LocalDateTime dingdongTime;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

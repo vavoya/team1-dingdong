@@ -1,6 +1,5 @@
 package com.ddbb.dingdong.infrastructure.auth.encrypt;
 
-import com.ddbb.dingdong.application.usecase.reservation.RequestTogetherReservationUseCase;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.AESEncoder;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.SHA512Encoder;
 import com.fasterxml.jackson.core.JsonProcessingException;
