@@ -6,12 +6,12 @@ import { getMessaging, getToken } from "firebase/messaging";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAr-VReho4JfeIHhXrELr_IARZj2uwgdo4",
-  authDomain: "dingdong-7b8d4.firebaseapp.com",
-  projectId: "dingdong-7b8d4",
-  storageBucket: "dingdong-7b8d4.firebasestorage.app",
-  messagingSenderId: "737122933712",
-  appId: "1:737122933712:web:6df6cad62e05e5ef72b7d5",
+  apiKey: "AIzaSyBJ1k8Pq4-w0aaFon3ZBmPboULhZvdqP2E",
+  authDomain: "ding-dong-dcdfa.firebaseapp.com",
+  projectId: "ding-dong-dcdfa",
+  storageBucket: "ding-dong-dcdfa.firebasestorage.app",
+  messagingSenderId: "511741269",
+  appId: "1:511741269:web:b051c0f33cf11d1c70b3dc",
 };
 
 // Initialize Firebase
