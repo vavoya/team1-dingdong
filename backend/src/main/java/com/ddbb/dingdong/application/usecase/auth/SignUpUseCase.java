@@ -3,6 +3,9 @@ package com.ddbb.dingdong.application.usecase.auth;
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
 import com.ddbb.dingdong.application.usecase.auth.errors.AuthParamErrors;
+import com.ddbb.dingdong.domain.user.entity.User;
+import com.ddbb.dingdong.infrastructure.auth.security.AuthUser;
+import com.ddbb.dingdong.infrastructure.auth.security.AuthenticationManager;
 import com.ddbb.dingdong.util.ParamValidator;
 import com.ddbb.dingdong.domain.auth.service.AuthManagement;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SignUpUseCase implements UseCase<SignUpUseCase.Param, Void> {
     private final AuthManagement authManagement;
+    private final AuthenticationManager authenticationManager;
 
     @Transactional
     @Override
@@ -23,7 +27,9 @@ public class SignUpUseCase implements UseCase<SignUpUseCase.Param, Void> {
         param.validate();
         authManagement.checkEmail(param.getEmail());
         authManagement.checkPassword(param.getPassword());
-        authManagement.signUp(param.getName(), param.getEmail(), param.getPassword(), param.getHome(), param.getSchoolId());
+        User newUser = authManagement.signUp(param.getName(), param.getEmail(), param.getPassword(), param.getHome(), param.getSchoolId());
+        authenticationManager.setAuthentication(new AuthUser(newUser.getId(), newUser.getSchool().getId(), newUser.getRole()));
+
         return null;
     }
 

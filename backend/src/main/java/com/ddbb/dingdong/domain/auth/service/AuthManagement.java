@@ -35,8 +35,7 @@ public class AuthManagement {
 
     private static final int WELCOME_MONEY = 50000;
 
-    @Transactional
-    public void signUp(String name, String email, String password, SignUpRequestDto.Home home, Long schoolId) {
+    public User signUp(String name, String email, String password, SignUpRequestDto.Home home, Long schoolId) {
         School school = schoolRepository.findById(schoolId).orElseThrow(AuthErrors.SCHOOL_NOT_FOUND::toException);
         User user = User.builder()
                 .name(name)
@@ -60,6 +59,8 @@ public class AuthManagement {
         walletRepository.save(wallet);
 
         eventPublisher.publishEvent(new SignUpSuccessEvent(user.getId()));
+
+        return user;
     }
 
     public void login(String email, String password) {
