@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,7 @@ public class GetNotificationsUseCase implements UseCase<GetNotificationsUseCase.
         Page<Result.NotificationInfo> notificationInfos = getNotifications(userId, pageable);
         notificationManagement.readAllNotifications(userId);
 
-        return new Result(notificationInfos);
+        return new Result(new PagedModel<>(notificationInfos));
     }
 
     private Page<Result.NotificationInfo> getNotifications(Long userId, Pageable pageable) {
@@ -71,7 +72,7 @@ public class GetNotificationsUseCase implements UseCase<GetNotificationsUseCase.
     @Getter
     @AllArgsConstructor
     public static class Result {
-        private Page<NotificationInfo> notifications;
+        private PagedModel<NotificationInfo> notifications;
 
         @Getter
         @AllArgsConstructor

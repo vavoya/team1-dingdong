@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,7 +75,7 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
                 })
                 .toList();
 
-        return new Result(new PageImpl<>(reservationInfos, param.pageable, result.getTotalElements()));
+        return new Result(new PagedModel<>(new PageImpl<>(reservationInfos, param.pageable, result.getTotalElements())));
     }
 
     @Getter
@@ -89,7 +90,7 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
     @Getter
     @AllArgsConstructor
     public static class Result {
-        private Page<ReservationInfo> reservationInfos;
+        private PagedModel<ReservationInfo> reservationInfos;
 
         @Getter
         @AllArgsConstructor
