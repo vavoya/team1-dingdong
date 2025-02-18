@@ -19,9 +19,6 @@ public interface UserQueryRepository extends JpaRepository<User, Long> {
             "FROM User u JOIN u.home h WHERE u.id = :userId")
     Optional<HomeLocationProjection> queryHomeLocationByUserId(@Param("userId") Long userId);
 
-    @Query("SELECT u.school.id as schoolId FROM User u WHERE u.id = :userId")
-    Optional<SchoolIdProjection> findSchoolIDByUserId(@Param("userId") Long userId);
-
     @Query("SELECT u.school.id as schoolId, u.home.stationLatitude as stationLatitude, u.home.stationLongitude as stationLongitude " +
             "FROM User u " +
             "WHERE u.id = :userId")
