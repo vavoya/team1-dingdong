@@ -41,11 +41,6 @@ export default function SchoolAuthSignUp() {
     setEmail(e.target.value);
   };
 
-  const certifiedEmail = () => {
-    setEmailErrorText("");
-    setHasErrorEmail(false);
-  };
-
   const checkVerificationCodeHandler = () => {
     setVerificationCodeErrorText("");
 
