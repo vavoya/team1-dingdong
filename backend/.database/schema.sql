@@ -201,3 +201,14 @@ CREATE TABLE IF NOT EXISTS timetable (
                            fri_end_time time,
                            primary key (id)
 ) engine=InnoDB;
+
+CREATE TABLE IF NOT EXISTS fcmtoken (
+                           id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                           token VARCHAR(255) NOT NULL,
+                           is_active BOOLEAN NOT NULL,
+                           last_modified_at DATETIME,
+                           user_id BIGINT NOT NULL
+);
+
+ALTER TABLE fcmtoken ADD CONSTRAINT uq_fcm_token UNIQUE (token);
+ALTER TABLE fcmtoken ADD CONSTRAINT fk_fcm_token_user FOREIGN KEY (user_id) REFERENCES user(id);
