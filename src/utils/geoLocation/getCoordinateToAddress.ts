@@ -4,7 +4,6 @@ export const getCoordsFromAddress = (
   if (window.kakao && window.kakao.maps) {
     kakao.maps.load(() => {
       console.log("Kakao Maps API 로드 완료!");
-      console.log(window.kakao.maps.services);
     });
   }
   return new Promise((resolve, reject) => {
