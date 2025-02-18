@@ -50,9 +50,10 @@ export default function SetLocationBottomModal({
   }, [addressNickname, roadAddress]);
 
   const setLocationSubmit = () => {
+    const shortAddress = roadAddress!.split(" ").slice(-2).join(" "); // 도로명과 지번 주소만 남겨서 저장
     putHomeLocationMutation(
       {
-        stationRoadAddressName: roadAddress!,
+        stationRoadAddressName: shortAddress,
         latitude: stationInfo.latitude,
         longitude: stationInfo.longitude,
         stationName: addressNickname,
