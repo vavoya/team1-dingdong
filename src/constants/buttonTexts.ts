@@ -1,6 +1,6 @@
-export const AI_RECOMMENDATION_TEXT = Object.freeze({
-  requestRecommendation: "AI 추천 받기",
-  getRecommendation: "AI 추천 적용",
+export const TIMETABLE_RECOMMENDATION_TEXT = Object.freeze({
+  requestRecommendation: "시간표 추천 받기",
+  getRecommendation: "시간표 추천 적용",
 });
 
 export const CHECK_BUS_LOCATION_TEXT = Object.freeze({

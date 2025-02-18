@@ -81,3 +81,5 @@ export default function SetLocationHomeMap({
     </MapWrapper>
   );
 }
+
+// draggable: true,
