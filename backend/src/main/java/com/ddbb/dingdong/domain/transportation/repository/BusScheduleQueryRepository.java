@@ -40,13 +40,12 @@ public interface BusScheduleQueryRepository extends JpaRepository<BusSchedule, L
             "GROUP BY bs.id")
     List<BusReservedSeatProjection> findReservedSeatCount(@Param("busScheduleIds") List<Long> busScheduleIds);
 
-    @Query("SELECT busStop.id as busStopId, res.userId as userId, busStop.expectedArrivalTime as busStopArrivalTime " +
-            "FROM BusStop busStop " +
-            "JOIN Ticket ticket ON ticket.busStopId = busStop.id " +
-            "JOIN Reservation res ON res.id = ticket.reservation.id " +
-            "JOIN BusSchedule bs ON bs.id = ticket.busScheduleId " +
-            "WHERE bs.id = :busScheduleId " +
-            "ORDER BY busStop.sequence")
+    @Query("""
+    SELECT DISTINCT busStop.id as busStopId, busStop.expectedArrivalTime as busStopArrivalTime, busStop.sequence
+    FROM Path p , BusStop busStop
+    WHERE p.busSchedule.id = :busScheduleId AND busStop.path.id = p.id
+    ORDER BY busStop.sequence
+    """)
     List<UserBusStopProjection> findUserBusStops(@Param("busScheduleId") Long busScheduleId);
 
     @Query("SELECT busStop.longitude as longitude, busStop.latitude as latitude " +

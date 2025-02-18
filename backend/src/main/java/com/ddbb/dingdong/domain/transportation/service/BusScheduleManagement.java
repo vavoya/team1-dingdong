@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.ddbb.dingdong.domain.transportation.service.BusErrors.BUS_UPDATE_ERROR;
 
@@ -96,8 +97,7 @@ public class BusScheduleManagement {
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void publishDepartureEvent(List<UserBusStopTime> userBusStopTimes) {
-        for (UserBusStopTime userBusStopTime : userBusStopTimes) {
-            eventPublisher.publishEvent(new BusDepartureEvent(userBusStopTime.getTime(), userBusStopTime.getUserIds()));
-        }
+        List<Long> userIds = userBusStopTimes.stream().map(UserBusStopTime::getBusStopId).filter(Objects::nonNull).toList();
+        eventPublisher.publishEvent(new BusDepartureEvent(userIds));
     }
 }
