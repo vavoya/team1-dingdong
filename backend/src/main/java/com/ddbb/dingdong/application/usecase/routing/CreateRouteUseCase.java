@@ -59,9 +59,11 @@ public class CreateRouteUseCase implements UseCase<CreateRouteUseCase.Param, Voi
                 reservations.size()
         );
 
+        Map<Long, Location> locationMap = new HashMap<>();
         Map<Long, Long> allocatedReservation = new HashMap<>();
         Set<Long> locatedId = new HashSet<>();
         for(Location location : locations) {
+            locationMap.put(location.getId(), location);
             allocatedReservation.put(location.getReservationId(), location.getId());
             locatedId.add(location.getId());
         }
@@ -74,6 +76,8 @@ public class CreateRouteUseCase implements UseCase<CreateRouteUseCase.Param, Voi
             if(locationId == null) {
                 lastBusStop = busStop;
             } else {
+                Location location = locationMap.get(locationId);
+                location.setExpectedArrivalTime(busStop.getExpectedArrivalTime());
                 locatedId.remove(locationId);
             }
             allocatedBusStop.put(busStop.getLocationId(), busStop);
