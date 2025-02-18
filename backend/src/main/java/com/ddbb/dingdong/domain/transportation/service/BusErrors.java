@@ -10,7 +10,10 @@ public enum BusErrors implements ErrorInfo {
     NO_BUS_FOUND("조건에 만족하는 버스가 존재하지 않습니다."),
     NO_BUS_STOP("조건에 맞는 버스 정류장이 없습니다."),
     NO_SEATS("남은 좌석이 없습니다."),
-    BUS_SCHEDULE_UPDATE_ERR("버스 운행 상태 업데이트 도중 오류가 발생했습니다.")
+    BUS_SCHEDULE_UPDATE_ERROR("버스 운행 상태 업데이트 도중 오류가 발생했습니다."),
+    STOP_BUS_ERROR("버스 운행 종료 도중 문제가 발생했습니다."),
+    BUS_NOT_INITIATED("버스의 운행 준비가 끝나지 않았습니다."),
+    BUS_ALREADY_STOPPED("버스 운행이 종료되었습니다.")
     ;
     private final String desc;
 
