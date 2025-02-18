@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class UserBusStopTime {
-    public record UserReservationId(Long userId, Long busStopId) {}
+    public record UserReservationId(Long userId, Long reservationId) {}
 
     private Long busStopId;
     private LocalDateTime time;
