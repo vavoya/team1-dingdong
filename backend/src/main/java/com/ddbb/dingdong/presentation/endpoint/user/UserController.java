@@ -1,6 +1,7 @@
 package com.ddbb.dingdong.presentation.endpoint.user;
 
 import com.ddbb.dingdong.application.exception.APIException;
+import com.ddbb.dingdong.application.usecase.user.ChargeDingdongMoneyFreeUseCase;
 import com.ddbb.dingdong.application.usecase.user.GetUserInfoUseCase;
 import com.ddbb.dingdong.application.usecase.user.GetWalletBalanceUseCase;
 import com.ddbb.dingdong.application.usecase.user.GetWalletHistoryUseCase;
@@ -12,10 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.ddbb.dingdong.application.usecase.user.GetUserInfoUseCase.Param;
 import static com.ddbb.dingdong.application.usecase.user.GetUserInfoUseCase.Result;
@@ -27,6 +25,7 @@ public class UserController {
     private final GetUserInfoUseCase getUserInfoUseCase;
     private final GetWalletBalanceUseCase getWalletBalanceUseCase;
     private final GetWalletHistoryUseCase getWalletHistoryUseCase;
+    private final ChargeDingdongMoneyFreeUseCase chargeDingdongMoneyFreeUseCase;
 
     @GetMapping("/me")
     public Result getUserInfo(
@@ -64,5 +63,20 @@ public class UserController {
         GetWalletHistoryUseCase.Result result = getWalletHistoryUseCase.execute(param);
 
         return ResponseEntity.ok().body(result);
+    }
+
+    @PostMapping("/wallet/charge/free")
+    public ResponseEntity<Void> chargeDingdongMoneyFree(
+            @LoginUser AuthUser authUser
+    ) {
+        Long userId = authUser.id();
+        ChargeDingdongMoneyFreeUseCase.Param param = new ChargeDingdongMoneyFreeUseCase.Param(userId);
+        try {
+            chargeDingdongMoneyFreeUseCase.execute(param);
+        } catch (DomainException e) {
+            throw new APIException(e, HttpStatus.BAD_REQUEST);
+        }
+
+        return ResponseEntity.ok().build();
     }
 }
