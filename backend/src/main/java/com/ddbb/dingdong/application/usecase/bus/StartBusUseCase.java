@@ -2,8 +2,11 @@ package com.ddbb.dingdong.application.usecase.bus;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
+import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
+import com.ddbb.dingdong.domain.transportation.entity.BusSchedule;
 import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.domain.transportation.repository.BusScheduleQueryRepository;
+import com.ddbb.dingdong.domain.transportation.repository.BusScheduleRepository;
 import com.ddbb.dingdong.domain.transportation.repository.projection.UserBusStopProjection;
 import com.ddbb.dingdong.domain.transportation.service.BusErrors;
 import com.ddbb.dingdong.domain.transportation.service.BusPublishService;
@@ -27,6 +30,7 @@ public class StartBusUseCase implements UseCase<StartBusUseCase.Param, Void> {
     private final BusPublishService busPublishService;
     private final BusScheduleQueryRepository busScheduleQueryRepository;
     private final BusScheduleManagement busScheduleManagement;
+    private final BusScheduleRepository busScheduleRepository;
 
     @Override
     @Transactional
@@ -55,7 +59,11 @@ public class StartBusUseCase implements UseCase<StartBusUseCase.Param, Void> {
                 param.timeUnit
         );
         busScheduleManagement.updateBusScheduleExpectedArrivalTime(param.getBusScheduleId(), newUserBusStopTimes.get(newUserBusStopTimes.size() - 1).getTime());
-        busScheduleManagement.publishDepartureEvent(newUserBusStopTimes);
+        BusSchedule busSchedule = busScheduleRepository.findById(param.busScheduleId)
+                        .orElseThrow(BusErrors.NO_BUS_FOUND::toException);
+        if(busSchedule.getDirection().equals(Direction.TO_SCHOOL)) {
+            busScheduleManagement.publishDepartureEvent(newUserBusStopTimes);
+        }
         return null;
     }
 
