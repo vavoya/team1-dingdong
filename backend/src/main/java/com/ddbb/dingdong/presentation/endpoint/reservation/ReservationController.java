@@ -29,6 +29,7 @@ public class ReservationController {
     private final MakeTogetherReservationUseCase makeTogetherReservationUseCase;
     private final CancelReservationUseCase cancelReservationUseCase;
     private final SuggestReservationUseCase suggestReservationUseCase;
+    private final GetUserBusScheduleInfoUseCase getUserBusScheduleInfoUseCase;
 
     @GetMapping
     public ResponseEntity<GetReservationsUseCase.Result> getReservations(
@@ -186,5 +187,25 @@ public class ReservationController {
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/busSchedules/{busScheduleId}")
+    public ResponseEntity<GetUserBusScheduleInfoUseCase.Result> getUserBusScheduleInfo(
+            @LoginUser AuthUser user,
+            @PathVariable Long busScheduleId
+    ) {
+        Long userId = user.id();
+        GetUserBusScheduleInfoUseCase.Param param = new GetUserBusScheduleInfoUseCase.Param(
+                userId,
+                busScheduleId
+        );
+        GetUserBusScheduleInfoUseCase.Result result;
+        try {
+            result = getUserBusScheduleInfoUseCase.execute(param);
+        } catch (DomainException ex) {
+            throw new APIException(ex, HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok().body(result);
     }
 }

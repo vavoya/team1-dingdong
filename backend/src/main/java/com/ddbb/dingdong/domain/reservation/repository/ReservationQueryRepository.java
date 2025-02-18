@@ -8,9 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 public interface ReservationQueryRepository extends JpaRepository<Reservation, Long> {
     @Query(value = """
@@ -77,4 +75,27 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
         )
     """)
     Page<UserReservationProjection> queryReservationsByUserId(@Param("userId") Long userId, @Param("category") int category, @Param("sort") int sort, Pageable p);
+
+    @Query("""
+        SELECT DISTINCT null AS userHomeStationName,
+           t.reservation.id AS reservationId,
+           t.reservation.startDate AS startDate,
+           t.reservation.direction AS direction,
+           t.reservation.arrivalTime AS expectedArrivalTime,
+           t.reservation.departureTime AS expectedDepartureTime,
+           bs_arrival.departureTime AS realDepartureTime,
+           bs_arrival.arrivalTime AS realArrivalTime,
+           t.reservation.status AS reservationStatus,
+           bs_arrival.id AS busScheduleId,
+           bs_arrival.bus.name AS busName,
+           bs_arrival.status AS busStatus,
+           bs.roadNameAddress AS busStopRoadNameAddress,
+           bs.expectedArrivalTime AS busStopArrivalTime
+    FROM Ticket t
+    JOIN BusSchedule bs_arrival ON t.busScheduleId = :busScheduleId
+    JOIN BusStop bs ON t.busStopId = bs.id
+    WHERE bs_arrival.id = :busScheduleId AND t.busScheduleId = :busScheduleId AND t.reservation.userId = :userId
+        AND t.reservation.status = 'ALLOCATED' AND (bs_arrival.status = 'RUNNING' OR bs_arrival.status = 'READY')
+    """)
+    Optional<UserReservationProjection> queryReservationByBusScheduleIdAndUserId(@Param("userId") Long userId, @Param("busScheduleId") Long busScheduleId);
 }
