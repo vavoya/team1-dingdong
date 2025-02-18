@@ -1,5 +1,6 @@
 package com.ddbb.dingdong.bus;
 
+import com.ddbb.dingdong.infrastructure.bus.simulator.BusSubscriptionLockManager;
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.BusSubscriptionManager;
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.UserSubscription;
 import com.ddbb.dingdong.domain.transportation.service.BusPublishService;
@@ -19,7 +20,7 @@ class BusSimulatorTest {
 
     public BusSimulatorTest() {
         this.segmentProvider = new TMapStubRouteSegmentProvider();
-        this.manager = new BusSubscriptionManager();
+        this.manager = new BusSubscriptionManager(new BusSubscriptionLockManager());
         this.factory = new BusSimulatorFactory(segmentProvider);
         this.publishService = new BusPublishService(this.factory, manager);
     }

@@ -1,43 +1,47 @@
 package com.ddbb.dingdong.infrastructure.bus.simulator.subscription;
 
+import com.ddbb.dingdong.domain.common.exception.DomainException;
+import com.ddbb.dingdong.domain.transportation.service.BusErrors;
+import com.ddbb.dingdong.infrastructure.bus.simulator.BusSubscriptionLockManager;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SubmissionPublisher;
-import java.util.concurrent.locks.StampedLock;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class BusSubscriptionManager {
-    private final Map<Long, StampedLock> lockMap = new ConcurrentHashMap<>();
+    private final BusSubscriptionLockManager lockManager;
     private final Map<Long, SubmissionPublisher<Point>> publishers = new HashMap<>();
     private final Map<Long, Set<UserSubscription>> subscribers = new HashMap<>();
 
-    public BusSubscriptionManager() {}
 
     public void subscribe(long busId, UserSubscription subscription) {
-        StampedLock lock = lockMap.computeIfAbsent(busId, id -> new StampedLock());
-        long stamp = lock.writeLock();
-        Set<UserSubscription> set = subscribers.computeIfAbsent(busId, id -> new TreeSet<>());
-        if (!set.contains(subscription)) {
-            set.add(subscription);
+        StoppableLock lock = lockManager.getLock(busId)
+                .orElseThrow(() -> new DomainException(BusErrors.BUS_NOT_INITIATED));
+        if (!lock.lock()) {
+            throw new DomainException(BusErrors.BUS_ALREADY_STOPPED);
         }
-        log.debug("user ({}) subscribe bus ({})", subscription.getUserId(), busId);
+        Set<UserSubscription> set = subscribers.computeIfAbsent(busId, id -> new TreeSet<>());
         set.add(subscription);
 
         publishers.computeIfPresent(busId, (key, publisher) -> {
            publisher.subscribe(subscription.getSubscriber());
            return publisher;
         });
-        lock.unlockWrite(stamp);
+        lock.unlock();
     }
 
     public void addPublishers(Long busId, SubmissionPublisher<Point> publisher) {
-        StampedLock lock = lockMap.computeIfAbsent(busId, id -> new StampedLock());
-        long stamp = lock.writeLock();
+        StoppableLock lock = lockManager.getLock(busId)
+                .orElseThrow(() -> new DomainException(BusErrors.BUS_NOT_INITIATED));
+        if (!lock.lock()) {
+            throw new DomainException(BusErrors.BUS_ALREADY_STOPPED);
+        }
         if (!publishers.containsKey(busId)) {
             Set<UserSubscription> subscriberSet = subscribers.computeIfAbsent(busId, (id) -> new TreeSet<>());
             for (UserSubscription subscription : subscriberSet) {
@@ -45,13 +49,15 @@ public class BusSubscriptionManager {
             }
             publishers.put(busId, publisher);
         }
-        lock.unlockWrite(stamp);
+        lock.unlock();
     }
 
     public void unsubscribe(Long busId, Long userId) {
-        StampedLock lock = lockMap.computeIfAbsent(busId, id -> new StampedLock());
-        long stamp = lock.writeLock();
-
+        StoppableLock lock = lockManager.getLock(busId)
+                .orElseThrow(() -> new DomainException(BusErrors.BUS_NOT_INITIATED));
+        if (!lock.lock()) {
+            throw new DomainException(BusErrors.BUS_ALREADY_STOPPED);
+        }
         subscribers.computeIfPresent(busId, (id, subscriberSet) -> {
             subscriberSet.removeIf(subscription -> {
                 if (subscription.getUserId().equals(userId)) {
@@ -63,26 +69,26 @@ public class BusSubscriptionManager {
             });
             return subscriberSet;
         });
-        if (!(publishers.containsKey(busId) || subscribers.containsKey(busId))) {
-            lockMap.remove(busId);
-        }
-        lock.unlockWrite(stamp);
+        lock.unlock();
     }
 
     /**
      * @param busId : 메모리에서 지울 publisher의 버스 아이디
      * 매개변수로 들어온 버스아이디와 관련된 publisher과 관련된 자원(Subscriber 등)의 메모리를 해제합니다.
      * 자동으로 publisher의 close를 호출하므로 동일한 publisher에 대해서 close 메서드를 재호출하지 않아야 합니다.
+     *
+     * 반드시 버스 구독 락을 제거하기 전에 호출해야 합니다.
      * **/
     public void cleanPublisher(Long busId) {
-        StampedLock lock = lockMap.computeIfAbsent(busId, id -> new StampedLock());
-        long stamp = lock.writeLock();
-
+        StoppableLock lock = lockManager.getLock(busId)
+                .orElseThrow(() -> new DomainException(BusErrors.BUS_NOT_INITIATED));
+        if (!lock.lock()) {
+            throw new DomainException(BusErrors.BUS_ALREADY_STOPPED);
+        }
         SubmissionPublisher<Point> publisher = publishers.remove(busId);
         subscribers.remove(busId);
-        lockMap.remove(busId);
         publisher.close();
-        lock.unlockWrite(stamp);
+        lock.unlock();
     }
 
     /**
@@ -91,11 +97,13 @@ public class BusSubscriptionManager {
      * publisher의 close를 호출하지 않으므로 반드시 해당 publisher에 close 메서드를 호출해야 합니다.
      **/
     public void removeRefOnly(Long busId) {
-        StampedLock lock = lockMap.computeIfAbsent(busId, id -> new StampedLock());
-        long stamp = lock.writeLock();
+        StoppableLock lock = lockManager.getLock(busId)
+                .orElseThrow(() -> new DomainException(BusErrors.BUS_NOT_INITIATED));
+        if (!lock.lock()) {
+            throw new DomainException(BusErrors.BUS_ALREADY_STOPPED);
+        }
         publishers.remove(busId);
         subscribers.remove(busId);
-        lockMap.remove(busId);
-        lock.unlockWrite(stamp);
+        lock.unlock();
     }
 }
