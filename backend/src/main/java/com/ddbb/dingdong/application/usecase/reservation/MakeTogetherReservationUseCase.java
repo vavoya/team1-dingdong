@@ -88,6 +88,10 @@ public class MakeTogetherReservationUseCase implements UseCase<MakeTogetherReser
         BusStop busStop = busStopRepository.findById(busStopId)
                 .orElseThrow(ReservationErrors.BUS_STOP_NOT_FOUND::toException);
 
+        if(busStop.getLocationId() == null) {
+            throw ReservationErrors.INVALID_BUS_STOP.toException();
+        }
+
         Long queryBusScheduleId = busStop.getPath().getBusSchedule().getId();
 
         if (!busScheduleId.equals(queryBusScheduleId)) {
