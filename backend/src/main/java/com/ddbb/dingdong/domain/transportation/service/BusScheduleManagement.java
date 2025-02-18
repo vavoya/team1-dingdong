@@ -100,4 +100,9 @@ public class BusScheduleManagement {
         List<Long> userIds = userBusStopTimes.stream().map(UserBusStopTime::getBusStopId).filter(Objects::nonNull).toList();
         eventPublisher.publishEvent(new BusDepartureEvent(userIds));
     }
+
+    public void updateBusScheduleExpectedArrivalTime(Long busScheduleId, LocalDateTime time) {
+        BusSchedule busSchedule = busScheduleRepository.findById(busScheduleId).orElseThrow(BusErrors.NO_BUS_FOUND::toException);
+        busSchedule.setArrivalTime(time);
+    }
 }
