@@ -55,7 +55,7 @@ public class GetReservationsUseCase implements UseCase<GetReservationsUseCase.Pa
                         operationInfo = new Result.ReservationInfo.OperationInfo(
                                 r.getBusScheduleId(),
                                 r.getBusStatus(),
-                                r.getBusName(),
+                                "버스 " + String.format("%02d", r.getBusId()),
                                 r.getBusStopArrivalTime()
                         );
                         expectedDepartureTime = r.getRealDepartureTime();

@@ -22,7 +22,7 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
            bs_arrival.arrivalTime AS realArrivalTime,
            r.status AS reservationStatus,
            bs_arrival.id AS busScheduleId,
-           b.name AS busName,
+           b.id AS busId,
            bs_arrival.status AS busStatus,
            bs.roadNameAddress AS busStopRoadNameAddress,
            bs.expectedArrivalTime AS busStopArrivalTime
@@ -87,7 +87,7 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
            bs_arrival.arrivalTime AS realArrivalTime,
            t.reservation.status AS reservationStatus,
            bs_arrival.id AS busScheduleId,
-           bs_arrival.bus.name AS busName,
+           bs_arrival.bus.id AS busId,
            bs_arrival.status AS busStatus,
            bs.roadNameAddress AS busStopRoadNameAddress,
            bs.expectedArrivalTime AS busStopArrivalTime
