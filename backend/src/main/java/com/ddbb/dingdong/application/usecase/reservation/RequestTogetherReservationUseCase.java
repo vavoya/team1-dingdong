@@ -52,6 +52,11 @@ public class RequestTogetherReservationUseCase implements UseCase<RequestTogethe
         LocalDateTime hopeTime = schedule.getDirection().equals(Direction.TO_SCHOOL)
                 ? schedule.getArrivalTime()
                 : schedule.getDepartureTime();
+
+        if(hopeTime.isBefore(LocalDateTime.now())) {
+            throw ReservationErrors.EXPIRED_RESERVATION_DATE.toException();
+        }
+
         return hopeTime;
     }
 
