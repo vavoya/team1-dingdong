@@ -39,6 +39,7 @@ interface BusInfo {
 
 interface RouteInfo {
   busScheduleId: number;
+  busStopId: number;
   busStop: BusStop;
   busInfo: BusInfo;
 }
@@ -83,6 +84,7 @@ export default function BusSelectBottomModal({
       direction,
       timeSchedule: busInfoArray[selectedBusCardIndex].busStop.time,
       busId: busInfoArray[selectedBusCardIndex].busScheduleId,
+      busStopId: busInfoArray[selectedBusCardIndex].busStopId,
       busStopName: busInfoArray[selectedBusCardIndex].busStop.name,
     });
   };
@@ -112,7 +114,7 @@ export default function BusSelectBottomModal({
             <BusInfo>
               <BusNo>
                 <BusIcon />
-                <BusNumber>버스{schedule.busInfo.name}</BusNumber>
+                <BusNumber>{schedule.busInfo.name}</BusNumber>
               </BusNo>
               <PeopleInfo>
                 <RemainSeat>{schedule.busInfo.reservedSeat}</RemainSeat>

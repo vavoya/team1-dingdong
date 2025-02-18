@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import ExitHeader from "@/components/Headers/ExitHeader";
 import BusSelectMap from "./components/MapWrapper";
@@ -90,11 +90,11 @@ const BUS_PATH = [
 export default function FixedRouteBookingSelectBus() {
   const userLocation = useCurrentLocation();
 
-  // const { schoolLocation } = useLoaderData()[0]; // 집...(즉 탑승지)
+  const { schoolLatitude, schoolLongitude } = useLoaderData()[0]; // 집...(즉 탑승지)
 
   const { stationInfo: originalUserStation } = useLoaderData()[1]; // 집...(즉 탑승지)
 
-  const schoolLocation = { latitue: 37.4602, longitude: 126.9517 }; // 임시 값. 서울대
+  // const schoolLocation = { latitue: 37.4602, longitude: 126.9517 }; // 임시 값. 서울대
 
   const { direction, timeSchedule } = JSON.parse(
     sessionStorage.getItem("/fixed-bus-booking")!
@@ -130,8 +130,8 @@ export default function FixedRouteBookingSelectBus() {
     lng: originalUserStation.longitude as number,
   });
   const [endPoint, setEndPoint] = useState({
-    lat: schoolLocation.latitue,
-    lng: schoolLocation.longitude,
+    lat: schoolLatitude,
+    lng: schoolLongitude,
   });
 
   const userBusStop = {
@@ -139,22 +139,19 @@ export default function FixedRouteBookingSelectBus() {
     lat: busInfoArray[selectedBusCardIndex].busStop.latitude,
     lng: busInfoArray[selectedBusCardIndex].busStop.longitude,
   };
-  const locationToMarkOnMap = {
-    startPoint,
-    endPoint,
-    busPath: BUS_PATH[selectedBusCardIndex],
-    userBusStop,
-  };
+
   useEffect(() => {
     // 현재 버스카드 id를 가지고 값을 fetch한다.
     // ex) startPoint, endPoint, busPath, 승차지, 하차지 이름 3가지 받기.
     setMapCenterLocation({ center: { ...userBusStop }, isPanto: false });
   }, [selectedBusCardIndex]);
 
-  //path 부분.
+ 
+
   const selectedBusPath = useGetBusPath(
     busInfoArray[selectedBusCardIndex].busScheduleId
   );
+  
 
   const selectedBusPathPoints =
     selectedBusPath.data?.data?.points.length > 0
@@ -162,6 +159,29 @@ export default function FixedRouteBookingSelectBus() {
       : BUS_PATH[selectedBusCardIndex];
 
   const [busPathPoints, setBusPathPoints] = useState(selectedBusPathPoints);
+
+  useEffect(() => {
+    setBusPathPoints(selectedBusPathPoints);
+  }, [selectedBusPath.data]);
+
+  const clientDataList = useMemo(
+    () =>
+      // lattitude, longitude 변수 => lat, lng 카카오 맵에 맞게 변환.
+      busPathPoints.map(
+        ({ latitude, longitude }: { latitude: number; longitude: number }) => ({
+          lat: latitude,
+          lng: longitude,
+        })
+      ),
+    [busPathPoints] // serverDataList가 변경될 때만 다시 계산
+  );
+
+  const locationToMarkOnMap = {
+    startPoint: clientDataList[0],
+    endPoint: clientDataList[clientDataList.length - 1],
+    busPath: clientDataList,
+    userBusStop,
+  };
 
   useEffect(() => {
     setBusPathPoints(selectedBusPathPoints);
