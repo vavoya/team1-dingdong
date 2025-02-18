@@ -50,7 +50,7 @@ export const timeScheduleSelectors = {
           date.setHours(date.getHours());
 
           // 한국 시간으로 변환된 ISO 형식 문자열을 배열에 추가
-          allSchedules.push(date.toDateString());
+          allSchedules.push(date.toISOString());
         });
       });
     });
