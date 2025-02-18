@@ -1,4 +1,4 @@
-export function getTravelDuration(departureTime: string, arrivalTime: string) {
+export function getTravelDuration(departureTime: string, arrivalTime: string, type: 0 | 1 = 0) {
     let depTime = new Date(departureTime);
     let arrTime = new Date(arrivalTime);
 
@@ -8,5 +8,13 @@ export function getTravelDuration(departureTime: string, arrivalTime: string) {
     let hours = Math.floor(diffMinutes / 60);
     let minutes = diffMinutes % 60;
 
-    return `${hours ? `${hours}시간 ` : ''}${minutes ? `${minutes}분` : ''}`.trim();
+    if (type === 0) {
+        return `${hours ? `${hours}시간 ` : ''}${minutes ? `${minutes}분` : ''} 소요`.trim();
+    }
+
+    if (diffMinutes <= 0) {
+        return "이용 완료"; // 도착 시간이 출발 시간보다 빠르거나 같으면 "이용 완료"
+    }
+
+    return `${hours ? `${hours}시간 ` : ''}${minutes ? `${minutes}분` : ''} 후 도착`.trim();
 }
