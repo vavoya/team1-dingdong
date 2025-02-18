@@ -9,11 +9,6 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"token"})
-        }
-)
 public class FCMToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
