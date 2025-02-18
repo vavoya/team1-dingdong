@@ -7,6 +7,7 @@ public enum PaymentErrors implements ErrorInfo {
 
     INSUFFICIENT_BALANCE("잔고가 부족합니다."),
     ALREADY_REFUNDED("해당 예매는 이미 환불이 처리되었습니다."),
+    FREE_CHARGE_LIMIT_EXCEEDED("오늘 이미 무료충전을 하였습니다."),
     ;
 
     private final String desc;

@@ -25,6 +25,7 @@ public class UserController {
     private final GetWalletHistoryUseCase getWalletHistoryUseCase;
     private final GetTimetableUseCase getTimetableUseCase;
     private final ChangeTimetableUseCase changeTimetableUseCase;
+    private final ChargeDingdongMoneyFreeUseCase chargeDingdongMoneyFreeUseCase;
 
     @GetMapping("/me")
     public Result getUserInfo(
@@ -101,6 +102,21 @@ public class UserController {
         );
         try {
             changeTimetableUseCase.execute(param);
+        } catch (DomainException e) {
+            throw new APIException(e, HttpStatus.BAD_REQUEST);
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/wallet/charge/free")
+    public ResponseEntity<Void> chargeDingdongMoneyFree(
+            @LoginUser AuthUser authUser
+    ) {
+        Long userId = authUser.id();
+        ChargeDingdongMoneyFreeUseCase.Param param = new ChargeDingdongMoneyFreeUseCase.Param(userId);
+        try {
+            chargeDingdongMoneyFreeUseCase.execute(param);
         } catch (DomainException e) {
             throw new APIException(e, HttpStatus.BAD_REQUEST);
         }
