@@ -41,16 +41,11 @@ public class StartBusUseCase implements UseCase<StartBusUseCase.Param, Void> {
             if (!busStopTimeMap.containsKey(proj.getBusStopId())) {
                 busStopTimeMap.put(proj.getBusStopId(), new UserBusStopTime(proj.getBusStopId(), proj.getBusStopArrivalTime()));
             }
-            busStopTimeMap.computeIfPresent(proj.getBusStopId(), (k, v) ->  {
-                v.addUserReservation(proj.getUserId(), proj.getReservationId());
-                return v;
-            });
         }
         List<UserBusStopTime> userBusStopTimes = busStopTimeMap.values().stream().toList();
 
         LocalDateTime now = LocalDateTime.now();
         List<UserBusStopTime> newUserBusStopTimes = busScheduleManagement.adjustBusStopTimes(now, userBusStopTimes);
-
         busScheduleManagement.updateBusStopTimes(newUserBusStopTimes, userBusStopTimes);
         busPublishService.publishSimulator(
                 param.busScheduleId,
