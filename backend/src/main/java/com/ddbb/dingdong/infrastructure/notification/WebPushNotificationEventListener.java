@@ -35,11 +35,5 @@ public class WebPushNotificationEventListener {
     @Async
     @EventListener
     protected void sendBusStartNotification(BusDepartureEvent event) {
-        NotificationMessage message = messageFormatter.busDeparture(event.getArrivalTime(), LocalDateTime.now());
-        List<Long> userIds = event.getUserReservationIds()
-                .stream()
-                .map(UserBusStopTime.UserReservationId::userId)
-                .toList();
-        notificationSender.send(message.title(), message.content(), userIds);
     }
 }
