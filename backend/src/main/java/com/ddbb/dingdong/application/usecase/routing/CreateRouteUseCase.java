@@ -14,6 +14,7 @@ import com.ddbb.dingdong.domain.transportation.entity.Path;
 import com.ddbb.dingdong.domain.transportation.service.BusScheduleManagement;
 import com.ddbb.dingdong.domain.user.entity.School;
 import com.ddbb.dingdong.domain.user.service.UserManagement;
+import com.ddbb.dingdong.infrastructure.bus.simulator.BusSubscriptionLockManager;
 import com.ddbb.dingdong.infrastructure.routing.BusRouteCreationService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,6 +32,7 @@ public class CreateRouteUseCase implements UseCase<CreateRouteUseCase.Param, Voi
     private final ClusteringService clusteringService;
     private final BusScheduleManagement busScheduleManagement;
     private final BusRouteCreationService busRouteCreationService;
+    private final BusSubscriptionLockManager busSubscriptionLockManager;
     private final UserManagement userManagement;
 
     @Transactional
@@ -98,6 +100,7 @@ public class CreateRouteUseCase implements UseCase<CreateRouteUseCase.Param, Voi
             ticket.setBusStopId(busStop.getId());
             reservationManagement.allocate(reservation,ticket);
         }
+        busSubscriptionLockManager.addLock(busSchedule.getId());
     }
 
     @Getter
