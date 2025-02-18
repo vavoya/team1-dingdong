@@ -161,7 +161,7 @@ export default function FixedBookingCalendarView({
                   commuteType,
                   "fixedBusBooking"
                 );
-                console.log(disabledDate, date);
+                
                 return (
                   <S.DayButton
                     onClick={() => {

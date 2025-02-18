@@ -11,7 +11,6 @@ export const handleAllowNotification = async () => {
     if (status === "denied") {
       return "denied";
     } else if (status === "granted") {
-      console.log("granted");
       try {
         // 서비스 워커 등록 완료를 기다림
         await registerServiceWorker();

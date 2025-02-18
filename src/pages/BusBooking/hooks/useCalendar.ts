@@ -76,7 +76,7 @@ export default function useCalendar(calendarType = "customBooking") {
     if (calendarType === "fixedBusBooking") {
       // 예약 가능한 마지막 날짜가 다음 월보다 작으면 비활성화.
       // date가 마지막 날보다 크다면 false.
-      console.log(!(new Date(lastDayCanBook) < date), "이 부분!");
+      
       return !(new Date(lastDayCanBook) < date);
     }
 
