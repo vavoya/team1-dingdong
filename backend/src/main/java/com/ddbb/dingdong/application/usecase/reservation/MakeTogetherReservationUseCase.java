@@ -52,7 +52,9 @@ public class MakeTogetherReservationUseCase implements UseCase<MakeTogetherReser
     private void checkHasDuplicatedReservation(Param param) {
         Long userId = param.getReservationInfo().userId;
         LocalDateTime hopeTime = extractTimeFromBusSchedule(param);
-
+        if(hopeTime.isBefore(LocalDateTime.now())) {
+            throw ReservationErrors.EXPIRED_RESERVATION_DATE.toException();
+        }
         reservationManagement.checkHasDuplicatedReservation(userId, hopeTime);
     }
 
@@ -88,11 +90,16 @@ public class MakeTogetherReservationUseCase implements UseCase<MakeTogetherReser
         BusStop busStop = busStopRepository.findById(busStopId)
                 .orElseThrow(ReservationErrors.BUS_STOP_NOT_FOUND::toException);
 
+        if(busStop.getLocationId() == null) {
+            throw ReservationErrors.INVALID_BUS_STOP.toException();
+        }
+
         Long queryBusScheduleId = busStop.getPath().getBusSchedule().getId();
 
         if (!busScheduleId.equals(queryBusScheduleId)) {
             throw ReservationErrors.INVALID_BUS_SCHEDULE.toException();
         }
+
 
         Reservation reservation = makeReservation(busSchedule, userId);
         Ticket ticket = new Ticket(null, busScheduleId, busStopId, reservation);

@@ -105,33 +105,6 @@ public class ReservationManagement {
         }
     }
 
-    public void validateTogetherReservationDate(LocalDateTime reservationDate , Direction direction) {
-
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime startDate = reservationDate.minusHours(48);
-        LocalDateTime deadLine = reservationDate;
-
-        if(now.isBefore(startDate)){
-            throw ReservationErrors.BEFORE_RESERVATION_DATE.toException();
-        }
-        if(now.isAfter(deadLine)){
-            throw ReservationErrors.EXCEEDED_RESERVATION_DATE.toException();
-        }
-        if(reservationDate.getMinute() != 0 && reservationDate.getMinute() != 30) {
-            throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
-        }
-        if(direction.equals(Direction.TO_SCHOOL)) {
-            if (reservationDate.toLocalTime().isBefore(LocalTime.of(8,0)) || reservationDate.toLocalTime().isAfter(LocalTime.of(18,0))) {
-                throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
-            }
-        } else {
-            if (reservationDate.toLocalTime().isBefore(LocalTime.of(11,0)) || reservationDate.toLocalTime().isAfter(LocalTime.of(21,0))) {
-                throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
-            }
-        }
-
-    }
-
     public List<LocalDateTime> recommendReservationDates(YearMonth yearMonth, Direction direction, Timetable timetable) {
         return IntStream.rangeClosed(1, yearMonth.lengthOfMonth())
                 .mapToObj(yearMonth::atDay)
@@ -196,7 +169,6 @@ public class ReservationManagement {
     }
 
     private Reservation reserveTogether(Reservation reservation) {
-        validateTogetherReservation(reservation);
         return reservationRepository.save(reservation);
     }
 
@@ -206,15 +178,6 @@ public class ReservationManagement {
         }
         LocalDateTime reservationDate = reservation.getDirection().equals(Direction.TO_SCHOOL) ? reservation.getArrivalTime() : reservation.getDepartureTime();
         validateGeneralReservationDate(reservationDate , reservation.getDirection());
-    }
-
-    private void validateTogetherReservation(Reservation reservation) {
-        if (!ReservationType.TOGETHER.equals(reservation.getType())) {
-            throw ReservationErrors.INVALID_RESERVATION_TYPE.toException();
-        } else if (!ReservationStatus.ALLOCATED.equals(reservation.getStatus())) {
-            throw ReservationErrors.INVALID_RESERVATION_STATUS.toException();
-        }
-        validateTogetherReservationDate(reservation.getArrivalTime(), reservation.getDirection());
     }
 
 
