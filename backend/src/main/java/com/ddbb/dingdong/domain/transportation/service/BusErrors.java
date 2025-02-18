@@ -13,7 +13,10 @@ public enum BusErrors implements ErrorInfo {
     BUS_SCHEDULE_UPDATE_ERROR("버스 운행 상태 업데이트 도중 오류가 발생했습니다."),
     STOP_BUS_ERROR("버스 운행 종료 도중 문제가 발생했습니다."),
     BUS_NOT_INITIATED("버스의 운행 준비가 끝나지 않았습니다."),
-    BUS_ALREADY_STOPPED("버스 운행이 종료되었습니다.")
+    BUS_ALREADY_STOPPED("버스 운행이 종료되었습니다."),
+    BUS_SUBSCRIBE_ERROR("버스 구독 도중에 문제가 발생했습니다."),
+    BUS_START_ERROR("버스 운행 시작 도중에 문제가 발생했습니다."),
+    BUS_UNSUBSCRIBE_ERROR("버스 구독 취소 도중에 문제가 발생했습니다."),
     ;
     private final String desc;
 
