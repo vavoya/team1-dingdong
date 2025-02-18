@@ -1,23 +1,24 @@
 package com.ddbb.dingdong.infrastructure.bus.simulator;
 
-import org.springframework.stereotype.Component;
+
+import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.StoppableLock;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.StampedLock;
 
-@Component
+@Service
 public class BusSubscriptionLockManager {
-    private final Map<Long, StampedLock> locks = new ConcurrentHashMap<>();
+    private final Map<Long, StoppableLock> locks = new ConcurrentHashMap<>();
 
-    public Optional<StampedLock> getLock(long busScheduleId) {
-        StampedLock stampedLock = locks.get(busScheduleId);
+    public Optional<StoppableLock> getLock(long busScheduleId) {
+        StoppableLock stampedLock = locks.get(busScheduleId);
         return Optional.ofNullable(stampedLock);
     }
 
     public void addLock(long busScheduleId) {
-        locks.computeIfAbsent(busScheduleId, id -> new StampedLock());
+        locks.computeIfAbsent(busScheduleId, id -> new StoppableLock());
     }
 
     public void removeLock(long busScheduleId) {
