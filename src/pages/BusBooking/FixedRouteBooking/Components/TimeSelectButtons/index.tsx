@@ -13,7 +13,6 @@ export default function TimeSelectButtons({
   selectedHourMinute,
   setSelectedHourMinute,
 }: TimeSelectButtonsProps) {
-  console.log(selectedHourMinute, "버튼 누름");
 
   return (
     <SelectionWrapper>

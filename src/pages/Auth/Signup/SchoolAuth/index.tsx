@@ -20,7 +20,6 @@ import Dropdown from "../../Components/Dropdown";
 
 export default function SchoolAuthSignUp() {
   const { schools: schoolList } = useLoaderData()[0];
-  console.log(schoolList, "학교 목록");
 
   const [email, setEmail] = useState("");
   const [emailFormatHasError, setEmailFormatHasError] = useState(false);

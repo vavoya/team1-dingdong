@@ -74,11 +74,7 @@ export default function BusSelectBottomModal({
   // 탑승, 하차
   const boardingOrGetOff = direction === "TO_SCHOOL" ? "탑승" : "하차";
 
-  console.log(busInfoArray[selectedBusCardIndex], "정보정보");
-  // navigateCustom("/fixed-bus-select-bus", {
-  //   direction,
-  //   timeSchedule: selectTimeScheduleArray[0],
-  // });
+
   const nextClickHandler = () => {
     navigateCustom("/payment/purchase", {
       direction,

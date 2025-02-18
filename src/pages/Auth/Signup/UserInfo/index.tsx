@@ -90,7 +90,6 @@ export default function UserInfoSignup() {
   const handleClick = () => {
     open({ onComplete: handleComplete });
   };
-  console.log(formData);
 
   useEffect(() => {
     setNameFormatError(!isValidNameFormat(formData.name));
@@ -102,7 +101,6 @@ export default function UserInfoSignup() {
     formData.addressNickname.length > 0 &&
     isValidPhoneNumber(formData.phoneNumber);
 
-  console.log(userInfoFromPreviousStep.current, formData, "회원정보~");
   const submitUserInfoHandler = () => {
     if (!homeGeoLocation) return;
     const splitAddress = formData.address.split(" ").slice(-2).join(" ");
@@ -117,7 +115,6 @@ export default function UserInfoSignup() {
       },
       schoolId: userInfoFromPreviousStep.current.schoolId,
     };
-    console.log(finalUserInfo);
     postUserInfoMutation(finalUserInfo, {
       onSuccess: () => {
         navigate("/home");

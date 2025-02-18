@@ -79,11 +79,8 @@ export default function SelectTimeBottomModal({
   const handleTimeChange = useDebounce(
     // 이벤트 발생한지 2초 간 움직임이 없다면 reset
     (amPm: string, hour: string, minute: string) => {
-      console.log(`현재 시간: ${amPm} ${hour}:${minute}`);
 
       const newTime = parseAndCreateTime(selectedDate, amPm, hour, minute);
-      console.log(newTime, "새로운 새로운", newTime.getHours());
-      console.log(selectedDate, newTime.getHours(), newTime.getMinutes());
 
       const timeAvailability = handleTimeAvailability(newTime, commuteType);
 
@@ -202,7 +199,6 @@ export default function SelectTimeBottomModal({
     return { initHour: hour - 1, initMinute: minute };
   }, [selectedTimeSchedule, selectedDate, commuteType]); // 의존성 배열에 필요한 값들 추가
 
-  console.log(selectedTimeSchedule, "지금까지의 데이터");
 
   const isRepeatedDay = () => {
     let isRepeated = false;
@@ -232,7 +228,6 @@ export default function SelectTimeBottomModal({
   useEffect(() => {
     if (isTimeSelectModalOpen && repeatIconToggle !== null) {
       const returnValue = isRepeatedDay();
-      console.log(returnValue, "qksghk");
       setRepeatIconToggle(returnValue);
     }
   }, [isTimeSelectModalOpen]);

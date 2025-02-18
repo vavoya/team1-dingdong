@@ -67,7 +67,6 @@ export default forwardRef(function TimeWheel(
     }),
     resetScrollPosition,
   }));
-  console.log(selectedHour, selectedMinute, selectedAmPm, "시간시간");
 
   // 특정 시각으로 스크롤을 재설정하는 함수.
 

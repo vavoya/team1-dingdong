@@ -57,7 +57,6 @@ export default function BusSelectMap({
   const updateMapBounds = () => {
     if (!mapRef.current || !startPoint || !endPoint) return;
 
-    console.log("startPoint:", startPoint, "endPoint:", endPoint); // 좌표 확인
 
     const bounds = new kakao.maps.LatLngBounds();
     bounds.extend(new kakao.maps.LatLng(startPoint.lat, startPoint.lng));

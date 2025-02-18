@@ -135,7 +135,6 @@ export default function CalendarView({
 
     return hasScheduledTime || isTempSelected;
   };
-  console.log(selectedDate, "!");
 
   useEffect(() => {
     setAIBtnToggles(new Array(3).fill(false));

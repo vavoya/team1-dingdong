@@ -9,7 +9,6 @@ export default function Notification() {
   const {
     notifications: { content: notificationArray },
   } = useLoaderData()[0];
-  console.log(notificationArray, "요청 받은 알림 내역");
 
   const navigate = useNavigate();
 

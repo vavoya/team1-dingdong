@@ -60,7 +60,6 @@ export default function TimeViewBottomModal({
       timeSchedule: selectedTimeSchduleArray,
     });
     // 세션에 저장.
-    console.log(selectedTimeSchduleArray, "지금까지의 데이터 배열");
   };
 
   return (
