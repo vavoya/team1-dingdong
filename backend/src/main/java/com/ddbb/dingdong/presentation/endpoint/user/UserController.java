@@ -1,10 +1,7 @@
 package com.ddbb.dingdong.presentation.endpoint.user;
 
 import com.ddbb.dingdong.application.exception.APIException;
-import com.ddbb.dingdong.application.usecase.user.ChargeDingdongMoneyFreeUseCase;
-import com.ddbb.dingdong.application.usecase.user.GetUserInfoUseCase;
-import com.ddbb.dingdong.application.usecase.user.GetWalletBalanceUseCase;
-import com.ddbb.dingdong.application.usecase.user.GetWalletHistoryUseCase;
+import com.ddbb.dingdong.application.usecase.user.*;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.infrastructure.auth.security.AuthUser;
 import com.ddbb.dingdong.infrastructure.auth.security.annotation.LoginUser;
@@ -26,6 +23,7 @@ public class UserController {
     private final GetWalletBalanceUseCase getWalletBalanceUseCase;
     private final GetWalletHistoryUseCase getWalletHistoryUseCase;
     private final ChargeDingdongMoneyFreeUseCase chargeDingdongMoneyFreeUseCase;
+    private final CheckFreeChargeAvailableUseCase checkFreeChargeAvailableUseCase;
 
     @GetMapping("/me")
     public Result getUserInfo(
@@ -78,5 +76,21 @@ public class UserController {
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/wallet/charge/free/available")
+    public ResponseEntity<CheckFreeChargeAvailableUseCase.Result> checkFreeChargeAvailable(
+            @LoginUser AuthUser authUser
+    ) {
+        Long userId = authUser.id();
+        CheckFreeChargeAvailableUseCase.Param param = new CheckFreeChargeAvailableUseCase.Param(userId);
+        CheckFreeChargeAvailableUseCase.Result result;
+        try {
+            result = checkFreeChargeAvailableUseCase.execute(param);
+        } catch (DomainException e) {
+            throw new APIException(e, HttpStatus.BAD_REQUEST);
+        }
+
+        return ResponseEntity.ok().body(result);
     }
 }
