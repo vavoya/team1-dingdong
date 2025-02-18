@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "fcmtoken")
 public class FCMToken {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
