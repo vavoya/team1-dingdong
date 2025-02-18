@@ -26,6 +26,7 @@ public class UserController {
     private final GetTimetableUseCase getTimetableUseCase;
     private final ChangeTimetableUseCase changeTimetableUseCase;
     private final ChargeDingdongMoneyFreeUseCase chargeDingdongMoneyFreeUseCase;
+    private final CheckFreeChargeAvailableUseCase checkFreeChargeAvailableUseCase;
 
     @GetMapping("/me")
     public Result getUserInfo(
@@ -122,5 +123,21 @@ public class UserController {
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/wallet/charge/free/available")
+    public ResponseEntity<CheckFreeChargeAvailableUseCase.Result> checkFreeChargeAvailable(
+            @LoginUser AuthUser authUser
+    ) {
+        Long userId = authUser.id();
+        CheckFreeChargeAvailableUseCase.Param param = new CheckFreeChargeAvailableUseCase.Param(userId);
+        CheckFreeChargeAvailableUseCase.Result result;
+        try {
+            result = checkFreeChargeAvailableUseCase.execute(param);
+        } catch (DomainException e) {
+            throw new APIException(e, HttpStatus.BAD_REQUEST);
+        }
+
+        return ResponseEntity.ok().body(result);
     }
 }
