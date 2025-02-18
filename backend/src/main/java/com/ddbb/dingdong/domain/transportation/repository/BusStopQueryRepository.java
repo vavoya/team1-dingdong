@@ -2,6 +2,7 @@ package com.ddbb.dingdong.domain.transportation.repository;
 
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.transportation.entity.BusStop;
+import com.ddbb.dingdong.domain.transportation.repository.projection.AllAvailableBusStopProjection;
 import com.ddbb.dingdong.domain.transportation.repository.projection.AvailableBusStopProjection;
 import com.ddbb.dingdong.domain.transportation.repository.projection.UserIdAndReservationIdProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,6 +29,25 @@ public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
     List<AvailableBusStopProjection> findAvailableBusStop(
             @Param("direction") Direction direction,
             @Param("time") LocalDateTime time,
+            @Param("schoolId") Long schoolId
+    );
+
+
+    @Query("SELECT bst.latitude as latitude, bst.longitude as longitude, " +
+            "busSchedule.id as busScheduleId, " +
+            "CASE WHEN busSchedule.direction = 'TO_SCHOOL' " +
+                "THEN busSchedule.arrivalTime " +
+                "ELSE busSchedule.departureTime " +
+            "END AS busScheduleTime " +
+            "FROM BusStop bst " +
+            "JOIN Ticket t ON t.busStopId = bst.id " +
+            "JOIN BusSchedule busSchedule ON t.busScheduleId = busSchedule.id " +
+            "WHERE busSchedule.direction = :direction " +
+            "AND busSchedule.schoolId = :schoolId " +
+            "AND busSchedule.status = 'READY'"
+    )
+    List<AllAvailableBusStopProjection> findAllAvailableBusStop(
+            @Param("direction") Direction direction,
             @Param("schoolId") Long schoolId
     );
 
