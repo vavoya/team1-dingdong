@@ -54,6 +54,13 @@ public class Wallet {
         this.usageHistory.add(history);
     }
 
+    public void freeCharge(int chargePrice) {
+        this.balance += chargePrice;
+        lastUpdatedAt = LocalDateTime.now();
+        DingdongMoneyUsageHistory history = generateHistory(DingdongMoneyUsageType.FREE_CHARGE, chargePrice, null);
+        this.usageHistory.add(history);
+    }
+
     private boolean alreadyRefunded(Long reservationId) {
         return this.usageHistory.stream().anyMatch(history ->reservationId.equals(history.getRefundedReservationId()));
     }
