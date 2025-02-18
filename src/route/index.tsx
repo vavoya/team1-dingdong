@@ -65,6 +65,53 @@ export const router = createBrowserRouter(
                     },
                 },
                 {
+                    path: "/signup",
+                    lazy: async () => {
+                        const [{ default: SignupLayout }] = await Promise.all([
+                            import("@/pages/Auth/Signup/page"),
+                        ]);
+                        return { Component: SignupLayout };
+                    },
+                    children: [
+                        {
+                            index: true,
+                            lazy: async () => {
+                                const [{default: SchoolAuthSignUp}, {createLoader}] = await Promise.all([
+                                    import("@/pages/Auth/Signup/SchoolAuth/index.tsx"),
+                                    import("@/route/loader/createLoader.tsx"),
+                                ]);
+                                const schoolModule = await import('@/api/query/signUp/index.ts')
+                                return {
+                                    Component: SchoolAuthSignUp,
+                                    loader: createLoader(() => [schoolModule.school()])
+                                };
+                            },
+                        },
+                        {
+                            path: "password",
+                            lazy: async () => {
+                                const [{default: PasswordSignup}] = await Promise.all([
+                                    import("@/pages/Auth/Signup/Password/index.tsx"),
+                                ]);
+                                return {
+                                    Component: PasswordSignup,
+                                };
+                            },
+                        },
+                        {
+                            path: "user-info",
+                            lazy: async () => {
+                                const [{default: UserInfoSignup}] = await Promise.all([
+                                    import("@/pages/Auth/Signup/UserInfo/index.tsx"),
+                                ]);
+                                return {
+                                    Component: UserInfoSignup,
+                                };
+                            },
+                        },
+                    ],
+                },
+                {
                     path: "set-home-location",
                     lazy: async () => {
                         const [{ default: SetHomeLocation }, { createLoader }] =
@@ -226,6 +273,50 @@ export const router = createBrowserRouter(
                             },
                         },
                     ],
+                },
+                {
+                    path: "my-page",
+                    lazy: async () => {
+                        const [{ default: MyPage }, { createLoader: createLoader }] =
+                            await Promise.all([
+                                import("@/pages/MyPage/page.tsx"),
+                                import("@/route/loader/createLoader.tsx"),
+                            ]);
+                        const usersModule = await import("@/api/query/users");
+                        return { Component: MyPage, loader: createLoader(()=> [
+                                usersModule.users_me()
+                            ]) };
+                    },
+                },
+                {
+                    // 시간표 관리 페이지
+                    path: "timetable-management",
+                    lazy: async () => {
+                        const [{ default: TimetableManagementPage }, { createLoader: createLoader }] =
+                            await Promise.all([
+                                import("@/pages/TimetableManagement/page.tsx"),
+                                import("@/route/loader/createLoader.tsx"),
+                            ]);
+                        const usersModule = await import("@/api/query/users");
+                        return { Component: TimetableManagementPage, loader: createLoader(()=> [
+                                usersModule.users_me()
+                            ]) };
+                    },
+                },
+                {
+                    // 충전 페이지
+                    path: "wallet",
+                    lazy: async () => {
+                        const [{ default: Wallet }, { createLoader: createLoader }] =
+                            await Promise.all([
+                                import("@/pages/Wallet/page.tsx"),
+                                import("@/route/loader/createLoader.tsx"),
+                            ]);
+                        const usersModule = await import("@/api/query/users");
+                        return { Component: Wallet, loader: createLoader(()=> [
+                                usersModule.users_me()
+                            ]) };
+                    },
                 },
             ],
         },
