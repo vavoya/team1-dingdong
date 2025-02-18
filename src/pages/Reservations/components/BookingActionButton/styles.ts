@@ -24,7 +24,5 @@ export const ActionText = styled(Body2Medium).withConfig({
 })<{disabled: boolean}>`
     color: ${({disabled}) => disabled ? colors.gray0 : colors.gray100};
 
-    /* Body 2/Medium */
-    font-family: Pretendard,serif;
     font-style: normal;
 `

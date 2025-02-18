@@ -213,7 +213,7 @@ function AllocatedItem({
                             </BusNumber>
                             {status === 'READY' ?
                                 <Status>배차 완료</Status>:
-                                <TimeUntilArrival dropOffDate={dropOffDate}/>
+                                <TimeUntilArrival boardingDate={boardingDate}/>
                             }
                         </>: null}
                 </StatusInfo>

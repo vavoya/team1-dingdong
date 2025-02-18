@@ -196,6 +196,6 @@ const busFunctions = {
     }
 };
 
-function getBusCardFunction(busDirection: Direction, state: State) {
+export function getBusCardFunction(busDirection: Direction, state: State) {
     return busFunctions[busDirection][state]
 }

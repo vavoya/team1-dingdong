@@ -64,6 +64,7 @@ export const TableCell = styled.div`
     justify-content: space-between;
     align-items: center;
     align-self: stretch;
+    height: 44px;
 
 
     border-radius: 4px;

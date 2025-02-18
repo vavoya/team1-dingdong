@@ -4,14 +4,7 @@ import {
 
     ButtonBox, ButtonText,
     CardBox,
-    History,
-    HistoryAmount,
-    HistoryAmountBox,
-    HistoryBalance,
-    HistoryDate,
-    HistoryList,
-    HistoryStatus,
-    HistoryStatusBox, Main,
+    Main,
     PageDivider,
     PageWrapper,
     RechargeButton,
@@ -21,65 +14,32 @@ import {
 } from "@/pages/Wallet/styles.ts";
 import {colors} from "@/styles/colors.ts";
 import useToast from "@/hooks/useToast";
-import {useNavigate} from "react-router-dom";
+import {useLoaderData} from "react-router-dom";
+import {users_wallet_history_interface} from "@/api/query/users";
+import HistoryList from "@/pages/Wallet/component/HistoryList";
+import {getFreeChargeAvailable} from "@/api/wallet/getFreeChargeAvailable.ts";
+import {postFreeCharge} from "@/api/wallet/postFreeCharge.ts";
 
 
 export default function Page() {
-    const navigate = useNavigate();
-    const setToast = useToast();
+    const addToast = useToast();
+    const [histories]: [users_wallet_history_interface] = useLoaderData()
 
 
-  const temp: HistoryItemProps[] = [
-    {
-      isDeposit: false,
-      date: "24.12.27 11:00",
-      amount: "10,000원",
-      balance: "잔액페이 12,000원",
-    },
-    {
-      isDeposit: true,
-      date: "24.12.27 11:00",
-      amount: "10,000원",
-      balance: "잔액페이 12,000원",
-    },
-    {
-      isDeposit: false,
-      date: "24.12.27 11:00",
-      amount: "10,000원",
-      balance: "잔액페이 12,000원",
-    },
-    {
-      isDeposit: true,
-      date: "24.12.27 11:00",
-      amount: "10,000원",
-      balance: "잔액페이 12,000원",
-    },
-    {
-      isDeposit: false,
-      date: "24.12.27 11:00",
-      amount: "10,000원",
-      balance: "잔액페이 12,000원",
-    },
-    {
-      isDeposit: true,
-      date: "24.12.27 11:00",
-      amount: "10,000원",
-      balance: "잔액페이 12,000원",
-    },
-    {
-      isDeposit: false,
-      date: "24.12.27 11:00",
-      amount: "10,000원",
-      balance: "잔액페이 12,000원",
-    },
-    {
-      isDeposit: true,
-      date: "24.12.27 11:00",
-      amount: "10,000원",
-      balance: "잔액페이 12,000원",
-    },
-  ];
-
+    const actFreeCharge = async () => {
+        try {
+            if ((await getFreeChargeAvailable()).available) {
+                await postFreeCharge()
+                addToast("무료 충전이 성공 했습니다.")
+            }
+            else{
+                addToast("무료 충전은 1일 한번 입니다.")
+            }
+        }
+        catch (error) {
+            addToast("네트워크에 에러가 발생했어요.")
+        }
+    }
 
     return (
         <PageWrapper>
@@ -95,50 +55,22 @@ export default function Page() {
                     <DingDongCard />
                 </CardBox>
                 <ButtonBox>
-                    <SendButton onClick={() => setToast("새  토스트토스트토스트토스트토스트토스트토스트토스트토스트")}>
+                    <SendButton onClick={() => addToast("현재 지원하지 않는 기능입니다.")}>
                         <ButtonText color={colors.gray90}>
-                            내 계좌로 송금하기
+                            딩동 머니 충전
                         </ButtonText>
                     </SendButton>
-                    <RechargeButton onClick={() => navigate('/home')}>
+                    <RechargeButton onClick={actFreeCharge}>
                         <ButtonText color={colors.gray0}>
-                            딩동 머니 채우기
+                            딩동 머니 무료 충전
                         </ButtonText>
                     </RechargeButton>
                 </ButtonBox>
                 <PageDivider />
-                <HistoryList>
-                    {
-                        temp.map((data, key) => (
-                            <HistoryItem key={key} isDeposit={data.isDeposit} date={data.date} amount={data.amount} balance={data.balance}/>
-                        ))
-                    }
-                </HistoryList>
+                <HistoryList histories={histories} />
             </Main>
         </PageWrapper>
     )
 
 }
 
-interface HistoryItemProps {
-  isDeposit: boolean;
-  date: string;
-  amount: string;
-  balance: string;
-}
-function HistoryItem({ isDeposit, date, amount, balance }: HistoryItemProps) {
-  return (
-    <History>
-      <HistoryStatusBox>
-        <HistoryStatus isDeposit={isDeposit}>
-          {isDeposit ? "입금" : "출금"}
-        </HistoryStatus>
-        <HistoryDate>{date}</HistoryDate>
-      </HistoryStatusBox>
-      <HistoryAmountBox>
-        <HistoryAmount>{amount}</HistoryAmount>
-        <HistoryBalance>{balance}</HistoryBalance>
-      </HistoryAmountBox>
-    </History>
-  );
-}
