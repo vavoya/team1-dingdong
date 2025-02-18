@@ -21,5 +21,15 @@ export const convertToISOStringArray = (
 
   const ISOString = date.toISOString();
 
-  return [ISOString];
+  const convertedToKST = new Date(ISOString); // UTC 기준 Date 객체 생성
+
+  // 한국 시간(UTC+9)으로 조정
+  convertedToKST.setHours(convertedToKST.getHours() + 9);
+
+  // ISO 형식으로 변환
+  const koreaISOString = convertedToKST.toISOString();
+
+  const koreaTime = koreaISOString.replace(".000Z", "");
+
+  return [koreaTime];
 };
