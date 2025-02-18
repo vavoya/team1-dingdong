@@ -56,7 +56,7 @@ export function createLoader(callbackF: CallbackF, callbackF2?: CallbackF2) {
                 ...fetches.map((fn) => fn()), // 여기서 fetches를 실행
             ]);
         } catch (error) {
-            handleError(error);
+            return handleError(error);
         }
     };
 }
