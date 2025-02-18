@@ -32,11 +32,11 @@ export const ScrollContainer = styled.div`
   padding: 60px 0;
 `;
 
-export const TimeItem = styled(Heading2SemiBold)<{ isSelected: boolean }>`
+export const TimeItem = styled(Heading2SemiBold)<{ $isSelected: boolean }>`
   height: 46px;
   display: flex;
   align-items: center;
   justify-content: center;
   scroll-snap-align: center;
-  color: ${(props) => (props.isSelected ? colors.orange900 : colors.gray60)};
+  color: ${(props) => (props.$isSelected ? colors.orange900 : colors.gray60)};
 `;

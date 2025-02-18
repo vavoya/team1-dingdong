@@ -18,7 +18,7 @@ export default forwardRef<HTMLDivElement, TimePickerProps>(function TimePicker(
       <SelectionBox $itemWidth={itemWidth} />
       <ScrollContainer ref={ref} onScroll={handleTimeScroll}>
         {time.map((t, index) => (
-          <TimeItem key={`t-${index}-${t}`} isSelected={selectedTime === t}>
+          <TimeItem key={`t-${index}-${t}`} $isSelected={selectedTime === t}>
             {t}
           </TimeItem>
         ))}
