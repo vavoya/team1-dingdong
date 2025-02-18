@@ -16,10 +16,7 @@ import {
 } from "./styles";
 import { convertInfoToText } from "@/utils/calendar/fixedBusBookingUtils";
 import { useLoaderData, useNavigate } from "react-router-dom";
-import {
-  useGetAvailableBusInfo,
-  useGetBusTimeSchedule,
-} from "@/hooks/BusBooking/useFixedBooking";
+import { useGetBusTimeSchedule } from "@/hooks/BusBooking/useFixedBooking";
 import { convertToISOStringArray } from "@/utils/fixedBusBooking/timeObjectToString";
 import { useCustomNavigate } from "@/hooks/useNavigate";
 
@@ -98,7 +95,6 @@ export default function FixedRouteBooking() {
       />
     );
   };
-  
 
   const [showInfo, setShowInfo] = useState("-");
 
@@ -128,7 +124,7 @@ export default function FixedRouteBooking() {
       selectedDate!,
       selectedHourMinute!
     );
-    
+
     const direction = commuteType === "등교" ? "TO_SCHOOL" : "TO_HOME";
 
     navigateCustom("/fixed-bus-select-bus", {

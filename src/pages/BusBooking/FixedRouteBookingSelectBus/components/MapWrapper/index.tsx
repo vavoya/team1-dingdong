@@ -6,7 +6,7 @@ import {
   HomePinMark,
   MapWrapper,
 } from "./styles";
-import { CustomOverlayMap, Map, Polyline } from "react-kakao-maps-sdk";
+import { CustomOverlayMap, Map } from "react-kakao-maps-sdk";
 import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader.ts";
 import PinIcon from "@/components/designSystem/Icons/PinIcon";
 import { colors } from "@/styles/colors";

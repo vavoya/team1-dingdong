@@ -27,7 +27,7 @@ export default function SetLocationBottomModal({
   const setToast = useToast("-500px");
 
   const [houseAndStationInfo] = useLoaderData();
-  const { houseInfo, stationInfo } = houseAndStationInfo;
+  const { stationInfo } = houseAndStationInfo;
 
   const { putHomeLocationMutation } = usePutStationLocation();
 

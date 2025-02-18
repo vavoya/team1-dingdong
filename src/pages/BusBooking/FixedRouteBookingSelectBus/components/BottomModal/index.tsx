@@ -51,7 +51,6 @@ interface BusSelectBottomModalProps {
   setSelectedBusCardIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 export default function BusSelectBottomModal({
-  busPathPoints,
   busInfoArray,
   selectedBusCardIndex,
   setSelectedBusCardIndex,
@@ -73,7 +72,6 @@ export default function BusSelectBottomModal({
   const departOrArrival = direction === "TO_SCHOOL" ? "출발" : "도착";
   // 탑승, 하차
   const boardingOrGetOff = direction === "TO_SCHOOL" ? "탑승" : "하차";
-
 
   const nextClickHandler = () => {
     navigateCustom("/payment/purchase", {

@@ -18,7 +18,7 @@ import {
   useGetAvailableBusInfo,
   useGetBusPath,
 } from "@/hooks/BusBooking/useFixedBooking";
-import { useLoaderData } from "react-router-dom";
+
 import { ISOStringToDateDayFormat } from "@/utils/fixedBusBooking/ISOStringToDateDay";
 
 const BUS_INFO_ARRAY = [
@@ -90,10 +90,7 @@ const BUS_PATH = [
 export default function FixedRouteBookingSelectBus() {
   const userLocation = useCurrentLocation();
 
-  const { schoolLatitude, schoolLongitude } = useLoaderData()[0]; // 집...(즉 탑승지)
-
-  const { stationInfo: originalUserStation } = useLoaderData()[1]; // 집...(즉 탑승지)
-
+ 
   // const schoolLocation = { latitue: 37.4602, longitude: 126.9517 }; // 임시 값. 서울대
 
   const { direction, timeSchedule } = JSON.parse(
@@ -125,14 +122,7 @@ export default function FixedRouteBookingSelectBus() {
 
   const mapJitter = useRef<number>(0.00000001);
 
-  const [startPoint, setStartPoint] = useState({
-    lat: originalUserStation.latitude as number,
-    lng: originalUserStation.longitude as number,
-  });
-  const [endPoint, setEndPoint] = useState({
-    lat: schoolLatitude,
-    lng: schoolLongitude,
-  });
+
 
   const userBusStop = {
     // 유저 승차지 또는 하자치 위치
@@ -188,10 +178,7 @@ export default function FixedRouteBookingSelectBus() {
     setBusStopName(busInfoArray[selectedBusCardIndex].busStop.name);
   }, [selectedBusCardIndex]);
 
-  useEffect(() => {
-    setStartPoint(busPathPoints[0]);
-    setEndPoint(busPathPoints[busPathPoints.length - 1]);
-  }, [busPathPoints]);
+
 
   return (
     <>

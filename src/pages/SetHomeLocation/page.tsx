@@ -3,7 +3,7 @@ import SetLocationBottomModal from "./components/BottomModal";
 import { useState } from "react";
 import PopHeader from "@/components/Headers/PopHeader";
 import { useLoaderData } from "react-router-dom";
-import { getAddressFromCoords } from "@/utils/geoLocation/coordinateToAddress";
+
 import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader";
 // import { useHomeLocation } from "@/hooks/setHomeLocation/useHomeLocation";
 
@@ -25,7 +25,7 @@ export default function SetHomeLocation() {
 
   const [houseAndStationInfo] = useLoaderData();
   console.log(houseAndStationInfo, "houseAndStationInfo");
-  const { houseInfo, stationInfo: stationInfoServer } = houseAndStationInfo;
+  const { houseInfo } = houseAndStationInfo;
 
   const [roadAddress, setRoadAddress] = useState<string | null>("");
   const [stationInfo, setStationInfo] = useState<{

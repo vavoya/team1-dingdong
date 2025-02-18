@@ -3,7 +3,6 @@ import {
   Label,
   EmailInputWrapper,
   EmailInput,
-  VerifyButton,
   VerificationTimeText,
   NextButtonWrapper,
   EmailFormWrapper,
@@ -11,7 +10,7 @@ import {
 } from "./styles";
 import SolidButton from "@/components/designSystem/Button/SolidButton";
 import { Star } from "@/pages/SetHomeLocation/components/BottomModal/styles";
-import CustomInput from "../../Components/Input";
+
 import { useLoaderData, useNavigate } from "react-router-dom";
 import CustomFormWrapper from "../../Components/FormWrapper";
 
@@ -25,9 +24,6 @@ export default function SchoolAuthSignUp() {
   const [emailFormatHasError, setEmailFormatHasError] = useState(false);
 
   const [nextButtonActive, setNextButtonActive] = useState(false);
-
-  const [emailErrorText, setEmailErrorText] = useState("");
-  const [hasErrorEmail, setHasErrorEmail] = useState(false && email.length > 0);
 
   const [verificationCodeErrorText, setVerificationCodeErrorText] =
     useState("");
@@ -73,7 +69,7 @@ export default function SchoolAuthSignUp() {
           </Label>
           <EmailInputWrapper>
             <EmailInput
-              $hasError={hasErrorEmail}
+              $hasError={emailFormatHasError}
               value={email}
               onChange={handleEmailChange}
             />
@@ -94,7 +90,7 @@ export default function SchoolAuthSignUp() {
 
         {/* 인증코드 에러. */}
         {verificationCodeErrorText.length > 0 && (
-          <VerificationTimeText $hasError={hasErrorEmail}>
+          <VerificationTimeText $hasError={emailFormatHasError}>
             {verificationCodeErrorText}
           </VerificationTimeText>
         )}
