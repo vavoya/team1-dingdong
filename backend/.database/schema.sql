@@ -135,6 +135,7 @@ CREATE TABLE IF NOT EXISTS user (
                                     created_at DATETIME(6),
                                     home_id BIGINT,
                                     school_id BIGINT,
+                                    timetable_id BIGINT,
                                     email VARCHAR(255) NOT NULL,
                                     name VARCHAR(255) NOT NULL,
                                     password VARCHAR(255) NOT NULL,
@@ -145,6 +146,7 @@ ALTER TABLE user ADD CONSTRAINT UK_user_home UNIQUE (home_id);
 ALTER TABLE user ADD CONSTRAINT UK_user_email UNIQUE (email);
 ALTER TABLE user ADD CONSTRAINT FK_user_home FOREIGN KEY (home_id) REFERENCES home(id);
 ALTER TABLE user ADD CONSTRAINT FK_user_school FOREIGN KEY (school_id) REFERENCES school(id);
+ALTER TABLE user ADD CONSTRAINT FK_user_timetable FOREIGN KEY (timetable_id) REFERENCES timetable(id);
 
 CREATE TABLE IF NOT EXISTS wallet (
                                       id BIGINT NOT NULL AUTO_INCREMENT,
@@ -184,3 +186,18 @@ CREATE TABLE IF NOT EXISTS token (
                                      PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 ALTER TABLE token ADD CONSTRAINT UK_token UNIQUE (token);
+
+CREATE TABLE IF NOT EXISTS timetable (
+                           id bigint not null auto_increment,
+                           mon_start_time time,
+                           mon_end_time time,
+                           tue_start_time time,
+                           tue_end_time time,
+                           wed_start_time time,
+                           wed_end_time time,
+                           thu_start_time time,
+                           thu_end_time time,
+                           fri_start_time time,
+                           fri_end_time time,
+                           primary key (id)
+) engine=InnoDB;
