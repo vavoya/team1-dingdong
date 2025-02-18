@@ -64,10 +64,10 @@ public class ChangeTimetableUseCase implements UseCase<ChangeTimetableUseCase.Pa
         @Override
         public boolean validate() {
             validateTime(monStartTime, monEndTime);
-            validateTime(monStartTime, monEndTime);
-            validateTime(monStartTime, monEndTime);
-            validateTime(monStartTime, monEndTime);
-            validateTime(monStartTime, monEndTime);
+            validateTime(tueStartTime, tueEndTime);
+            validateTime(wedStartTime, wedEndTime);
+            validateTime(thuStartTime, thuEndTime);
+            validateTime(friStartTime, friEndTime);
 
             return true;
         }
