@@ -49,10 +49,12 @@ export const router = createBrowserRouter(
                 {
                     path: "notification",
                     lazy: async () => {
-                        const [{ default: Notification }] = await Promise.all([
+                        const [{ default: Notification }, {createLoader}] = await Promise.all([
                             import("@/pages/Notification/page.tsx"),
+                            import("@/route/loader/createLoader.tsx")
                         ]);
-                        return { Component: Notification };
+                        const notificationLoader = await import('@/hooks/Notification/useNotification.ts')
+                        return { Component: Notification, loader: createLoader(() => [notificationLoader.notificationLoader]) };
                     },
                 },
                 {
@@ -299,7 +301,7 @@ export const router = createBrowserRouter(
                             ]);
                         const usersModule = await import("@/api/query/users");
                         return { Component: TimetableManagementPage, loader: createLoader(()=> [
-                                usersModule.users_me()
+                                usersModule.users_timetable()
                             ]) };
                     },
                 },
