@@ -1,10 +1,10 @@
 import { useKakaoLoader as useKakaoLoaderOrigin } from "react-kakao-maps-sdk"
-import {kakaoAppKey} from "@/env.ts";
 
 export default function useKakaoLoader() {
+
     useKakaoLoaderOrigin({
 
-        appkey: kakaoAppKey,
+        appkey: import.meta.env.VITE_KAKAOMAP_API_KEY,
         libraries: ["clusterer", "drawing", "services"],
     })
 }
