@@ -5,7 +5,9 @@ import com.ddbb.dingdong.application.common.UseCase;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.transportation.repository.BusScheduleQueryRepository;
 import com.ddbb.dingdong.domain.transportation.repository.projection.ScheduleTimeProjection;
+import com.ddbb.dingdong.domain.transportation.service.BusStopQueryService;
 import com.ddbb.dingdong.domain.user.repository.UserQueryRepository;
+import com.ddbb.dingdong.domain.user.repository.projection.HomeStationProjection;
 import com.ddbb.dingdong.domain.user.service.error.UserErrors;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,22 +22,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GetBusSchedulesUseCase implements UseCase<GetBusSchedulesUseCase.Param, GetBusSchedulesUseCase.Response> {
     private final UserQueryRepository userRepository;
-    private final BusScheduleQueryRepository busScheduleRepository;
+    private final BusStopQueryService busStopQueryService;
 
     @Override
     @Transactional(readOnly = true)
     public Response execute(Param param) {
-        Long schoolId = userRepository.findSchoolIDByUserId(param.getUserId())
-                .orElseThrow(UserErrors.NOT_FOUND::toException)
-                .getSchoolId();
-        List<ScheduleTimeProjection> times = switch (param.getDirection()) {
-            case TO_SCHOOL -> busScheduleRepository.findAvailableGoSchoolBusTime(schoolId);
-            case TO_HOME -> busScheduleRepository.findAvailableGoHomeBusTime(schoolId);
-        };
-        List<LocalDateTime> results = times.stream()
-                .map(ScheduleTimeProjection::getTime)
-                .toList();
-        return new Response(results);
+        HomeStationProjection proj = userRepository.findHomeStationLocationWithSchoolId(param.getUserId())
+                .orElseThrow(UserErrors.NOT_FOUND::toException);
+        List<LocalDateTime> times = busStopQueryService.findAllAvailableBusStopTimes(
+                param.direction,
+                proj.getSchoolId(),
+                proj.getStationLongitude(),
+                proj.getStationLatitude()
+        );
+        return new Response(times);
     }
 
     @Getter
