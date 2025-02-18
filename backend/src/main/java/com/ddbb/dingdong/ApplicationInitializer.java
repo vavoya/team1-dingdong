@@ -52,7 +52,7 @@ public class ApplicationInitializer {
     private void adminSignUp() {
         Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790, "에티버스" ,"학동로 180");
         Timetable timetable = new Timetable();
-        User user = new User(null, "admin", "admin@admin.com", "abcd1234!@", Role.ADMIN, LocalDateTime.now(), school, null, timetable);
+        User user = new User(null, "admin", "admin@admin.com", passwordEncoder.encode("abcd1234!@"), Role.ADMIN, LocalDateTime.now(), school, null, timetable);
         user.associateHome(home);
         user = userRepository.save(user);
         Wallet wallet = new Wallet(null, user.getId(), 1000000, LocalDateTime.now(), new ArrayList<>());
