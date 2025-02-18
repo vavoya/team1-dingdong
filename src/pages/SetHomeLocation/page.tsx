@@ -24,7 +24,7 @@ export default function SetHomeLocation() {
   //   );
 
   const [houseAndStationInfo] = useLoaderData();
-  console.log(houseAndStationInfo, "houseAndStationInfo");
+  
   const { houseInfo } = houseAndStationInfo;
 
   const [roadAddress, setRoadAddress] = useState<string | null>("");
