@@ -3,7 +3,7 @@ import * as S from "./styles";
 import ChevronLeftIcon from "@/components/designSystem/Icons/ChevronLeftIcon";
 import { colors } from "@/styles/colors";
 import ChevronRightIcon from "@/components/designSystem/Icons/ChevronRightIcon";
-import AIRecommendationButton from "@/components/Button/AIRecommendationButton";
+import TimeTableRecommendationButton from "@/components/Button/TimeTableRecommendationButton";
 import useCalendar from "@/pages/BusBooking/hooks/useCalendar";
 import {
   formatMonthName,
@@ -184,7 +184,7 @@ export default function CalendarView({
             <ChevronRightIcon size={24} fill={colors.gray50} />
           </S.IconWrapper>
         </S.MonthNavigator>
-        <AIRecommendationButton
+        <TimeTableRecommendationButton
           active={AIBtnToggles[currentMonthIndex]}
           onClick={handleAIRecommendation}
         />
