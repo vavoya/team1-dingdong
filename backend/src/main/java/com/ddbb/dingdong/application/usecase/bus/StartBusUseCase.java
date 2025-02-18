@@ -46,6 +46,7 @@ public class StartBusUseCase implements UseCase<StartBusUseCase.Param, Void> {
 
         LocalDateTime now = LocalDateTime.now();
         List<UserBusStopTime> newUserBusStopTimes = busScheduleManagement.adjustBusStopTimes(now, userBusStopTimes);
+
         busScheduleManagement.updateBusStopTimes(newUserBusStopTimes, userBusStopTimes);
         busPublishService.publishSimulator(
                 param.busScheduleId,
@@ -53,6 +54,7 @@ public class StartBusUseCase implements UseCase<StartBusUseCase.Param, Void> {
                 param.delay,
                 param.timeUnit
         );
+        busScheduleManagement.updateBusScheduleExpectedArrivalTime(param.getBusScheduleId(), newUserBusStopTimes.get(newUserBusStopTimes.size() - 1).getTime());
         busScheduleManagement.publishDepartureEvent(newUserBusStopTimes);
         return null;
     }
