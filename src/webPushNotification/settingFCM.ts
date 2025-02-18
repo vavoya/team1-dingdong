@@ -2,7 +2,7 @@
 
 import { initializeApp } from "firebase/app";
 import { getMessaging } from "firebase/messaging";
-import { handleAllowNotification } from "./handleAllowNotification";
+//import { handleAllowNotification } from "./handleAllowNotification";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
