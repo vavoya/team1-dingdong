@@ -17,7 +17,6 @@ export const useGeoLocationAddress = (
           latitude: location?.lat as number,
           longitude: location?.lng as number,
         });
-        console.log(location, "도로명주소 => 위도경동");
       } catch (error) {
         console.error(error);
         setGeoLocation(null);

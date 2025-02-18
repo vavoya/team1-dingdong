@@ -16,16 +16,14 @@ import {
 } from "./styles";
 import { convertInfoToText } from "@/utils/calendar/fixedBusBookingUtils";
 import { useLoaderData, useNavigate } from "react-router-dom";
-import {
-  useGetAvailableBusInfo,
-  useGetBusTimeSchedule,
-} from "@/hooks/BusBooking/useFixedBooking";
+import { useGetBusTimeSchedule } from "@/hooks/BusBooking/useFixedBooking";
 import { convertToISOStringArray } from "@/utils/fixedBusBooking/timeObjectToString";
 import { useCustomNavigate } from "@/hooks/useNavigate";
-import { mountModal } from "@/components/Loading";
+
 import Modal from "@/components/Modal";
 import { transformSchedules } from "@/utils/fixedBusBooking/busTimeScheduleStringToObject";
 import { TEMP_DATE } from "@/constants/busTimeScheduleTempData";
+import { mountModal } from "@/components/Loading";
 // import { useGetAvailableBusInfo } from "@/hooks/BusBooking/useFixedBooking";
 
 export interface SelectedTimeType {
@@ -46,7 +44,7 @@ export type timeType = {
   hour: number;
   minute: number;
 };
-const { render } = mountModal();
+
 export default function FixedRouteBooking() {
   // 예매 나가기 모달 상태관리
 
@@ -75,18 +73,28 @@ export default function FixedRouteBooking() {
 
   const exitButtonHandler = () => {
     // 모달 오픈. ( 예매를 취소 하시겠어요 ?)
-
+    const { render, unmountModal } = mountModal();
     render(
       <Modal
         title={["다음에 다시 예약할까요?"]}
         text={["예매 내역이 저장되지 않습니다."]}
         isError={false}
-        leftButton={{ text: "취소", onClick: () => render(null) }}
-        rightButton={{ text: "나가기", onClick: () => navigate(-1) }}
+        leftButton={{
+          text: "취소",
+          onClick: () => {
+            unmountModal();
+          },
+        }}
+        rightButton={{
+          text: "나가기",
+          onClick: () => {
+            unmountModal();
+            navigate(-1);
+          },
+        }}
       />
     );
   };
-  console.log(selectedDate, selectedHourMinute, commuteType);
 
   const [showInfo, setShowInfo] = useState("-");
 
@@ -116,7 +124,7 @@ export default function FixedRouteBooking() {
       selectedDate!,
       selectedHourMinute!
     );
-    console.log(selectTimeScheduleArray, "이게 뭐징?");
+
     const direction = commuteType === "등교" ? "TO_SCHOOL" : "TO_HOME";
 
     navigateCustom("/fixed-bus-select-bus", {

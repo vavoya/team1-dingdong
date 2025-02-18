@@ -39,6 +39,7 @@ interface BusInfo {
 
 interface RouteInfo {
   busScheduleId: number;
+  busStopId: number;
   busStop: BusStop;
   busInfo: BusInfo;
 }
@@ -50,7 +51,6 @@ interface BusSelectBottomModalProps {
   setSelectedBusCardIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 export default function BusSelectBottomModal({
-  busPathPoints,
   busInfoArray,
   selectedBusCardIndex,
   setSelectedBusCardIndex,
@@ -73,16 +73,12 @@ export default function BusSelectBottomModal({
   // 탑승, 하차
   const boardingOrGetOff = direction === "TO_SCHOOL" ? "탑승" : "하차";
 
-  console.log(busInfoArray[selectedBusCardIndex], "정보정보");
-  // navigateCustom("/fixed-bus-select-bus", {
-  //   direction,
-  //   timeSchedule: selectTimeScheduleArray[0],
-  // });
   const nextClickHandler = () => {
     navigateCustom("/payment/purchase", {
       direction,
       timeSchedule: busInfoArray[selectedBusCardIndex].busStop.time,
       busId: busInfoArray[selectedBusCardIndex].busScheduleId,
+      busStopId: busInfoArray[selectedBusCardIndex].busStopId,
       busStopName: busInfoArray[selectedBusCardIndex].busStop.name,
     });
   };
@@ -112,7 +108,7 @@ export default function BusSelectBottomModal({
             <BusInfo>
               <BusNo>
                 <BusIcon />
-                <BusNumber>버스{schedule.busInfo.name}</BusNumber>
+                <BusNumber>{schedule.busInfo.name}</BusNumber>
               </BusNo>
               <PeopleInfo>
                 <RemainSeat>{schedule.busInfo.reservedSeat}</RemainSeat>

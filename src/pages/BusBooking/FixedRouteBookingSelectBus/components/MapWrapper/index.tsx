@@ -55,22 +55,22 @@ export default function BusSelectMap({
 
   // 📌 **지도 경계 업데이트 함수**
   const updateMapBounds = () => {
-    if (mapRef.current && startPoint && endPoint) {
-      const bounds = new kakao.maps.LatLngBounds();
-      bounds.extend(new kakao.maps.LatLng(startPoint.lat, startPoint.lng));
-      bounds.extend(new kakao.maps.LatLng(endPoint.lat, endPoint.lng));
+    if (!mapRef.current || !startPoint || !endPoint) return;
 
-      setTimeout(() => {
-        // 76이나 77.5 같은 미세한 값으로 테스트
-        mapRef.current?.setBounds(bounds, 76.8);
-      }, 300);
-    }
+
+    const bounds = new kakao.maps.LatLngBounds();
+    bounds.extend(new kakao.maps.LatLng(startPoint.lat, startPoint.lng));
+    bounds.extend(new kakao.maps.LatLng(endPoint.lat, endPoint.lng));
+
+    setTimeout(() => {
+      mapRef.current?.setBounds(bounds, 70); // Use a single padding number
+    }, 100);
   };
 
   // 📌 **좌표가 변경될 때마다 setBounds 실행**
   useEffect(() => {
     updateMapBounds();
-  }, [startPoint, endPoint]);
+  }, [locationToMarkOnMap]);
 
   // 📌 **화면 크기가 변경될 때도 setBounds 실행**
   useEffect(() => {
@@ -80,12 +80,11 @@ export default function BusSelectMap({
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [locationToMarkOnMap]);
 
   return (
     <MapWrapper>
       <Map
-        id="map"
         center={mapCenterLocation.center}
         style={{ width: "100%", height: "100%" }}
         onCreate={handleMapCreate}

@@ -47,7 +47,7 @@ export const timeScheduleSelectors = {
           const date = new Date(year, month - 1, day, hour, minute);
 
           // 한국 시간(KST)으로 변환: UTC로부터 9시간을 더함
-          date.setHours(date.getHours()); // 9시간 더해서 한국 시간 적용
+          date.setHours(date.getHours());
 
           // 한국 시간으로 변환된 ISO 형식 문자열을 배열에 추가
           allSchedules.push(date.toISOString());

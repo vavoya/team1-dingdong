@@ -1,6 +1,6 @@
 import { colors } from "@/styles/colors";
 import { Body1SemiBold } from "@/styles/typography";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 
 export const ShowSelectedSchedule = styled.div`
   display: flex;

@@ -1,7 +1,18 @@
 export const getCoordsFromAddress = (
   address: string
 ): Promise<{ lat: number; lng: number } | null> => {
+  if (window.kakao && window.kakao.maps) {
+    kakao.maps.load(() => {
+      console.log("Kakao Maps API 로드 완료!");
+      console.log(window.kakao.maps.services);
+    });
+  }
   return new Promise((resolve, reject) => {
+    if (!window.kakao?.maps?.services) {
+      reject(new Error("Kakao Maps SDK is not loaded"));
+      return;
+    }
+
     const geocoder = new kakao.maps.services.Geocoder();
     geocoder.addressSearch(address, (result, status) => {
       if (status === kakao.maps.services.Status.OK && result.length > 0) {

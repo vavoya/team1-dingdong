@@ -26,8 +26,11 @@ import { handleAllowNotification } from "@/webPushNotification/handleAllowNotifi
 // 예시 타입들
 
 export default function UserInfoSignup() {
-  const location = useLocation();
+  // 브라우저 콘솔에서
   useKakaoLoader();
+
+  const location = useLocation();
+
   const userInfoFromPreviousStep = useRef<{
     email: string;
     password: string;
@@ -49,6 +52,7 @@ export default function UserInfoSignup() {
     //   navigate("/signup");
     //   return;
     // }
+
     userInfoFromPreviousStep.current = location.state;
   }, []);
 
@@ -83,11 +87,10 @@ export default function UserInfoSignup() {
   };
 
   useGeoLocationAddress(formData.address, setHomeGeoLocation);
-  console.log(homeGeoLocation, "w위도 경도");
+
   const handleClick = () => {
     open({ onComplete: handleComplete });
   };
-  console.log(formData);
 
   useEffect(() => {
     setNameFormatError(!isValidNameFormat(formData.name));
@@ -99,10 +102,9 @@ export default function UserInfoSignup() {
     formData.addressNickname.length > 0 &&
     isValidPhoneNumber(formData.phoneNumber);
 
-  console.log(userInfoFromPreviousStep.current, formData, "회원정보~");
   const submitUserInfoHandler = () => {
     if (!homeGeoLocation) return;
-
+    const splitAddress = formData.address.split(" ").slice(-2).join(" ");
     const finalUserInfo = {
       email: userInfoFromPreviousStep.current.email,
       password: userInfoFromPreviousStep.current.password,
@@ -110,11 +112,10 @@ export default function UserInfoSignup() {
       home: {
         houseLatitude: homeGeoLocation.latitude,
         houseLongitude: homeGeoLocation.longitude,
-        houseRoadNameAddress: formData.address,
+        houseRoadNameAddress: splitAddress,
       },
       schoolId: userInfoFromPreviousStep.current.schoolId,
     };
-    console.log(finalUserInfo);
     postUserInfoMutation(finalUserInfo, {
       onSuccess: () => {
         navigate("/home");

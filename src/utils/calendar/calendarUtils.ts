@@ -68,6 +68,16 @@ export const getDaysInMonth = (year: number, month: number) => {
 
   return days;
 };
+
+export const availableBookingMinDate = () => {
+  const now = new Date();
+
+  const TWO_DAYS_AND_FIVE_MINUTES_TO_SECONDS = 48 * 60 * 60 + 5 * 60;
+  const minDate = new Date(
+    now.getTime() + TWO_DAYS_AND_FIVE_MINUTES_TO_SECONDS * 1000
+  );
+  return minDate;
+};
 // 예매 가능한 기간에 해당하는지와 등교버스 하교버스 운영 시간이 지나도 비활성화여부를 체크.
 export const isDateDisabled = (
   date: Date,
@@ -92,6 +102,7 @@ export const isDateDisabled = (
   }
 
   const now = new Date();
+
   const compareDate = new Date(date);
   compareDate.setHours(
     now.getHours(),
@@ -104,6 +115,7 @@ export const isDateDisabled = (
   const minDate = new Date(
     now.getTime() + TWO_DAYS_AND_FIVE_MINUTES_TO_SECONDS * 1000
   );
+
   const maxDate = new Date(now.getTime() + 48 * 60 * 60 * 1000);
   maxDate.setMonth(maxDate.getMonth() + 2);
 

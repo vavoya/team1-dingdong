@@ -21,15 +21,7 @@ export default function NotificationContent({
   type,
   isRead,
 }: NotificationContentProps) {
-  const {
-    reservationId,
-    money,
-    startDate,
-    startStationName,
-    endStationName,
-    expectedEndTime,
-    expectedStartTime,
-  } = reservationInfo;
+  const { money } = reservationInfo;
   const navigate = useNavigate();
 
   const renderFailedContent = (refundAmount: number) => (
@@ -42,15 +34,15 @@ export default function NotificationContent({
     </AlarmText>
   );
 
-  const renderWelcomeContent = () => (
-    <AlarmText>
-      <Description>웰컴 포인트로 체험권 2회분이 적립되었어요.</Description>
-      <LinkBox onClick={() => navigate("/reservations")}>
-        버스를 예매해 볼까요?
-        <ChevronRightIcon size={18} fill={colors.orange900} />
-      </LinkBox>
-    </AlarmText>
-  );
+  // const renderWelcomeContent = () => (
+  //   <AlarmText>
+  //     <Description>웰컴 포인트로 체험권 2회분이 적립되었어요.</Description>
+  //     <LinkBox onClick={() => navigate("/reservations")}>
+  //       버스를 예매해 볼까요?
+  //       <ChevronRightIcon size={18} fill={colors.orange900} />
+  //     </LinkBox>
+  //   </AlarmText>
+  // );
 
   switch (type) {
     case "BUS_START":

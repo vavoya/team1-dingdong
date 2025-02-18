@@ -11,6 +11,7 @@ import { TIME_WHEEL_ITEM_BOX_HEIGHT } from "@/constants/timeWheelView";
 import { convertTimeToScrollPosition } from "@/utils/calendar/timeWheelUtils";
 
 interface TimeWheelDataType {
+  // 24시간제.
   initHour: number;
   initMinute: number;
 }
@@ -42,7 +43,9 @@ export default forwardRef(function TimeWheel(
   const hourContainerRef = useRef<HTMLDivElement | null>(null);
   const minuteContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const hours = [...Array(13)].map((_, i) => i.toString().padStart(2, "0"));
+  const hours = [...Array(12)].map((_, i) =>
+    (i + 1).toString().padStart(2, "0")
+  );
   const minutes = ["00", "30"];
   const amPm = ["오전", "오후"];
 
@@ -64,7 +67,6 @@ export default forwardRef(function TimeWheel(
     }),
     resetScrollPosition,
   }));
-  console.log(selectedHour, selectedMinute, selectedAmPm, "시간시간");
 
   // 특정 시각으로 스크롤을 재설정하는 함수.
 
@@ -108,6 +110,40 @@ export default forwardRef(function TimeWheel(
     }
   };
 
+  const smoothScrollAmPm = (targetIndex: number) => {
+    if (amPmContainerRef.current) {
+      const targetScrollTop = targetIndex * TIME_WHEEL_ITEM_BOX_HEIGHT;
+      amPmContainerRef.current.scrollTo({
+        top: targetScrollTop,
+        behavior: "smooth",
+      });
+    }
+  };
+// 오전, 오후 자동 바뀜 구현
+  const currentAMPMIndex = useRef(initScrollTop.current.initHourScrollTop);// 오전또는 오후인지 나타내는 인덱스.
+  const prevHourRef = useRef<number | null>(null); // 이전 시간을 저장할 ref
+
+  const updateAmPmBasedOnHour = (hourNum: number) => {
+    if (prevHourRef.current === null) {
+      prevHourRef.current = hourNum; // 초기 값 설정
+      return;
+    }
+
+    // 11 → 12 변화: AM -> PM
+    if (prevHourRef.current === 10 && hourNum === 11) {
+      currentAMPMIndex.current = currentAMPMIndex.current === 1 ? 0 : 1;
+      smoothScrollAmPm(currentAMPMIndex.current);
+    }
+
+    // 12 → 11 변화: PM -> AM
+    if (prevHourRef.current === 11 && hourNum === 10) {
+      currentAMPMIndex.current = currentAMPMIndex.current === 1 ? 0 : 1;
+      smoothScrollAmPm(currentAMPMIndex.current);
+    }
+
+    prevHourRef.current = hourNum; // 현재 시간을 이전 값으로 업데이트
+  };
+
   const handleHourScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
 
@@ -138,6 +174,9 @@ export default forwardRef(function TimeWheel(
       hours.length;
 
     setSelectedHour(hours[index]);
+
+    //##
+    updateAmPmBasedOnHour(index);
 
     if (onTimeChange) {
       onTimeChange(selectedAmPm, selectedHour, selectedMinute);

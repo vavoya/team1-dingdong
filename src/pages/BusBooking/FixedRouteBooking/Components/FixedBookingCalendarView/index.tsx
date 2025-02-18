@@ -45,7 +45,6 @@ export default function FixedBookingCalendarView({
   if (shouldIncludeNextMonth.current) {
     daysArray.push(getDaysInMonth(currentDate.year, currentDate.month + 1));
   }
-  console.log(shouldIncludeNextMonth, "??");
 
   const months = useRef(daysArray);
 
@@ -78,12 +77,14 @@ export default function FixedBookingCalendarView({
   };
 
   const isHaveSchedule = (date: Date) => {
-    return busTimeSchedule.some(
+    const result = busTimeSchedule.some(
       (schedule) =>
         date.getFullYear() === new Date(schedule).getFullYear() &&
         date.getMonth() === new Date(schedule).getMonth() &&
         date.getDate() === new Date(schedule).getDate()
     );
+
+    return result;
   };
 
   return (

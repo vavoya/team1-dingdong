@@ -1,4 +1,5 @@
 import {
+  availableBookingMinDate,
   isDateDisabled,
   totalDaysInMonth,
 } from "@/utils/calendar/calendarUtils";
@@ -6,10 +7,10 @@ import { useState } from "react";
 import { CommuteType } from "../types/commuteType";
 export default function useCalendar() {
   const [currentDate, setCurrentDate] = useState(() => {
-    const now = new Date();
+    const minDateCanBooking = availableBookingMinDate();
     return {
-      year: now.getFullYear(),
-      month: now.getMonth(), //  (0: 1월, 1: 2월, ...)
+      year: minDateCanBooking.getFullYear(),
+      month: minDateCanBooking.getMonth(), //  (0: 1월, 1: 2월, ...)
     };
   });
 
