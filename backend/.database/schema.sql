@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS location (
                                         PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 ALTER TABLE location ADD CONSTRAINT UK_location_reservation UNIQUE (reservation_id);
+ALTER TABLE location ADD COLUMN expected_arrival_time DATETIME(6);
 
 CREATE TABLE IF NOT EXISTS reservation (
                                            id BIGINT NOT NULL AUTO_INCREMENT,
@@ -129,6 +130,22 @@ CREATE TABLE IF NOT EXISTS home (
                                     station_road_address_name VARCHAR(255),
                                     PRIMARY KEY (id)
 ) ENGINE=InnoDB;
+
+
+CREATE TABLE IF NOT EXISTS timetable (
+                                         id bigint not null auto_increment,
+                                         mon_start_time time,
+                                         mon_end_time time,
+                                         tue_start_time time,
+                                         tue_end_time time,
+                                         wed_start_time time,
+                                         wed_end_time time,
+                                         thu_start_time time,
+                                         thu_end_time time,
+                                         fri_start_time time,
+                                         fri_end_time time,
+                                         primary key (id)
+) engine=InnoDB;
 
 CREATE TABLE IF NOT EXISTS user (
                                     id BIGINT NOT NULL AUTO_INCREMENT,
@@ -186,21 +203,6 @@ CREATE TABLE IF NOT EXISTS token (
                                      PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 ALTER TABLE token ADD CONSTRAINT UK_token UNIQUE (token);
-
-CREATE TABLE IF NOT EXISTS timetable (
-                           id bigint not null auto_increment,
-                           mon_start_time time,
-                           mon_end_time time,
-                           tue_start_time time,
-                           tue_end_time time,
-                           wed_start_time time,
-                           wed_end_time time,
-                           thu_start_time time,
-                           thu_end_time time,
-                           fri_start_time time,
-                           fri_end_time time,
-                           primary key (id)
-) engine=InnoDB;
 
 CREATE TABLE IF NOT EXISTS fcmtoken (
                            id BIGINT AUTO_INCREMENT PRIMARY KEY,

@@ -95,7 +95,6 @@ public class BusScheduleManagement {
         }
     }
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void publishDepartureEvent(List<UserBusStopTime> userBusStopTimes) {
         List<Long> userIds = userBusStopTimes.stream().map(UserBusStopTime::getBusStopId).filter(Objects::nonNull).toList();
         eventPublisher.publishEvent(new BusDepartureEvent(userIds));

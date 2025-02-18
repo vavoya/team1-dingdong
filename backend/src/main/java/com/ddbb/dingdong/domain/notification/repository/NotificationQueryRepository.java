@@ -26,18 +26,19 @@ public interface NotificationQueryRepository extends JpaRepository<Notification,
         END AS endStationName,
         r.startDate AS startDate,
         CASE
-            WHEN r.direction = 'TO_SCHOOL' THEN bs.expectedArrivalTime
-            ELSE r.departureTime
+            WHEN n.type = 'BUS_START' THEN bs.expectedArrivalTime
+            ELSE l.expectedArrivalTime
         END AS expectedStartTime,
         CASE
-            WHEN r.direction = 'TO_SCHOOL' THEN r.arrivalTime
-            ELSE bs.expectedArrivalTime
+            WHEN n.type = 'BUS_START' THEN busSchedule.arrivalTime
+            ELSE r.arrivalTime
         END AS expectedEndTime
     FROM Notification n
     JOIN User u ON n.userId = u.id
     LEFT JOIN Reservation r ON n.reservationId = r.id
-    LEFT JOIN Location l ON l.reservationId = r.id
-    LEFT JOIN BusStop bs ON bs.locationId = l.id
+    LEFT JOIN BusSchedule busSchedule ON r.ticket.busScheduleId = busSchedule.id
+    LEFT JOIN BusStop bs ON r.ticket.busStopId = bs.id
+    LEFT JOIN Location l ON l.id = bs.locationId
     WHERE n.userId = :userId
     ORDER BY n.createdAt DESC
     """)

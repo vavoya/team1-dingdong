@@ -2,6 +2,7 @@ package com.ddbb.dingdong.domain.transportation.repository;
 
 import com.ddbb.dingdong.domain.transportation.entity.BusStop;
 import com.ddbb.dingdong.domain.transportation.repository.projection.AvailableBusStopProjection;
+import com.ddbb.dingdong.domain.transportation.repository.projection.UserIdAndReservationIdProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,5 +39,10 @@ public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
             @Param("schoolId") Long schoolId
     );
 
-
+    @Query("""
+    SELECT t.reservation.userId AS userId, t.reservation.id AS reservationId
+    FROM Ticket t
+    WHERE t.busStopId IN :busStops
+    """)
+    List<UserIdAndReservationIdProjection> queryUserIdByBusStops(@Param("busStops") List<Long> busStops);
 }
