@@ -6,6 +6,8 @@ public abstract class CancelableSubscriber<T> implements Flow.Subscriber<T> {
     protected Flow.Subscription subscription;
 
     public void cancel() {
-        this.subscription.cancel();
+        if (subscription != null) {
+            this.subscription.cancel();
+        }
     }
 }
