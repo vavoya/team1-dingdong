@@ -1,12 +1,22 @@
-// 라이브러리
-import { RouterProvider } from "react-router-dom";
 // 전역 상태
 import ResetStyle from "@/styles/ResetStyle.ts";
 import GlobalStyle from "./styles/GlobalStyle.ts";
-import { router } from "@/route";
 import "@/webPushNotification/settingFCM.ts";
 import { handleAllowNotification } from "./webPushNotification/handleAllowNotification.ts";
-import { useEffect } from "react";
+import {lazy, Suspense, useEffect} from "react";
+import LoadingModal from "@/components/Loading";
+
+// `RouterProvider` 자체를 동적 import
+const LazyRouterProvider = lazy(async () => {
+  const [{RouterProvider}, {router}] = await Promise.all([
+    import("react-router-dom"),
+    import("@/route")
+  ])
+  return {
+    default: () => <RouterProvider router={router} />
+  }
+})
+
 
 function App() {
   const notificationPermission = async () => {
@@ -29,7 +39,9 @@ function App() {
     <>
       <ResetStyle />
       <GlobalStyle />
-      <RouterProvider router={router} />
+      <Suspense fallback={<LoadingModal text={"페이지 불러오는 중"} />}>
+        <LazyRouterProvider />
+      </Suspense>
     </>
   );
 }

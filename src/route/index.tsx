@@ -1,6 +1,7 @@
 import {createBrowserRouter} from "react-router-dom";
 import Layout from "@/pages/layout.tsx";
 import dataStrategy from "@/route/dataStrategy.tsx";
+import ErrorPage from "@/pages/Error/page.tsx";
 
 export const router = createBrowserRouter(
     [
@@ -274,6 +275,19 @@ export const router = createBrowserRouter(
                                 };
                             },
                         },
+                        {
+                            path: "success",
+                            lazy: async () => {
+                                const [
+                                    { default: PaymentSuccessPage }
+                                ] = await Promise.all([
+                                    import("@/pages/Payment/Success/page.tsx"),
+                                ])
+                                return {
+                                    Component: PaymentSuccessPage
+                                }
+                            }
+                        }
                     ],
                 },
                 {
@@ -316,12 +330,16 @@ export const router = createBrowserRouter(
                             ]);
                         const usersModule = await import("@/api/query/users");
                         return { Component: Wallet, loader: createLoader(()=> [
-                                usersModule.users_me()
+                                usersModule.users_wallet_history({page: 0, pageSize: 20})
                             ]) };
                     },
                 },
             ],
         },
+        {
+            path: "*",
+            Component: ErrorPage
+        }
     ],
     {
         dataStrategy,
