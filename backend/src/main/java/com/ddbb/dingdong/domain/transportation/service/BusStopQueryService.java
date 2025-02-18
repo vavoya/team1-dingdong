@@ -4,9 +4,10 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
+import com.ddbb.dingdong.domain.transportation.repository.projection.AllAvailableBusStopProjection;
 
 import org.springframework.stereotype.Service;
 
@@ -22,12 +23,10 @@ import lombok.RequiredArgsConstructor;
 public class BusStopQueryService {
     private static final int THRESHOLD_METER = 1000;
 
-    public record AvailableBusStopDistance(AvailableBusStopProjection busStop, double distance)
-            implements Comparable<AvailableBusStopDistance> {
-        @Override
-        public int compareTo(AvailableBusStopDistance o) {
-            return Double.compare(this.distance, o.distance);
-        }
+    public record AvailableBusStopDistance(AvailableBusStopProjection busStop, double distance) {
+    }
+
+    public record AvailableBusStopWithTimeDistance(AllAvailableBusStopProjection busStop, double distance) {
     }
 
     private final BusStopQueryRepository busStopQueryRepository;
@@ -39,19 +38,34 @@ public class BusStopQueryService {
                 direction, time, schoolId
         );
         return projections.stream()
-            .map(projection -> {
-                double distance = GeoUtil.haversine(latitude, longitude, projection.getLatitude(), projection.getLongitude());
-                return new AvailableBusStopDistance(projection, distance);
-            })
-            .filter(item -> item.distance() <= THRESHOLD_METER)
-            .collect(Collectors.groupingBy(
-                    item -> item.busStop().getBusScheduleId(),
-                    Collectors.minBy(Comparator.comparingDouble(AvailableBusStopDistance::distance))
-            ))
+                .map(projection -> {
+                    double distance = GeoUtil.haversine(latitude, longitude, projection.getLatitude(), projection.getLongitude());
+                    return new AvailableBusStopDistance(projection, distance);
+                })
+                .filter(item -> item.distance() <= THRESHOLD_METER)
+                .collect(Collectors.groupingBy(
+                        item -> item.busStop().getBusScheduleId(),
+                        Collectors.minBy(Comparator.comparingDouble(AvailableBusStopDistance::distance))
+                ))
                 .values()
                 .stream()
                 .filter(Optional::isPresent)
                 .map(item -> item.get().busStop())
                 .toList();
+    }
+
+    public List<LocalDateTime> findAllAvailableBusStopTimes(
+            Direction direction, Long schoolId, double longitude, double latitude
+    ) {
+        List<AllAvailableBusStopProjection> items = busStopQueryRepository.findAllAvailableBusStop(direction, schoolId);
+        return items.stream()
+                .filter(item -> {
+                    double distance = GeoUtil.haversine(latitude, longitude, item.getLatitude(), item.getLongitude());
+                    return distance <= THRESHOLD_METER;
+                })
+                .map(AllAvailableBusStopProjection::getBusScheduleTime)
+                .collect(Collectors.toCollection(TreeSet::new))
+                .stream().toList();
+
     }
 }
