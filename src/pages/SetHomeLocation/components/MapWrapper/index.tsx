@@ -58,7 +58,7 @@ export default function SetLocationHomeMap({
       <Map
         center={userHomeCoordinate}
         style={{ width: "100%", height: "100%" }}
-        level={6}
+        level={4}
         onCreate={(map) => {
           mapRef.current = map;
         }}
