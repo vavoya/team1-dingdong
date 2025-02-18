@@ -12,19 +12,17 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
     const schedule: ScheduleInterface = JSON.parse(sessionStorage.getItem("/fixed-bus-select-bus") as string);
 
     try {
-
-
         const response = await Promise.all([
             axiosInstance.post(`/api/users/reservations/token/together`, {
-                busStopId: schedule.busStopName,
+                busStopId: schedule.busStopId,
                 busScheduleId: schedule.busId
                 }).then(res => res.data),
             queryClient.fetchQuery(users_wallet_balances()),
         ])
 
-        return response
+        return [...response, schedule]
     } catch (error) {
-        handleError(error);
+        return handleError(error);
     }
 }
 
@@ -34,4 +32,5 @@ export interface ScheduleInterface {
     timeSchedule: string;
     busId: number;
     busStopName: string;
+    busStopId: number;
 }

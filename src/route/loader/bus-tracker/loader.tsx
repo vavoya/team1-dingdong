@@ -8,7 +8,8 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
     const url = new URL(request.url);
     const queryParams = new URLSearchParams(url.search);
 
-    if (params) {}
+    if (params) {
+    }
 
     const busScheduleId = queryParams.get('busScheduleId')
 
@@ -27,6 +28,14 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
                 queryKey: [`/api/bus/bus-stop/location${busScheduleId}`],
                 queryFn: async () => {
                     const response = await axiosInstance.get(`/api/bus/bus-stop/location/${busScheduleId}`)
+                    return response.data;
+                },
+                staleTime: 1000 * 60, // 1분 동안 캐싱
+            }),
+            queryClient.fetchQuery({
+                queryKey: [`/api/reservations/busSchedules/${busScheduleId}`],
+                queryFn: async () => {
+                    const response = await axiosInstance.get(`/api/reservations/busSchedules/${busScheduleId}`)
                     return response.data;
                 },
                 staleTime: 1000 * 60, // 1분 동안 캐싱
