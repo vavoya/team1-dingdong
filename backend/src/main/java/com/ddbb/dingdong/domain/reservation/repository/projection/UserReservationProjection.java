@@ -20,6 +20,6 @@ public interface UserReservationProjection {
     ReservationStatus getReservationStatus();
     Long getBusScheduleId();
     OperationStatus getBusStatus();
-    String getBusName();
+    Long getBusId();
     LocalDateTime getBusStopArrivalTime();
 }

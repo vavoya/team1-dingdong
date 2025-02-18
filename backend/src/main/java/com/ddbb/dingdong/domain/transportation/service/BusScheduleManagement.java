@@ -32,8 +32,7 @@ public class BusScheduleManagement {
         BusSchedule busSchedule = new BusSchedule();
         busSchedule.setPath(path);
         busSchedule.setSchoolId(schoolId);
-        //TODO 버스할당 ->추후 수정
-        busSchedule.setBus(new Bus("버스 01"));
+        busSchedule.setBus(new Bus("가상 버스"));
         if(direction.equals(Direction.TO_SCHOOL)) {
             busSchedule.setArrivalTime(dingdongTime);
         } else {
