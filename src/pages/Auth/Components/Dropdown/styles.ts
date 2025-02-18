@@ -27,6 +27,8 @@ export const ChevronIconWrapper = styled.div`
 `;
 
 export const DropdownList = styled.ul<{ $isOpen: boolean }>`
+  overflow-y: scroll;
+  max-height: 200px;
   position: absolute;
   width: 100%;
   top: 100%;
