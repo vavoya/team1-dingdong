@@ -27,7 +27,7 @@ import { convertIsoToDateObject } from "@/utils/calendar/timeViewBottomModalUtil
 import { mountModal } from "@/components/Loading";
 import Modal from "@/components/Modal";
 import { useLoaderData, useNavigate } from "react-router-dom";
-const { render } = mountModal();
+// const { render, unmountModal } = mountModal();
 export default function CustomRouteBooking() {
   const [selectedTimeSchedule, dispatch] = useReducer(timeScheduleReducer, {});
   const navigate = useNavigate();
@@ -39,17 +39,27 @@ export default function CustomRouteBooking() {
     },
   ] = useLoaderData();
 
-  console.log(stationName, "역 이름");
-
   const exitButtonHandler = () => {
     // 모달 오픈
+    const { render, unmountModal } = mountModal();
     render(
       <Modal
         title={["다음에 다시 예약할까요?"]}
         text={["예매 내역이 저장되지 않습니다."]}
         isError={false}
-        leftButton={{ text: "취소", onClick: () => render(null) }}
-        rightButton={{ text: "나가기", onClick: () => navigate(-1) }}
+        leftButton={{
+          text: "취소",
+          onClick: () => {
+            render(<></>);
+          },
+        }}
+        rightButton={{
+          text: "나가기",
+          onClick: () => {
+            unmountModal();
+            navigate(-1);
+          },
+        }}
       />
     );
   };
