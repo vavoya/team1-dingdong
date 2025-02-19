@@ -1,12 +1,15 @@
 import { useState, ChangeEvent, useEffect, useRef } from "react";
-import { PasswordGuidText } from "./styles";
+import { PasswordGuidText, ValidGuideText } from "./styles";
 import CustomInput from "../../Components/Input";
 import CustomFormWrapper from "../../Components/FormWrapper";
 import { NextButtonWrapper } from "../SchoolAuth/styles";
 import SolidButton from "@/components/designSystem/Button/SolidButton";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SIGNUP_TEXT } from "@/constants/signupTexts";
-import { isValidatePassword } from "@/utils/signUp/passwordValidation";
+import {
+  isValidatePassword,
+  validPasswordCriteria,
+} from "@/utils/signUp/passwordValidation";
 import { colors } from "@/styles/colors";
 
 interface PasswordGuideTextType {
@@ -60,7 +63,7 @@ export default function PasswordSignup() {
       });
     } else
       setPasswordGuideText({
-        passwordGuideText: SIGNUP_TEXT.passwordFormatWrongText,
+        passwordGuideText: SIGNUP_TEXT.passwordFormatWrongMaxLength,
         color: colors.red,
       });
   }, [password]);
@@ -78,18 +81,33 @@ export default function PasswordSignup() {
         <CustomInput
           hasError={
             passwordGuideText.passwordGuideText ===
-              SIGNUP_TEXT.passwordFormatWrongText && password.length > 0
+              SIGNUP_TEXT.passwordFormatWrongMaxLength && password.length > 0
           }
           label="비밀번호"
           type="password"
           value={password}
           onChange={handlePasswordChange}
           placeholder="8자 이상의 비밀번호"
+          maxLength={20}
         />
-
-        <PasswordGuidText $textColor={passwordGuideText.color}>
-          {passwordGuideText.passwordGuideText}
+        <PasswordGuidText $textColor={colors.gray50}>
+          {SIGNUP_TEXT.passwordGuideText}
         </PasswordGuidText>
+        <div>
+          {validPasswordCriteria.map(({ regex, text, id }) => {
+            const isValid = regex.test(password);
+            return (
+              <PasswordGuidText key={id} $textColor={passwordGuideText.color}>
+                {password.length > 20 && (
+                  <>✖ 최대 20자까지만 입력 가능합니다.</>
+                )}
+                <ValidGuideText $isValid={isValid}>
+                  {isValid ? "✅" : "❌"} {text}
+                </ValidGuideText>
+              </PasswordGuidText>
+            );
+          })}
+        </div>
 
         <CustomInput
           label="비밀번호 확인"
