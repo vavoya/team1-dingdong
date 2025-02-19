@@ -42,11 +42,9 @@ export default function SchoolAuthSignUp() {
   const debounceCheckEmail = useDebounce((email: string) => {
     postPostCheckDuplicateEmailMutation(email, {
       onSuccess: () => {
-        console.log("중복 되지 않음");
         setDuplicateEmail(false);
       },
       onError: () => {
-        console.log("중복이 됨");
         setDuplicateEmail(true);
       },
     });
