@@ -60,7 +60,7 @@ public class ApplicationInitializer {
                 notification.setUserId((long)(i + 1));
                 notification.setReservationId(null);
                 notification.setType(NotificationType.WELCOME);
-                notification.setMoney(10000);
+                notification.setMoney(30000);
 
                 notificationRepository.save(notification);
             }
