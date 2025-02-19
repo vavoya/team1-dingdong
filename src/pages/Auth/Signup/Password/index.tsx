@@ -75,14 +75,15 @@ export default function PasswordSignup() {
       setButtonActive(false);
     }
   }, [password, confirmPassword]);
+
+  const allCriteriaPassed = validPasswordCriteria.every(({ regex }) =>
+    regex.test(password)
+  );
   return (
     <>
       <CustomFormWrapper>
         <CustomInput
-          hasError={
-            passwordGuideText.passwordGuideText ===
-              SIGNUP_TEXT.passwordFormatWrongMaxLength && password.length > 0
-          }
+          hasError={!allCriteriaPassed}
           label="비밀번호"
           type="password"
           value={password}
