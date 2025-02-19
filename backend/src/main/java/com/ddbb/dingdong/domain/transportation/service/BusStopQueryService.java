@@ -4,14 +4,14 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
-
-import lombok.Getter;
 
 import org.springframework.stereotype.Service;
 
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.transportation.repository.BusStopQueryRepository;
+import com.ddbb.dingdong.domain.transportation.repository.projection.AllAvailableBusStopProjection;
 import com.ddbb.dingdong.domain.transportation.repository.projection.AvailableBusStopProjection;
 import com.ddbb.dingdong.util.GeoUtil;
 
@@ -23,11 +23,14 @@ public class BusStopQueryService {
     private static final int THRESHOLD_METER = 1000;
 
     public record AvailableBusStopDistance(AvailableBusStopProjection busStop, double distance)
-            implements Comparable<AvailableBusStopDistance> {
+    implements Comparable<AvailableBusStopDistance> {
         @Override
         public int compareTo(AvailableBusStopDistance o) {
-            return Double.compare(this.distance, o.distance);
+            return Double.compare(distance, o.distance);
         }
+    }
+
+    public record AvailableBusStopWithTimeDistance(AllAvailableBusStopProjection busStop, double distance) {
     }
 
     private final BusStopQueryRepository busStopQueryRepository;
@@ -35,24 +38,40 @@ public class BusStopQueryService {
     public List<AvailableBusStopProjection> findAvailableBusStops(
             Long schoolId, Direction direction, LocalDateTime time, Double longitude, Double latitude
     ) {
-        List<AvailableBusStopProjection> projections = switch (direction) {
-            case TO_HOME -> busStopQueryRepository.findAvailableGoHomeBusStop(time, schoolId);
-            case TO_SCHOOL -> busStopQueryRepository.findAvailableGoSchoolBusStop(time, schoolId);
-        };
+        List<AvailableBusStopProjection> projections = busStopQueryRepository.findAvailableBusStop(
+                direction, time, schoolId
+        );
         return projections.stream()
-            .map(projection -> {
-                double distance = GeoUtil.haversine(latitude, longitude, projection.getLatitude(), projection.getLongitude());
-                return new AvailableBusStopDistance(projection, distance);
-            })
-            .filter(item -> item.distance() <= THRESHOLD_METER)
-            .collect(Collectors.groupingBy(
-                    item -> item.busStop().getBusScheduleId(),
-                    Collectors.minBy(Comparator.comparingDouble(AvailableBusStopDistance::distance))
-            ))
+                .filter(projection -> projection.getLocationId() != null)
+                .map(projection -> {
+                    double distance = GeoUtil.haversine(latitude, longitude, projection.getLatitude(), projection.getLongitude());
+                    return new AvailableBusStopDistance(projection, distance);
+                })
+                .filter(item -> item.distance() <= THRESHOLD_METER)
+                .collect(Collectors.groupingBy(
+                        item -> item.busStop().getBusScheduleId(),
+                        Collectors.minBy(Comparator.comparingDouble(AvailableBusStopDistance::distance))
+                ))
                 .values()
                 .stream()
                 .filter(Optional::isPresent)
                 .map(item -> item.get().busStop())
                 .toList();
+    }
+
+    public List<LocalDateTime> findAllAvailableBusStopTimes(
+            Direction direction, Long schoolId, double longitude, double latitude
+    ) {
+        List<AllAvailableBusStopProjection> items = busStopQueryRepository.findAllAvailableBusStop(direction, schoolId);
+        return items.stream()
+                .filter(projection -> projection.getLocationId() != null)
+                .filter(item -> {
+                    double distance = GeoUtil.haversine(latitude, longitude, item.getLatitude(), item.getLongitude());
+                    return distance <= THRESHOLD_METER;
+                })
+                .map(AllAvailableBusStopProjection::getBusScheduleTime)
+                .collect(Collectors.toCollection(TreeSet::new))
+                .stream().toList();
+
     }
 }
