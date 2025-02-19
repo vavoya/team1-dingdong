@@ -24,6 +24,7 @@ import TimePicker from "@/pages/TimetableManagement/components/TimePicker";
 import useToast from "@/hooks/useToast";
 import {putTimetable} from "@/api/timetable/putTimetable.ts";
 import {isAxiosError} from "axios";
+import {queryClient} from "@/main.tsx";
 
 
 const fetchTimetable = async (timetable: users_timetable_interface, addToast: (message: string) => void) => {
@@ -32,8 +33,8 @@ const fetchTimetable = async (timetable: users_timetable_interface, addToast: (m
     for (let i = 0; i < 10; i += 2) {
         const time1 = parseInt((timeArray[i] ?? '00:00').split(':').join(), 10)
         const time2 = parseInt((timeArray[i + 1] ?? '00:00').split(':').join(), 10)
-        console.log(time1, time2)
-        if (time1 > time2) {
+
+        if ((time1 > time2) && timeArray[i] && timeArray[i + 1]) {
             addToast("하교 시간은 등교 시간 이후여야 합니다.")
             return
         }
@@ -42,6 +43,9 @@ const fetchTimetable = async (timetable: users_timetable_interface, addToast: (m
     try {
         await putTimetable(timetable)
         addToast("시간표가 성공적으로 저장되었습니다.")
+        await queryClient.invalidateQueries({
+            queryKey: ["/api/users/timetable"]
+        })
     }
     catch (error) {
         if (isAxiosError(error) && error.response) {
