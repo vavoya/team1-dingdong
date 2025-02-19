@@ -35,10 +35,9 @@ public class BusStopQueryService {
     public List<AvailableBusStopProjection> findAvailableBusStops(
             Long schoolId, Direction direction, LocalDateTime time, Double longitude, Double latitude
     ) {
-        List<AvailableBusStopProjection> projections = switch (direction) {
-            case TO_HOME -> busStopQueryRepository.findAvailableGoHomeBusStop(time, schoolId);
-            case TO_SCHOOL -> busStopQueryRepository.findAvailableGoSchoolBusStop(time, schoolId);
-        };
+        List<AvailableBusStopProjection> projections = busStopQueryRepository.findAvailableBusStop(
+                direction, time, schoolId
+        );
         return projections.stream()
             .map(projection -> {
                 double distance = GeoUtil.haversine(latitude, longitude, projection.getLatitude(), projection.getLongitude());

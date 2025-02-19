@@ -1,5 +1,6 @@
 package com.ddbb.dingdong.domain.transportation.repository;
 
+import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.transportation.entity.BusStop;
 import com.ddbb.dingdong.domain.transportation.repository.projection.AvailableBusStopProjection;
 import com.ddbb.dingdong.domain.transportation.repository.projection.UserIdAndReservationIdProjection;
@@ -19,23 +20,14 @@ public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
             "JOIN Ticket t ON t.busStopId = bst.id " +
             "JOIN BusSchedule bs ON t.busScheduleId = bs.id " +
             "JOIN Bus b ON b.id = bs.bus.id " +
-            "WHERE bs.departureTime = :departureTime AND bs.schoolId = :schoolId " +
-            "AND bs.status = 'READY'")
-    List<AvailableBusStopProjection> findAvailableGoHomeBusStop(
-            @Param("departureTime") LocalDateTime departureTime,
-            @Param("schoolId") Long schoolId
-    );
-
-    @Query("SELECT bst.id as busStopId, bst.roadNameAddress as busStopName, bst.latitude as latitude, bst.longitude as longitude, " +
-            "bst.expectedArrivalTime as busStopTime, b.name as busName, bs.id as busScheduleId " +
-            "FROM BusStop bst " +
-            "JOIN Ticket t ON t.busStopId = bst.id " +
-            "JOIN BusSchedule bs ON t.busScheduleId = bs.id " +
-            "JOIN Bus b ON b.id = bs.bus.id " +
-            "WHERE bs.arrivalTime = :arrivalTime AND bs.schoolId = :schoolId " +
-            "AND bs.status = 'READY'")
-    List<AvailableBusStopProjection> findAvailableGoSchoolBusStop(
-            @Param("arrivalTime") LocalDateTime arrivalTime,
+            "WHERE ((:direction = 'GO_HOME' AND bs.departureTime = :time) OR " +
+            "       (:direction = 'GO_SCHOOL' AND bs.arrivalTime = :time)) " +
+            "AND bs.schoolId = :schoolId " +
+            "AND bs.status = 'READY'"
+    )
+    List<AvailableBusStopProjection> findAvailableBusStop(
+            @Param("direction") Direction direction,
+            @Param("time") LocalDateTime time,
             @Param("schoolId") Long schoolId
     );
 
