@@ -46,7 +46,7 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
             OR
             (:category = 5 AND CAST(r.status AS STRING) = 'CANCELED')
             OR
-            (:category = 6 AND (CAST(r.status AS STRING) = 'ALLOCATED' OR CAST(r.status AS STRING) = 'PENDING'))
+            (:category = 6 AND (CAST(r.status AS STRING) = 'ALLOCATED' OR CAST(r.status AS STRING) = 'PENDING') AND CAST(bs_arrival.status AS STRING) != 'ENDED')
         )
     ORDER BY
        CASE WHEN :sort = 0 THEN r.startDate END DESC,
