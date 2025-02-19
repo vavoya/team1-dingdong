@@ -49,14 +49,10 @@ export default function TicketCard({
         <StationInfo>
           <StationName>{reservationInfo!.startStationName}</StationName>
 
-          {type === "ALLOCATION_SUCCESS" ? (
-            <Time>-</Time>
+          {type === "ALLOCATION_SUCCESS" || "BUS_START" ? (
+            <Time>{formatTime(reservationInfo!.expectedStartTime!)} 탑승</Time>
           ) : (
-            <Time>
-              {reservationInfo!.expectedStartTime === null
-                ? "-"
-                : `${formatTime(reservationInfo!.expectedStartTime)} 탑승`}{" "}
-            </Time>
+            <Time>-</Time>
           )}
         </StationInfo>
         <ChevronRightIcon size={32} fill={colors.gray30} />
