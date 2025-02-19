@@ -1,11 +1,8 @@
 package com.ddbb.dingdong.domain.transportation.repository;
 
 import com.ddbb.dingdong.domain.transportation.entity.BusSchedule;
-import com.ddbb.dingdong.domain.transportation.repository.projection.BusReservedSeatProjection;
-import com.ddbb.dingdong.domain.transportation.repository.projection.BusStopLocationProjection;
-import com.ddbb.dingdong.domain.transportation.repository.projection.ScheduleTimeProjection;
+import com.ddbb.dingdong.domain.transportation.repository.projection.*;
 import jakarta.persistence.LockModeType;
-import com.ddbb.dingdong.domain.transportation.repository.projection.UserBusStopProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -59,4 +56,13 @@ public interface BusScheduleQueryRepository extends JpaRepository<BusSchedule, L
             @Param("userId") Long userId,
             @Param("busScheduleId") Long busScheduleId
     );
+
+    @Query("""
+        SELECT bs.expectedArrivalTime as arrivalTime, reservation.userId as userId
+        FROM BusStop bs
+        JOIN Ticket ticket ON ticket.busStopId = bs.id
+        JOIN Reservation reservation ON reservation.id = ticket.reservation.id
+        WHERE bs.id in :busStopIds
+    """)
+    List<BusStopArrivalTime> findBusStopArrivalTime(@Param("busStopIds") List<Long> busStopIds);
 }
