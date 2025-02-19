@@ -22,7 +22,7 @@ export default function HomeHeader({busStateRef, unreadNotification}: HomeHeader
     useEffect(() => {
         if (ws instanceof WebSocket) {
             const handleMessage = (message: MessageEvent) => {
-                const data = JSON.parse(message.data);
+                const data: string = message.data;
                 if (data === 'alarm') {
                     setIsNotification([true]);
                 }
