@@ -236,6 +236,7 @@ export const router = createBrowserRouter(
                                     category: "CANCELED",
                                     sort: "OLDEST",
                                 }),
+                                usersModule.users_me()
                             ]),
                         };
                     },

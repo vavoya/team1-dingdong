@@ -2,6 +2,7 @@ import {LoaderFunctionArgs} from "react-router-dom";
 import {queryClient} from "@/main.tsx";
 import {axiosInstance} from "@/api";
 import handleError from "@/route/loader/handleError.ts";
+import {users_me} from "@/api/query/users";
 
 
 export default async function loader({ request, params }: LoaderFunctionArgs) {
@@ -35,11 +36,12 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
             queryClient.fetchQuery({
                 queryKey: [`/api/reservations/busSchedules/${busScheduleId}`],
                 queryFn: async () => {
-                    const response = await axiosInstance.get(`/api/reservations/busSchedules/${busScheduleId}`)
+                    const response = await axiosInstance.get(`/api/users/reservations/busSchedules/${busScheduleId}`)
                     return response.data;
                 },
                 staleTime: 1000 * 60, // 1분 동안 캐싱
             }),
+            queryClient.fetchQuery(users_me())
         ]);
     } catch (error) {
         handleError(error);
