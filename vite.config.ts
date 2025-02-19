@@ -14,16 +14,16 @@ export default defineConfig({
     port: 5173, // 포트 설정 (기본값: 5173)
     proxy: {
       "/api": {
-        target: "https://dingdong-dev-beta.vercel.app",
+        target: "https://ding-dong-bus.shop",
         changeOrigin: true,
         secure: true,
         headers: {
           credentials: "include",
         },
-        cookieDomainRewrite: "localhost"
+        cookieDomainRewrite: "localhost",
       },
       "/ws": {
-        target: "https://dingdong-dev-beta.vercel.app",
+        target: "wss://ding-dong-bus.shop",
         changeOrigin: true,
         ws: true,
         secure: true,
