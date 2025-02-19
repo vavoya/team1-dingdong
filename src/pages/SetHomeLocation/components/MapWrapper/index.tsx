@@ -12,6 +12,7 @@ import { colors } from "@/styles/colors";
 import HomeIcon from "@/components/designSystem/Icons/HomeIcon";
 import { useAddress } from "../../hooks/useCoodinateToAddress";
 import { DragPin } from "../DragPin";
+import { useLoaderData } from "react-router-dom";
 
 interface SetLocationHomeMapProps {
   userHomeCoordinate: {
@@ -33,24 +34,31 @@ export default function SetLocationHomeMap({
 }: SetLocationHomeMapProps) {
   useKakaoLoader();
   const mapRef = useRef<kakao.maps.Map>();
-  const [centerPosition, setCenterPosition] = useState(userHomeCoordinate);
 
+  const [houseAndStationInfo] = useLoaderData();
+
+  const { stationInfo: serverStationInfo } = houseAndStationInfo;
+  const [centerPosition, setCenterPosition] = useState({
+    lat: serverStationInfo.latitude,
+    lng: serverStationInfo.longitude,
+  });
   useAddress(centerPosition, setRoadAddress);
+
+  const currentStationPosition = {
+    lat: serverStationInfo.latitude,
+    lng: serverStationInfo.longitude,
+  };
 
   // 지도 중심 좌표가 변경될 때 호출되는 함수
   const handleCenterChanged = () => {
     if (!mapRef.current) return;
 
     const center = mapRef.current.getCenter();
-    const newPosition = {
-      lat: center.getLat(),
-      lng: center.getLng(),
-    };
 
-    setCenterPosition(newPosition);
+    setCenterPosition(currentStationPosition);
     setStationInfo({
-      latitude: newPosition.lat,
-      longitude: newPosition.lng,
+      latitude: center.getLat(),
+      longitude: center.getLng(),
     });
     setShowBottomSheet(true);
   };
@@ -58,7 +66,7 @@ export default function SetLocationHomeMap({
   return (
     <MapWrapper>
       <Map
-        center={userHomeCoordinate}
+        center={centerPosition}
         style={{ width: "100%", height: "100%" }}
         level={4}
         onCreate={(map) => {
