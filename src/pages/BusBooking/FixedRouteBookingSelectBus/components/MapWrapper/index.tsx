@@ -57,13 +57,12 @@ export default function BusSelectMap({
   const updateMapBounds = () => {
     if (!mapRef.current || !startPoint || !endPoint) return;
 
-
     const bounds = new kakao.maps.LatLngBounds();
     bounds.extend(new kakao.maps.LatLng(startPoint.lat, startPoint.lng));
     bounds.extend(new kakao.maps.LatLng(endPoint.lat, endPoint.lng));
 
     setTimeout(() => {
-      mapRef.current?.setBounds(bounds, 70); // Use a single padding number
+      mapRef.current?.setBounds(bounds, 20); // Use a single padding number
     }, 100);
   };
 

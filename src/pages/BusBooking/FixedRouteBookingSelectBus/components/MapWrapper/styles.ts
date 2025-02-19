@@ -4,9 +4,9 @@ import { Detail1Medium } from "@/styles/typography";
 import styled from "styled-components";
 
 // 위치
-export const MapContainer = styled.div``;
+
 export const MapWrapper = styled.section`
-  height: calc(100% - 60px);
+  height: calc(100% - 60px - 57px - 280px);
 `;
 
 export const PinContainer = styled.div`
