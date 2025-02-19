@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
     @Query("SELECT bst.id as busStopId, bst.roadNameAddress as busStopName, bst.latitude as latitude, bst.longitude as longitude, " +
-            "bst.expectedArrivalTime as busStopTime, b.name as busName, bs.id as busScheduleId " +
+            "bst.expectedArrivalTime as busStopTime, b.id as busId, bs.id as busScheduleId " +
             "FROM BusStop bst " +
             "JOIN Ticket t ON t.busStopId = bst.id " +
             "JOIN BusSchedule bs ON t.busScheduleId = bs.id " +

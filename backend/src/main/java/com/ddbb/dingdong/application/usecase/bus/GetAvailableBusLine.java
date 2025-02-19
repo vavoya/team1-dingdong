@@ -55,7 +55,7 @@ public class GetAvailableBusLine implements UseCase<GetAvailableBusLine.Param, G
                     .longitude(busStop.getLongitude())
                     .build();
             Response.BusInfo busInfo = Response.BusInfo.builder()
-                    .name(busStop.getBusName())
+                    .name(String.format("버스 %02d", busStop.getBusId()))
                     .reservedSeat(count)
                     .totalSeat(15)
                     .build();

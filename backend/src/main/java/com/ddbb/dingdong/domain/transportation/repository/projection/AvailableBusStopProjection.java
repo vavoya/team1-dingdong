@@ -8,6 +8,6 @@ public interface AvailableBusStopProjection {
     String getBusStopName();
     Double getLongitude();
     Double getLatitude();
-    String getBusName();
+    Long getBusId();
     Long getBusScheduleId();
 }
