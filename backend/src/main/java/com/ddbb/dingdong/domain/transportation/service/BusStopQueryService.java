@@ -7,12 +7,11 @@ import java.util.Optional;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import com.ddbb.dingdong.domain.transportation.repository.projection.AllAvailableBusStopProjection;
-
 import org.springframework.stereotype.Service;
 
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.transportation.repository.BusStopQueryRepository;
+import com.ddbb.dingdong.domain.transportation.repository.projection.AllAvailableBusStopProjection;
 import com.ddbb.dingdong.domain.transportation.repository.projection.AvailableBusStopProjection;
 import com.ddbb.dingdong.util.GeoUtil;
 
@@ -23,7 +22,12 @@ import lombok.RequiredArgsConstructor;
 public class BusStopQueryService {
     private static final int THRESHOLD_METER = 1000;
 
-    public record AvailableBusStopDistance(AvailableBusStopProjection busStop, double distance) {
+    public record AvailableBusStopDistance(AvailableBusStopProjection busStop, double distance)
+    implements Comparable<AvailableBusStopDistance> {
+        @Override
+        public int compareTo(AvailableBusStopDistance o) {
+            return Double.compare(distance, o.distance);
+        }
     }
 
     public record AvailableBusStopWithTimeDistance(AllAvailableBusStopProjection busStop, double distance) {

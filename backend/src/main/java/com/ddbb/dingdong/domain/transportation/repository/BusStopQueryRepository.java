@@ -21,10 +21,11 @@ public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
             "JOIN Ticket t ON t.busStopId = bst.id " +
             "JOIN BusSchedule bs ON t.busScheduleId = bs.id " +
             "JOIN Bus b ON b.id = bs.bus.id " +
-            "WHERE ((:direction = 'GO_HOME' AND bs.departureTime = :time) OR " +
-            "       (:direction = 'GO_SCHOOL' AND bs.arrivalTime = :time)) " +
+            "WHERE ((bs.direction = 'TO_HOME' AND bs.departureTime = :time) OR " +
+                "(bs.direction = 'TO_SCHOOL' AND bs.arrivalTime = :time)) " +
             "AND bs.schoolId = :schoolId " +
-            "AND bs.status = 'READY'"
+            "AND bs.status = 'READY'" +
+            "AND bs.direction = :direction"
     )
     List<AvailableBusStopProjection> findAvailableBusStop(
             @Param("direction") Direction direction,
@@ -35,17 +36,14 @@ public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
 
     @Query("SELECT bst.latitude as latitude, bst.longitude as longitude, " +
             "busSchedule.id as busScheduleId, " +
-            "CASE WHEN busSchedule.direction = 'TO_SCHOOL' " +
-                "THEN busSchedule.arrivalTime " +
-                "ELSE busSchedule.departureTime " +
-            "END AS busScheduleTime " +
+            "CASE WHEN busSchedule.direction = com.ddbb.dingdong.domain.reservation.entity.vo.Direction.TO_SCHOOL " +
+            "THEN busSchedule.arrivalTime ELSE busSchedule.departureTime END AS busScheduleTime " +
             "FROM BusStop bst " +
             "JOIN Ticket t ON t.busStopId = bst.id " +
             "JOIN BusSchedule busSchedule ON t.busScheduleId = busSchedule.id " +
             "WHERE busSchedule.direction = :direction " +
             "AND busSchedule.schoolId = :schoolId " +
-            "AND busSchedule.status = 'READY'"
-    )
+            "AND busSchedule.status = 'READY'")
     List<AllAvailableBusStopProjection> findAllAvailableBusStop(
             @Param("direction") Direction direction,
             @Param("schoolId") Long schoolId
