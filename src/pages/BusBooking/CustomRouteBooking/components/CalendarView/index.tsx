@@ -78,7 +78,9 @@ export default function CalendarView({
       );
       setRecommendationDates(finalRecommendationDates);
     }
+
   }, [TimeTableRecommendationArray, currentMonthIndex]);
+
 
   const makingTimeTableSuggestion = () => {
     const { render, unmountModal } = mountModal();
@@ -145,7 +147,9 @@ export default function CalendarView({
         })
       );
     } else {
+
       if (recommendationDates?.length === 0) {
+
         // 모달 호출
         makingTimeTableSuggestion();
         return;

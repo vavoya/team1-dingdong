@@ -1,4 +1,6 @@
+
 import { useRef, useState } from "react";
+
 import {
   HomePinContainer,
   HomePinMark,
@@ -35,6 +37,7 @@ export default function SetLocationHomeMap({
   useKakaoLoader();
   const mapRef = useRef<kakao.maps.Map>();
 
+
   const [houseAndStationInfo] = useLoaderData();
 
   const { stationInfo: serverStationInfo } = houseAndStationInfo;
@@ -59,6 +62,7 @@ export default function SetLocationHomeMap({
     setStationInfo({
       latitude: center.getLat(),
       longitude: center.getLng(),
+
     });
     setShowBottomSheet(true);
   };
