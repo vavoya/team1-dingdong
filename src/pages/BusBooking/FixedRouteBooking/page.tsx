@@ -68,7 +68,7 @@ export default function FixedRouteBooking() {
   const busTimeSchedule =
     busTimeResponse?.data?.data?.schedules.length > 0
       ? busTimeResponse?.data?.data?.schedules
-      : TEMP_DATE;
+      : [];
 
   const sortedBusTimeSchedule = busTimeSchedule.sort(
     (a: string, b: string) => new Date(a).getTime() - new Date(b).getTime()
