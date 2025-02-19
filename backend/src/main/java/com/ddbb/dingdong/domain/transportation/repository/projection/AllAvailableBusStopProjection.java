@@ -6,5 +6,6 @@ public interface AllAvailableBusStopProjection {
     Double getLongitude();
     Double getLatitude();
     Long getBusScheduleId();
+    Long getLocationId();
     LocalDateTime getBusScheduleTime();
 }

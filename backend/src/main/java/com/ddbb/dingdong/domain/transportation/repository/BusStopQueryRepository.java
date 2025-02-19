@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
     @Query("SELECT bst.id as busStopId, bst.roadNameAddress as busStopName, bst.latitude as latitude, bst.longitude as longitude, " +
-            "bst.expectedArrivalTime as busStopTime, b.id as busId, bs.id as busScheduleId " +
+            "bst.expectedArrivalTime as busStopTime, b.id as busId, bs.id as busScheduleId, bst.locationId as locationId " +
             "FROM BusStop bst " +
             "JOIN Ticket t ON t.busStopId = bst.id " +
             "JOIN BusSchedule bs ON t.busScheduleId = bs.id " +
@@ -37,7 +37,8 @@ public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
     @Query("SELECT bst.latitude as latitude, bst.longitude as longitude, " +
             "busSchedule.id as busScheduleId, " +
             "CASE WHEN busSchedule.direction = com.ddbb.dingdong.domain.reservation.entity.vo.Direction.TO_SCHOOL " +
-            "THEN busSchedule.arrivalTime ELSE busSchedule.departureTime END AS busScheduleTime " +
+            "THEN busSchedule.arrivalTime ELSE busSchedule.departureTime END AS busScheduleTime, " +
+            "bst.locationId as locationId " +
             "FROM BusStop bst " +
             "JOIN Ticket t ON t.busStopId = bst.id " +
             "JOIN BusSchedule busSchedule ON t.busScheduleId = busSchedule.id " +
