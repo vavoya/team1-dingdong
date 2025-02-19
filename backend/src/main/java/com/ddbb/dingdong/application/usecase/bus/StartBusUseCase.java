@@ -58,12 +58,15 @@ public class StartBusUseCase implements UseCase<StartBusUseCase.Param, Void> {
                 param.delay,
                 param.timeUnit
         );
-        busScheduleManagement.updateBusScheduleExpectedArrivalTime(param.getBusScheduleId(), newUserBusStopTimes.get(newUserBusStopTimes.size() - 1).getTime());
         BusSchedule busSchedule = busScheduleRepository.findById(param.busScheduleId)
                         .orElseThrow(BusErrors.NO_BUS_FOUND::toException);
         if(busSchedule.getDirection().equals(Direction.TO_SCHOOL)) {
+            busSchedule.setArrivalTime(newUserBusStopTimes.get(newUserBusStopTimes.size() - 1).getTime());
             busScheduleManagement.publishDepartureEvent(newUserBusStopTimes);
+        }else {
+            busSchedule.setDepartureTime(now);
         }
+
         return null;
     }
 
