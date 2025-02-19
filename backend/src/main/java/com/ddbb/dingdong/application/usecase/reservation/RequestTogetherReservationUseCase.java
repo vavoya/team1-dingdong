@@ -2,6 +2,7 @@ package com.ddbb.dingdong.application.usecase.reservation;
 
 import com.ddbb.dingdong.application.common.Params;
 import com.ddbb.dingdong.application.common.UseCase;
+import com.ddbb.dingdong.application.usecase.reservation.error.ReservationInvalidParamErrors;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.repository.BusStopRepository;
 import com.ddbb.dingdong.domain.reservation.service.ReservationErrors;
@@ -27,6 +28,7 @@ public class RequestTogetherReservationUseCase implements UseCase<RequestTogethe
 
     @Override
     public Result execute(Param param) {
+        param.validate();
         LocalDateTime hopeTime = extractTimeFromBusSchedule(param);
         checkHasDuplicatedReservation(param.userId, hopeTime);
         String token = generateToken(param);
@@ -66,6 +68,16 @@ public class RequestTogetherReservationUseCase implements UseCase<RequestTogethe
         private Long userId;
         private Long busStopId;
         private Long busScheduleId;
+
+        @Override
+        public boolean validate() {
+            if (busStopId != null) {
+                throw ReservationInvalidParamErrors.INVALID_BUS_STOP_ID.toException();
+            } else if (busScheduleId != null) {
+                throw ReservationInvalidParamErrors.INVALID_BUS_SCHEDULE_ID.toException();
+            }
+            return true;
+        }
     }
 
     @Getter
