@@ -10,6 +10,9 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { isValidEmailFormat } from "@/utils/login/emailValidation";
 import { colors } from "@/styles/colors";
 import { useLogin } from "@/hooks/Login/useLogin";
+import { AxiosError } from "axios";
+import { mountModal } from "@/components/Loading";
+import Modal from "@/components/Modal";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -34,14 +37,29 @@ const Login = () => {
     setEmailFormatHasError(true);
   }, [email]);
 
+  const renderLoginErrorModal = (errorMessage: string) => {
+    const { render, unmountModal } = mountModal();
+    render(
+      <Modal
+        title={["❗로그인 실패"]}
+        text={[`${errorMessage}`]}
+        leftButton={{ text: "확인", onClick: unmountModal }}
+      />
+    );
+  };
   const loginHandler = () => {
     const loginFormData = { email, password };
     postLoginMutation(loginFormData, {
       onSuccess: () => {
         navigate("/home");
       },
-      onError: () => {
-        // 에러 발생.
+      onError: (error: Error) => {
+        const err = error as AxiosError<{ message: string }>;
+        if (err.response) {
+          renderLoginErrorModal(err.response.data.message);
+        } else {
+          console.log("Unknown error occurred");
+        }
       },
     });
   };
@@ -68,7 +86,8 @@ const Login = () => {
             style={{
               color: "transparent",
               marginTop: "-20px",
-            }}>
+            }}
+          >
             올바른 이메일 형식이 아닙니다.
           </div>
         )}
