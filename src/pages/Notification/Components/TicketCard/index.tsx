@@ -29,7 +29,7 @@ export default function TicketCard({
       <Banner $cardType={type}>
         {type === "ALLOCATION_SUCCESS" ? (
           <>
-            <HighlightText>{reservationInfo.startDate}</HighlightText>
+            <HighlightText>{reservationInfo!.startDate}</HighlightText>
             <Body1SemiBold>에 타야해요!</Body1SemiBold>
           </>
         ) : type === "BUS_START" ? (
@@ -40,29 +40,29 @@ export default function TicketCard({
         ) : (
           <>
             <Body2SemiBold>
-              {reservationInfo.startDate}일 예정내역{" "}
+              {reservationInfo!.startDate}일 예정내역{" "}
             </Body2SemiBold>
           </>
         )}
       </Banner>
       <Content>
         <StationInfo>
-          <StationName>{reservationInfo.startStationName}</StationName>
+          <StationName>{reservationInfo!.startStationName}</StationName>
 
           {type === "ALLOCATION_SUCCESS" ? (
             <Time>-</Time>
           ) : (
             <Time>
-              {reservationInfo.expectedStartTime === null
+              {reservationInfo!.expectedStartTime === null
                 ? "-"
-                : `${formatTime(reservationInfo.expectedStartTime)} 탑승`}{" "}
+                : `${formatTime(reservationInfo!.expectedStartTime)} 탑승`}{" "}
             </Time>
           )}
         </StationInfo>
         <ChevronRightIcon size={32} fill={colors.gray30} />
         <StationInfo>
-          <StationName>{reservationInfo.endStationName}</StationName>
-          <Time>{formatTime(reservationInfo.expectedEndTime)} 하차</Time>
+          <StationName>{reservationInfo!.endStationName}</StationName>
+          <Time>{formatTime(reservationInfo!.expectedEndTime)} 하차</Time>
         </StationInfo>
       </Content>
       <EmptyCircle
