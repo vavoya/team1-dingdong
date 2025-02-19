@@ -44,3 +44,14 @@ export async function postUserInfo(userInfo: SignUpRequestType) {
     throw new Error(err);
   }
 }
+
+export async function postCheckDuplicateEmail(email: string) {
+  try {
+    return axiosInstance.post("/api/auth/check-email", {
+      email: email,
+    });
+  } catch (err: any) {
+    console.error("이메일 중복 체크 요청 실패:", err);
+    throw new Error(err);
+  }
+}
