@@ -24,8 +24,10 @@ interface PendingBusStateCardProps {
     TO_HOME?: {
         boardingDate: string;
         boardingPoint: string;
+        dropOffPoint: string
     },
     TO_SCHOOL?: {
+        boardingPoint: string
         dropOffPoint: string,
         dropOffDate: string
     }
@@ -73,12 +75,12 @@ export function PendingBusStateCard({TO_HOME, TO_SCHOOL}: PendingBusStateCardPro
                     {
                         // 하교
                         TO_HOME != null ?
-                            `${formatKstTime(TO_HOME.boardingDate)} 학교 출발` : null
+                            `${formatKstTime(TO_HOME.boardingDate)} ${TO_HOME.dropOffPoint} 도착` : null
                     }
                     {
                         // 등교
                         TO_SCHOOL != null ?
-                            `${formatKstTime(TO_SCHOOL.dropOffDate)} 학교 도착` : null
+                            `${formatKstTime(TO_SCHOOL.dropOffDate)} ${TO_SCHOOL.dropOffPoint} 도착` : null
                     }
                 </CardDestinationText>
             </CardDestination>
@@ -94,6 +96,7 @@ interface AllocatedBusStateCardProps {
     isRun: boolean;
     busNumber: string;
     busScheduleId: number;
+    isLink: boolean
 }
 export function AllocatedBusStateCard({
                                           boardingDate,
@@ -102,7 +105,8 @@ export function AllocatedBusStateCard({
                                           dropOffDate,
                                           isRun,
                                           busNumber,
-                                          busScheduleId
+                                          busScheduleId,
+                                          isLink = true
 }: AllocatedBusStateCardProps) {
     const navigate = useNavigate();
 
@@ -137,12 +141,15 @@ export function AllocatedBusStateCard({
                     {`${getTravelDuration(boardingDate, dropOffDate)} 소요`}
                 </CardDestinationText>
             </CardDestination>
-            <CardAction onClick={() => navigate(`/bus-tracker?busScheduleId=${busScheduleId}`)}>
-                <CardActionText>
-                    {isRun ? "실시간 버스 위치 확인" : "버스 경로 확인"}
-                </CardActionText>
-                <ArrowRightIcon />
-            </CardAction>
+            {
+                isLink &&
+                <CardAction onClick={() => navigate(`/bus-tracker?busScheduleId=${busScheduleId}`)}>
+                    <CardActionText>
+                        {isRun ? "실시간 버스 위치 확인" : "버스 경로 확인"}
+                    </CardActionText>
+                    <ArrowRightIcon />
+                </CardAction>
+            }
         </Card>
     )
 }
