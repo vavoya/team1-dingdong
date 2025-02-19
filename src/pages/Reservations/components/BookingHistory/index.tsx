@@ -29,6 +29,7 @@ type ReservationsRecord = Record<FilterType, users_reservations_interface['reser
 type ReservationsPageRecord = Record<FilterType, {page: number, pageSize: number, totalPages: number}>
 
 interface BookingHistoryProps {
+    schoolName: string
     allReservations: users_reservations_interface;
     allocatedReservations: users_reservations_interface;
     pendingReservations: users_reservations_interface;
@@ -36,6 +37,7 @@ interface BookingHistoryProps {
     canceledReservations: users_reservations_interface;
 }
 export default function BookingHistory({
+                                           schoolName,
                                            allReservations,
                                            allocatedReservations,
                                            pendingReservations,
@@ -119,7 +121,7 @@ export default function BookingHistory({
                                         key={index}
                                         status={item.operationInfo.busStatus}
                                         boardingDate={direction === 'TO_HOME' ? item.expectedDepartureTime : item.operationInfo.busStopArrivalTime}
-                                        boardingPoint={item.busStopName}
+                                        boardingPoint={direction === 'TO_HOME' ? schoolName : item.busStopName}
                                         dropOffPoint={direction === 'TO_HOME' ? '집' : '학교'}
                                         dropOffDate={direction === 'TO_HOME' ? item.operationInfo.busStopArrivalTime : item.expectedArrivalTime}
                                         busName={item.operationInfo.busName} />
@@ -132,17 +134,18 @@ export default function BookingHistory({
                                         TO_HOME={
                                             item.direction === 'TO_HOME' ?
                                                 {
-                                                    boardingPoint: item.busStopName,
-                                                    boardingDate: item.expectedDepartureTime
+                                                    boardingPoint: schoolName,
+                                                    boardingDate: item.expectedDepartureTime,
                                                 }: undefined
                                         }
                                         TO_SCHOOL={
                                             item.direction === 'TO_SCHOOL' ?
                                                 {
                                                     dropOffPoint: item.busStopName,
-                                                    dropOffDate: item.expectedArrivalTime
+                                                    dropOffDate: item.expectedArrivalTime,
                                                 }: undefined
                                         }
+                                        status={item.reservationStatus}
                                         deleteItem={(deletedReservationId: number) => {
                                             setReservationsObj(prev => ({
                                             ...prev,
@@ -233,10 +236,11 @@ interface NotAllocatedItemProps {
         dropOffPoint: string;
         dropOffDate: string;
     }
+    status: users_reservations_interface['reservationInfos']['content'][number]['reservationStatus']
     reservationId: number;
     deleteItem: (deletedReservationId: number) => void;
 }
-function NotAllocatedItem({TO_HOME, TO_SCHOOL, reservationId, deleteItem}: NotAllocatedItemProps) {
+function NotAllocatedItem({TO_HOME, TO_SCHOOL, reservationId, deleteItem, status}: NotAllocatedItemProps) {
     const deleteReservation = useMutation<void, Error, number>({
         mutationFn: (reservationId: number) => {
             return axiosInstance.delete(`/api/users/reservations/${reservationId}`);
@@ -246,7 +250,7 @@ function NotAllocatedItem({TO_HOME, TO_SCHOOL, reservationId, deleteItem}: NotAl
             deleteItem(reservationId)
         },
         onError: error => {
-            console.log('삭제 에러', error)
+            console.error('삭제 에러', error)
         }
     });
 
@@ -293,10 +297,21 @@ function NotAllocatedItem({TO_HOME, TO_SCHOOL, reservationId, deleteItem}: NotAl
                     </TripText>
                 </TripInfo>
                 <StatusInfo>
-                    <Status>배차 대기</Status>
+                    <Status>
+                        {
+                            status === 'PENDING' ? '배차 대기' : null
+                        }
+                        {
+                            status === 'CANCELED' ? '예매 취소' : null
+                        }
+                    </Status>
                 </StatusInfo>
             </InfoBox>
-            <BookingActionButton disabled={false} onClick={() => deleteReservation.mutate(reservationId)}/>
+            <BookingActionButton disabled={status === 'PENDING'} onClick={() => {
+                if (status === 'PENDING') {
+                    deleteReservation.mutate(reservationId)
+                }
+            }}/>
         </HistoryItem>
     )
 }
