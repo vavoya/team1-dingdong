@@ -16,7 +16,7 @@ import {AllocatedBusStateCard, PendingBusStateCard} from "@/pages/Home/component
 import {
     TO_HOME_ALLOCATED,
     TO_HOME_NOT_ALLOCATED, TO_SCHOOL_ALLOCATED,
-    TO_SCHOOL_NOT_ALLOCATED, users_reservations,
+    TO_SCHOOL_NOT_ALLOCATED, users_me_interface, users_reservations,
     users_reservations_interface
 } from "@/api/query/users";
 import {useNavigate} from "react-router-dom";
@@ -27,10 +27,11 @@ import LoadingCard from "@/pages/Home/component/LoadingCard";
 
 interface BusStateProps {
     reservations: users_reservations_interface['reservationInfos'],
-    busStateRef: React.RefObject<HTMLDivElement>
+    busStateRef: React.RefObject<HTMLDivElement>,
+    schoolName: users_me_interface['schoolName'],
 }
 
-export default function BusState({reservations, busStateRef}: BusStateProps) {
+export default function BusState({reservations, busStateRef, schoolName}: BusStateProps) {
     const navigate = useNavigate();
     const [content, setContent] = useState(reservations.content);
     const [isLast, setIsLast] = useState(reservations.page.number >= (reservations.page.totalPages - 1));
@@ -84,7 +85,7 @@ export default function BusState({reservations, busStateRef}: BusStateProps) {
                     <CardList>
                         {
                             content.map((data, key) => {
-                                return getBusCardFunction(data.direction, data.reservationStatus)(data, key)
+                                return getBusCardFunction(data.direction, data.reservationStatus)(data, key, schoolName)
                             })
                         }
                         {
@@ -108,25 +109,27 @@ type State = BaseReservationInfo["reservationStatus"];
 
 const busFunctions = {
     TO_HOME: {
-        PENDING: (data: Extract<BaseReservationInfo, TO_HOME_NOT_ALLOCATED>, key: number) => {
+        PENDING: (data: Extract<BaseReservationInfo, TO_HOME_NOT_ALLOCATED>, key: number, schoolName: string) => {
             const boardingDate = data.expectedDepartureTime // 학교에서 버스 출발 시간
-            const boardingPoint = data.busStopName // 학교 이름
+            const boardingPoint = schoolName // 학교 이름
+            const dropOffPoint = data.busStopName
 
             return <PendingBusStateCard
                 key={key}
                 TO_HOME={{
                     boardingDate,
-                    boardingPoint
+                    boardingPoint,
+                    dropOffPoint
                 }}/>
         },
-        ALLOCATED: (data: Extract<BaseReservationInfo, TO_HOME_ALLOCATED>, key: number) => {
+        ALLOCATED: (data: Extract<BaseReservationInfo, TO_HOME_ALLOCATED>, key: number, schoolName: string, isLink: boolean = true) => {
             if (data.operationInfo.busStatus === 'ENDED') {
                 return null
             }
 
             const boardingDate = data.expectedDepartureTime // 학교에서 버스 출발 시간
-            const boardingPoint = data.busStopName // 학교 이름
-            const dropOffPoint = '집'
+            const boardingPoint = schoolName // 학교 이름
+            const dropOffPoint = data.busStopName
             const dropOffDate = data.operationInfo.busStopArrivalTime
             const busNumber = data.operationInfo.busName
             const busScheduleId = data.operationInfo.busScheduleId
@@ -140,7 +143,8 @@ const busFunctions = {
                 dropOffDate={dropOffDate}
                 isRun={isRun}
                 busNumber={busNumber}
-                busScheduleId={busScheduleId}/>
+                busScheduleId={busScheduleId}
+                isLink={isLink}/>
         },
         FAIL_ALLOCATED: (data: any, key: number) => {
             console.log("FAIL_ALLOCATED function called", data, key);
@@ -152,24 +156,26 @@ const busFunctions = {
         },
     },
     TO_SCHOOL: {
-        PENDING: (data: Extract<BaseReservationInfo, TO_SCHOOL_NOT_ALLOCATED>, key: number) => {
-            const dropOffPoint = data.busStopName
+        PENDING: (data: Extract<BaseReservationInfo, TO_SCHOOL_NOT_ALLOCATED>, key: number, schoolName: string) => {
+            const boardingPoint = data.busStopName
+            const dropOffPoint = schoolName
             const dropOffDate = data.expectedArrivalTime
             return <PendingBusStateCard
                 key={key}
                 TO_SCHOOL={{
+                    boardingPoint,
                     dropOffDate,
                     dropOffPoint
                 }}/>
         },
-        ALLOCATED: (data: Extract<BaseReservationInfo, TO_SCHOOL_ALLOCATED>, key: number) => {
+        ALLOCATED: (data: Extract<BaseReservationInfo, TO_SCHOOL_ALLOCATED>, key: number, schoolName: string, isLink: boolean = true) => {
             if (data.operationInfo.busStatus === 'ENDED') {
                 return null
             }
 
             const boardingDate = data.operationInfo.busStopArrivalTime // 승차 시간 (집 또는 지점)
             const boardingPoint = data.busStopName // 승차 이름 (집 또는 지점)
-            const dropOffPoint = '학교'
+            const dropOffPoint = schoolName
             const dropOffDate = data.expectedArrivalTime // 하차 시간 (학교)
             const busNumber = data.operationInfo.busName
             const busScheduleId = data.operationInfo.busScheduleId
@@ -183,7 +189,8 @@ const busFunctions = {
                 dropOffDate={dropOffDate}
                 isRun={isRun}
                 busNumber={busNumber}
-                busScheduleId={busScheduleId}/>
+                busScheduleId={busScheduleId}
+                isLink={isLink}/>
         },
         FAIL_ALLOCATED: (data: any, key: number) => {
             console.log("FAIL_ALLOCATED function called", data, key);
