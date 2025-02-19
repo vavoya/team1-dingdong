@@ -4,6 +4,7 @@ import com.ddbb.dingdong.application.exception.APIException;
 import com.ddbb.dingdong.application.usecase.reservation.*;
 import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
+import com.ddbb.dingdong.domain.reservation.service.ReservationErrors;
 import com.ddbb.dingdong.infrastructure.auth.security.AuthUser;
 import com.ddbb.dingdong.infrastructure.auth.security.annotation.LoginUser;
 import com.ddbb.dingdong.presentation.endpoint.reservation.exchanges.*;
@@ -112,7 +113,11 @@ public class ReservationController {
         try {
             result = requestGeneralReservationUseCase.execute(param);
         } catch (DomainException ex) {
-            throw new APIException(ex, HttpStatus.BAD_REQUEST);
+            if (ex.error.equals(ReservationErrors.ALREADY_HAS_SAME_RESERVATION)) {
+                throw new APIException(ex, HttpStatus.CONFLICT);
+            } else {
+                throw new APIException(ex, HttpStatus.BAD_REQUEST);
+            }
         }
 
         return ResponseEntity.ok().body(result);
@@ -133,7 +138,11 @@ public class ReservationController {
         try {
             result = requestTogetherReservationUseCase.execute(param);
         } catch (DomainException ex) {
-            throw new APIException(ex, HttpStatus.BAD_REQUEST);
+            if (ex.error.equals(ReservationErrors.ALREADY_HAS_SAME_RESERVATION)) {
+                throw new APIException(ex, HttpStatus.CONFLICT);
+            } else {
+                throw new APIException(ex, HttpStatus.BAD_REQUEST);
+            }
         }
 
         return ResponseEntity.ok().body(result);
@@ -160,7 +169,11 @@ public class ReservationController {
         try {
             makeGeneralReservationUseCase.execute(param);
         } catch (DomainException ex) {
-            throw new APIException(ex, HttpStatus.BAD_REQUEST);
+            if (ex.error.equals(ReservationErrors.ALREADY_HAS_SAME_RESERVATION)) {
+                throw new APIException(ex, HttpStatus.CONFLICT);
+            } else {
+                throw new APIException(ex, HttpStatus.BAD_REQUEST);
+            }
         }
 
         return ResponseEntity.ok().build();
@@ -183,7 +196,11 @@ public class ReservationController {
         try {
             makeTogetherReservationUseCase.execute(param);
         } catch (DomainException ex) {
-            throw new APIException(ex, HttpStatus.BAD_REQUEST);
+            if (ex.error.equals(ReservationErrors.ALREADY_HAS_SAME_RESERVATION)) {
+                throw new APIException(ex, HttpStatus.CONFLICT);
+            } else {
+                throw new APIException(ex, HttpStatus.BAD_REQUEST);
+            }
         }
 
         return ResponseEntity.ok().build();
