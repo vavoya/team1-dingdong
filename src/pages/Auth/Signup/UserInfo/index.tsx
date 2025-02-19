@@ -48,11 +48,10 @@ export default function UserInfoSignup() {
     useState<GeoLocationType | null>(null);
 
   useEffect(() => {
-    // 직접 링크 접속시, 데이터가 없다면 다시 이동.
-    // if (!location.state) {
-    //   navigate("/signup");
-    //   return;
-    // }
+    if (!location.state) {
+      navigate("/signup");
+      return;
+    }
 
     userInfoFromPreviousStep.current = location.state;
   }, []);
