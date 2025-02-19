@@ -37,7 +37,7 @@ export const router = createBrowserRouter(
                                         page: 0,
                                         pageSize: 5,
                                         category: "HOME",
-                                        sort: "LATEST",
+                                        sort: "OLDEST",
                                     }),
                                     usersModule.users_notifications_checkUnread(),
                                     usersModule.users_home_locations(),

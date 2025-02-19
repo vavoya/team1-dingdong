@@ -57,12 +57,12 @@ function HistoryItem({ content }: {content: users_wallet_history_interface['hist
     const transactionStatus: Record<users_wallet_history_interface['histories']['content'][number]['type'], string> = {
         PAY: "예매",
         REFUND: "예매 환불",
-        CHARGE: "무료 충전"
+        FREE_CHARGE: "무료 충전"
     }
     const transactionColorType: Record<users_wallet_history_interface['histories']['content'][number]['type'], boolean> = {
         PAY: false,
         REFUND: true,
-        CHARGE: true
+        FREE_CHARGE: true
     }
 
     return (
@@ -75,7 +75,7 @@ function HistoryItem({ content }: {content: users_wallet_history_interface['hist
             </HistoryStatusBox>
             <HistoryAmountBox>
                 <HistoryAmount>{`${transactionColorType[content.type] ? '' : '-'}${content.amountMoney.toLocaleString()}원`}</HistoryAmount>
-                <HistoryBalance>{content.remainMoney.toLocaleString() + "원"}</HistoryBalance>
+                <HistoryBalance>{'잔액 페이 ' + content.remainMoney.toLocaleString() + "원"}</HistoryBalance>
             </HistoryAmountBox>
         </History>
     );
