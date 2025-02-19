@@ -71,9 +71,9 @@ public class RequestTogetherReservationUseCase implements UseCase<RequestTogethe
 
         @Override
         public boolean validate() {
-            if (busStopId != null) {
+            if (busStopId == null) {
                 throw ReservationInvalidParamErrors.INVALID_BUS_STOP_ID.toException();
-            } else if (busScheduleId != null) {
+            } else if (busScheduleId == null) {
                 throw ReservationInvalidParamErrors.INVALID_BUS_SCHEDULE_ID.toException();
             }
             return true;
