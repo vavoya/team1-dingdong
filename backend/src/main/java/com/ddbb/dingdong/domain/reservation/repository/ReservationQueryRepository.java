@@ -8,6 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface ReservationQueryRepository extends JpaRepository<Reservation, Long> {
@@ -98,4 +101,15 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
         AND t.reservation.status = 'ALLOCATED' AND (bs_arrival.status = 'RUNNING' OR bs_arrival.status = 'READY')
     """)
     Optional<UserReservationProjection> queryReservationByBusScheduleIdAndUserId(@Param("userId") Long userId, @Param("busScheduleId") Long busScheduleId);
+
+    @Query("""
+        SELECT DISTINCT
+                CASE
+                    WHEN r.direction = 'TO_SCHOOL' THEN r.arrivalTime
+                    ELSE r.departureTime
+                END AS reservedTime
+            FROM Reservation r
+            WHERE r.status != 'CANCELED'
+    """)
+    List<LocalDateTime> findReservedTimeByUserId(@Param("userId") Long userId);
 }
