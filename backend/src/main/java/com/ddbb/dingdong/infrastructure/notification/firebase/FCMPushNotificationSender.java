@@ -25,6 +25,7 @@ public class FCMPushNotificationSender implements NotificationSender {
         List<String> tokens = tokenEntities.stream().map(FCMToken::getToken).toList();
 
         if (tokens.isEmpty()) {
+            log.info("No active tokens found for userIds: {}", userIds);
             return;
         }
         MulticastMessage multicastMessage = messageFactory.createMulticastMessage(title, content, tokens);
