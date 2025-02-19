@@ -20,6 +20,7 @@ export default defineConfig({
         headers: {
           credentials: "include",
         },
+        cookieDomainRewrite: "localhost"
       },
       "/ws": {
         target: "https://dingdong-dev-beta.vercel.app",
