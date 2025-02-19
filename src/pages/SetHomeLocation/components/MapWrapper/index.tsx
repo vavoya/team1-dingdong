@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   HomePinContainer,
   HomePinMark,
@@ -6,14 +6,11 @@ import {
   MapWrapper,
 } from "./styles";
 import { CustomOverlayMap, Map } from "react-kakao-maps-sdk";
-import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader.ts";
-
+import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader";
 import PinIcon from "@/components/designSystem/Icons/PinIcon";
 import { colors } from "@/styles/colors";
 import HomeIcon from "@/components/designSystem/Icons/HomeIcon";
-
 import { useAddress } from "../../hooks/useCoodinateToAddress";
-import { usePinDrag } from "../../hooks/usePinDrag";
 import { DragPin } from "../DragPin";
 
 interface SetLocationHomeMapProps {
@@ -23,9 +20,9 @@ interface SetLocationHomeMapProps {
   };
   setStationInfo: React.Dispatch<
     React.SetStateAction<{ latitude: number; longitude: number }>
-  >; // 역 정보 변경.
-  setShowBottomSheet: React.Dispatch<React.SetStateAction<boolean>>; // 핀을 움직여서, 바텀 시트를 보여준다.
-  setRoadAddress: React.Dispatch<React.SetStateAction<string | null>>; // 도로명 주소 변경.
+  >;
+  setShowBottomSheet: React.Dispatch<React.SetStateAction<boolean>>;
+  setRoadAddress: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 export default function SetLocationHomeMap({
@@ -35,23 +32,28 @@ export default function SetLocationHomeMap({
   setRoadAddress,
 }: SetLocationHomeMapProps) {
   useKakaoLoader();
+  const mapRef = useRef<kakao.maps.Map>();
+  const [centerPosition, setCenterPosition] = useState(userHomeCoordinate);
 
-  // 탑승지와 집 위치 초기에 동일하게 설정.
-  const { pinPosition, mapRef, onMouseDown, onMouseUp } = usePinDrag({
-    initialPosition: userHomeCoordinate,
-    onPositionChange: () => setShowBottomSheet(true),
-  });
+  useAddress(centerPosition, setRoadAddress);
 
-  useAddress(pinPosition, setRoadAddress);
+  // 지도 중심 좌표가 변경될 때 호출되는 함수
+  const handleCenterChanged = () => {
+    if (!mapRef.current) return;
 
-  useEffect(() => {
-    setStationInfo({ latitude: pinPosition.lat, longitude: pinPosition.lng });
-  }, [pinPosition, setStationInfo]);
+    const center = mapRef.current.getCenter();
+    const newPosition = {
+      lat: center.getLat(),
+      lng: center.getLng(),
+    };
 
-  useEffect(() => {
-    document.addEventListener("mouseup", onMouseUp);
-    return () => document.removeEventListener("mouseup", onMouseUp);
-  }, [onMouseUp]);
+    setCenterPosition(newPosition);
+    setStationInfo({
+      latitude: newPosition.lat,
+      longitude: newPosition.lng,
+    });
+    setShowBottomSheet(true);
+  };
 
   return (
     <MapWrapper>
@@ -61,12 +63,17 @@ export default function SetLocationHomeMap({
         level={4}
         onCreate={(map) => {
           mapRef.current = map;
+          kakao.maps.event.addListener(
+            map,
+            "center_changed",
+            handleCenterChanged
+          );
         }}
       >
-        <CustomOverlayMap position={pinPosition} yAnchor={1}>
-          <DragPin onMouseDown={onMouseDown} />
-        </CustomOverlayMap>
+        {/* 중앙 고정 핀 */}
+        <DragPin />
 
+        {/* 집 위치 마커 */}
         <CustomOverlayMap position={userHomeCoordinate}>
           <HomePinContainer>
             <HomePinMark>

@@ -33,7 +33,8 @@ export default function FixedBookingCalendarView({
 
   // 현재 화면 캘린저
 
-  const { currentDate, goToNextMonth, goToPreviousMonth } = useCalendar();
+  const { currentDate, goToNextMonth, goToPreviousMonth } =
+    useCalendar("fixed-bus-booking");
 
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
 
@@ -46,7 +47,10 @@ export default function FixedBookingCalendarView({
     daysArray.push(getDaysInMonth(currentDate.year, currentDate.month + 1));
   }
 
-  const months = useRef(daysArray);
+  const months = useRef([
+    getDaysInMonth(currentDate.year, currentDate.month),
+    getDaysInMonth(currentDate.year, currentDate.month + 1),
+  ]);
 
   useEffect(() => {
     const screenWidth = window.innerWidth;
@@ -86,7 +90,10 @@ export default function FixedBookingCalendarView({
 
     return result;
   };
+  const [prevDisabled, setPrevDisabled] = useState(true);
+  const [nextDisabled, setNextDisabled] = useState(true);
 
+  const lastDayCanBook = busTimeSchedule[busTimeSchedule.length - 1];
   return (
     <S.CalendarWrapper>
       <S.CalendarHeader>
@@ -99,23 +106,35 @@ export default function FixedBookingCalendarView({
             <S.IconWrapper
               onClick={() => {
                 if (!goToPreviousMonth(commuteType, "fixedBusBooking")) {
+                  setPrevDisabled(true);
                   return;
                 }
+                setPrevDisabled(false);
                 setCurrentMonthIndex(currentMonthIndex - 1);
               }}
             >
-              <ChevronLeftIcon size={24} fill={colors.gray50} />
+              <ChevronLeftIcon
+                size={24}
+                fill={prevDisabled ? colors.gray40 : colors.gray50}
+              />
             </S.IconWrapper>
 
             <S.IconWrapper
               onClick={() => {
-                if (!goToNextMonth(commuteType, "fixedBusBooking")) {
+                if (
+                  !goToNextMonth(commuteType, "fixedBusBooking", lastDayCanBook)
+                ) {
+                  setNextDisabled(true);
                   return;
                 }
+                setNextDisabled(false);
                 setCurrentMonthIndex(currentMonthIndex + 1);
               }}
             >
-              <ChevronRightIcon size={24} fill={colors.gray50} />
+              <ChevronRightIcon
+                size={24}
+                fill={nextDisabled ? colors.gray40 : colors.gray50}
+              />
             </S.IconWrapper>
           </S.IconBox>
         </S.MonthNavigator>
@@ -142,7 +161,7 @@ export default function FixedBookingCalendarView({
                   commuteType,
                   "fixedBusBooking"
                 );
-
+                
                 return (
                   <S.DayButton
                     onClick={() => {

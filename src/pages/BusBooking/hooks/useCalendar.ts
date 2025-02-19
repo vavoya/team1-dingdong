@@ -5,13 +5,21 @@ import {
 } from "@/utils/calendar/calendarUtils";
 import { useState } from "react";
 import { CommuteType } from "../types/commuteType";
-export default function useCalendar() {
+export default function useCalendar(calendarType = "customBooking") {
   const [currentDate, setCurrentDate] = useState(() => {
-    const minDateCanBooking = availableBookingMinDate();
-    return {
-      year: minDateCanBooking.getFullYear(),
-      month: minDateCanBooking.getMonth(), //  (0: 1월, 1: 2월, ...)
-    };
+    if (calendarType === "customBooking") {
+      const minDateCanBooking = availableBookingMinDate();
+      return {
+        year: minDateCanBooking.getFullYear(),
+        month: minDateCanBooking.getMonth(), //  (0: 1월, 1: 2월, ...)
+      };
+    } else {
+      const now = new Date();
+      return {
+        year: now.getFullYear(),
+        month: now.getMonth(), //  (0: 1월, 1: 2월, ...)
+      };
+    }
   });
 
   // 이전 달로 이동
@@ -54,7 +62,8 @@ export default function useCalendar() {
 
   const goToNextMonth = (
     commuteType: CommuteType,
-    calendarType = "customBooking"
+    calendarType = "customBooking",
+    lastDayCanBook = ""
   ) => {
     let [year, month, day] = [currentDate.year, currentDate.month + 1, 1];
     if (currentDate.month > 11) {
@@ -63,6 +72,13 @@ export default function useCalendar() {
     }
 
     const date = new Date(year, month, day);
+
+    if (calendarType === "fixedBusBooking") {
+      // 예약 가능한 마지막 날짜가 다음 월보다 작으면 비활성화.
+      // date가 마지막 날보다 크다면 false.
+      
+      return !(new Date(lastDayCanBook) < date);
+    }
 
     if (isDateDisabled(date, commuteType, calendarType)) return false;
 

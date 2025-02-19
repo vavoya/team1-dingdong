@@ -3,7 +3,7 @@ import * as S from "./styles";
 import ChevronLeftIcon from "@/components/designSystem/Icons/ChevronLeftIcon";
 import { colors } from "@/styles/colors";
 import ChevronRightIcon from "@/components/designSystem/Icons/ChevronRightIcon";
-import AIRecommendationButton from "@/components/Button/AIRecommendationButton";
+import TimeTableRecommendationButton from "@/components/Button/TimeTableRecommendationButton";
 import useCalendar from "@/pages/BusBooking/hooks/useCalendar";
 import {
   formatMonthName,
@@ -20,6 +20,15 @@ import {
   TimeScheduleAction,
 } from "@/pages/BusBooking/store/types";
 import { timeScheduleSelectors } from "@/pages/BusBooking/store/selectors";
+import { useGetTimeTableRecommendation } from "@/hooks/BusBooking/useCustomBooking";
+import {
+  convertTimeTableByCommuteType,
+  ServerRecommendationDataType,
+  timeTableRecommendationDatesByMonth,
+} from "@/utils/timetableRecommendation/convertToISOString";
+import { mountModal } from "@/components/Loading";
+import Modal from "@/components/Modal";
+import { useNavigate } from "react-router-dom";
 // import { useGetHomeLocation } from "@/hooks/setHomeLocation/useHomeLocation";
 // import { useGetAIRecommendation } from "@/hooks/BusBooking/useCustomBooking";
 
@@ -37,6 +46,7 @@ export default function CalendarView({
 
   const [AIBtnToggles, setAIBtnToggles] = useState([false, false, false]); // 3개의 month에서 각각 다루는 AI 적용 버튼 토글.
 
+  const navigate = useNavigate();
   // 현재 화면 캘린저
   const { currentDate, goToNextMonth, goToPreviousMonth } = useCalendar();
 
@@ -53,10 +63,46 @@ export default function CalendarView({
     day: number;
   }>({ year: currentDate.year, month: currentDate.month + 1, day: 0 });
 
-  // const AIRecommendationArray = useGetAIRecommendation(
-  //   currentDate.year,
-  //   currentDate.month + 1
-  // );
+  const TimeTableRecommendationArray: ServerRecommendationDataType =
+    useGetTimeTableRecommendation().data.data;
+
+  const [recommendationDates, setRecommendationDates] = useState<string[]>();
+
+  useEffect(() => {
+    if (TimeTableRecommendationArray) {
+      convertTimeTableByCommuteType(TimeTableRecommendationArray);
+
+      const finalRecommendationDates = timeTableRecommendationDatesByMonth(
+        currentDate.month,
+        commuteType
+      );
+      setRecommendationDates(finalRecommendationDates);
+    }
+  }, [TimeTableRecommendationArray]);
+
+  const makingTimeTableSuggestion = () => {
+    const { render, unmountModal } = mountModal();
+    render(
+      <Modal
+        title={["시간표가 등록되지 않았어요"]}
+        text={["시간표 등록을 하러 가볼까요?"]}
+        isError={false}
+        leftButton={{
+          text: "취소",
+          onClick: () => {
+            render(<></>);
+          },
+        }}
+        rightButton={{
+          text: "등록하기",
+          onClick: () => {
+            unmountModal();
+            navigate("/timetable-management");
+          },
+        }}
+      />
+    );
+  };
 
   const months = useRef([
     getDaysInMonth(currentDate.year, currentDate.month),
@@ -98,15 +144,16 @@ export default function CalendarView({
         })
       );
     } else {
+      if (true) {
+        // 모달 호출
+        makingTimeTableSuggestion();
+        return;
+      }
       dispatch(
         timeScheduleActions.setAIRecommendations({
           ...currentDate,
           month: currentDate.month + 1,
-          recommendations: [
-            "2025-02-20T09:00:00", // 한국 시간형식의 ISO.
-            "2025-02-21T10:30:00",
-            "2025-02-22T14:00:00",
-          ],
+          recommendations: recommendationDates!,
         })
       );
     }
@@ -184,7 +231,7 @@ export default function CalendarView({
             <ChevronRightIcon size={24} fill={colors.gray50} />
           </S.IconWrapper>
         </S.MonthNavigator>
-        <AIRecommendationButton
+        <TimeTableRecommendationButton
           active={AIBtnToggles[currentMonthIndex]}
           onClick={handleAIRecommendation}
         />

@@ -97,6 +97,7 @@ export const isDateDisabled = (
     const TWO_DAYS = 48 * 60 * 60;
     const minDate = new Date(now.getTime());
     const maxDate = new Date(now.getTime() + TWO_DAYS * 1000);
+    maxDate.setMonth(maxDate.getMonth() + 1); // 1개월 뒤까지.
 
     return compareDate < minDate || compareDate > maxDate;
   }

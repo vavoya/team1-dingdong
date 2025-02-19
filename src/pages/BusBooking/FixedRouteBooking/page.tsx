@@ -69,7 +69,11 @@ export default function FixedRouteBooking() {
       ? busTimeResponse?.data?.data?.schedules
       : TEMP_DATE;
 
-  const busTimeScheduleObjectArray = transformSchedules(busTimeSchedule);
+  const sortedBusTimeSchedule = busTimeSchedule.sort(
+    (a: string, b: string) => new Date(a).getTime() - new Date(b).getTime()
+  );
+
+  const busTimeScheduleObjectArray = transformSchedules(sortedBusTimeSchedule);
 
   const exitButtonHandler = () => {
     // 모달 오픈. ( 예매를 취소 하시겠어요 ?)
@@ -148,7 +152,7 @@ export default function FixedRouteBooking() {
 
       <DescriptionText>일자를 선택해 시각을 선택해주세요</DescriptionText>
       <FixedBookingCalendarView
-        busTimeSchedule={busTimeSchedule}
+        busTimeSchedule={sortedBusTimeSchedule}
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
         commuteType={commuteType}

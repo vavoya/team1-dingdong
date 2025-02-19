@@ -79,7 +79,6 @@ export default function SelectTimeBottomModal({
   const handleTimeChange = useDebounce(
     // 이벤트 발생한지 2초 간 움직임이 없다면 reset
     (amPm: string, hour: string, minute: string) => {
-
       const newTime = parseAndCreateTime(selectedDate, amPm, hour, minute);
 
       const timeAvailability = handleTimeAvailability(newTime, commuteType);
@@ -137,9 +136,7 @@ export default function SelectTimeBottomModal({
   const handleConfirm = () => {
     if (timeWheelRef.current) {
       const selectedTime = timeWheelRef.current.getSelectedTime();
-      console.log(
-        `${selectedTime.amPm} ${selectedTime.hour}:${selectedTime.minute}`
-      );
+
       if (!checkIsAvailableTime(selectedTime)) {
         // 선택한 시간이 불가능한 시간대라면. 모달
         return;
@@ -198,7 +195,6 @@ export default function SelectTimeBottomModal({
 
     return { initHour: hour - 1, initMinute: minute };
   }, [selectedTimeSchedule, selectedDate, commuteType]); // 의존성 배열에 필요한 값들 추가
-
 
   const isRepeatedDay = () => {
     let isRepeated = false;
