@@ -14,23 +14,24 @@ public class NotificationMessageFormatter {
         return NotificationMessage.ALLOCATE_FAIL;
     }
     public NotificationMessage busDeparture(LocalDateTime arrivalTime, LocalDateTime now) {
-        long totalSecond = Duration.between(arrivalTime, now).toSeconds();
-        long second = totalSecond % 60;
+        long totalSecond = Duration.between(now, arrivalTime).toSeconds();
         long totalMinute = totalSecond / 60;
         long minute = totalMinute % 60;
         long totalHour = totalMinute / 60;
         long hour = totalHour % 24;
+        long day = totalHour / 24;
         StringBuilder content = new StringBuilder().append("버스가 ");
+        System.out.printf("%d \n", totalSecond);
         if (hour > 0) {
             content.append(hour).append("시간 ");
+        }
+        if (day > 0) {
+            content.append(day).append("일 ");
         }
         if (minute > 0) {
             content.append(minute).append("분 ");
         }
-        if (second > 0) {
-            content.append(second).append("초 ");
-        }
-        if (totalSecond > 0) {
+        if (totalSecond >= 60) {
             content.append("후 도착할 예정입니다.");
         } else {
             content.append("곧 도착할 예정입니다.");
