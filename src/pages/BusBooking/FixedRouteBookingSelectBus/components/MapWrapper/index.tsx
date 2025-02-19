@@ -4,7 +4,10 @@ import {
   EndPointText,
   HomePinContainer,
   HomePinMark,
+  HomePinTitle,
   MapWrapper,
+  UserHomePinContainer,
+  UserHomePinMark,
 } from "./styles";
 import { CustomOverlayMap, Map } from "react-kakao-maps-sdk";
 import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader.ts";
@@ -16,6 +19,8 @@ import useCurrentLocation from "@/hooks/useCurrentLoaction/useCurrentLocation";
 import UserOverlay from "@/pages/BusTracker/components/UserOverlay";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
 import BusRoute from "@/pages/BusTracker/components/BusRoute";
+import { useLoaderData } from "react-router-dom";
+import HomeIcon from "@/components/designSystem/Icons/HomeIcon";
 
 interface SetLocationHomeMapProps {
   commuteType: CommuteType;
@@ -38,6 +43,10 @@ export default function BusSelectMap({
   locationToMarkOnMap,
 }: SetLocationHomeMapProps) {
   useKakaoLoader();
+
+  const { houseInfo } = useLoaderData()[1];
+  console.log(houseInfo, "!!!!!!!");
+
   const { startPoint, endPoint } = locationToMarkOnMap;
   const userLocation = useCurrentLocation();
   const mapRef = useRef<kakao.maps.Map | null>(null);
@@ -81,6 +90,7 @@ export default function BusSelectMap({
     return () => window.removeEventListener("resize", handleResize);
   }, [locationToMarkOnMap]);
 
+  console.log(houseInfo.latitude);
   return (
     <MapWrapper>
       <Map
@@ -102,6 +112,22 @@ export default function BusSelectMap({
         <CustomOverlayMap position={locationToMarkOnMap.endPoint}>
           <EndPointText>{departureOrArrivalPinText}</EndPointText>
           <EndPointPinMarkIcon />
+        </CustomOverlayMap>
+
+        <CustomOverlayMap
+          position={{
+            lat: houseInfo.latitude,
+            lng: houseInfo.longitude,
+          }}
+        >
+          <UserHomePinContainer>
+            <UserHomePinMark>
+              <HomePinTitle>
+                <HomeIcon fill={colors.white} />
+              </HomePinTitle>
+            </UserHomePinMark>
+            <PinIcon stroke={colors.orange900} />
+          </UserHomePinContainer>
         </CustomOverlayMap>
 
         <UserOverlay lat={userLocation.lat} lng={userLocation.lng} />

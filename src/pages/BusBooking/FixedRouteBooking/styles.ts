@@ -17,8 +17,8 @@ export const Subtitle = styled.div`
   line-height: 150%; /* 24px */
 `;
 
-export const DescriptionText = styled(Body1SemiBold)`
-  color: ${colors.gray100};
+export const DescriptionText = styled(Body1SemiBold)<{ $color?: string }>`
+  color: ${({ $color }) => ($color ? $color : colors.gray100)};
   display: flex;
   padding: 24px 20px 20px 20px;
   align-items: center;
