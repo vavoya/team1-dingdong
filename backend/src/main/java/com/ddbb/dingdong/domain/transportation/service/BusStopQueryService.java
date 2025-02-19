@@ -42,6 +42,7 @@ public class BusStopQueryService {
                 direction, time, schoolId
         );
         return projections.stream()
+                .filter(projection -> projection.getLocationId() != null)
                 .map(projection -> {
                     double distance = GeoUtil.haversine(latitude, longitude, projection.getLatitude(), projection.getLongitude());
                     return new AvailableBusStopDistance(projection, distance);
@@ -63,6 +64,7 @@ public class BusStopQueryService {
     ) {
         List<AllAvailableBusStopProjection> items = busStopQueryRepository.findAllAvailableBusStop(direction, schoolId);
         return items.stream()
+                .filter(projection -> projection.getLocationId() != null)
                 .filter(item -> {
                     double distance = GeoUtil.haversine(latitude, longitude, item.getLatitude(), item.getLongitude());
                     return distance <= THRESHOLD_METER;
