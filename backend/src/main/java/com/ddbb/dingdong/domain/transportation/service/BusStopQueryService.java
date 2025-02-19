@@ -1,10 +1,7 @@
 package com.ddbb.dingdong.domain.transportation.service;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -36,13 +33,15 @@ public class BusStopQueryService {
     private final BusStopQueryRepository busStopQueryRepository;
 
     public List<AvailableBusStopProjection> findAvailableBusStops(
-            Long schoolId, Direction direction, LocalDateTime time, Double longitude, Double latitude
+            Long schoolId, Direction direction, LocalDateTime time, Double longitude, Double latitude,
+            Set<LocalDateTime> alreadyReserved
     ) {
         List<AvailableBusStopProjection> projections = busStopQueryRepository.findAvailableBusStop(
                 direction, time, schoolId
         );
         return projections.stream()
-                .filter(projection -> projection.getLocationId() != null)
+                .filter(projection ->
+                        projection.getLocationId() != null && !alreadyReserved.contains(projection.getBusStopTime()))
                 .map(projection -> {
                     double distance = GeoUtil.haversine(latitude, longitude, projection.getLatitude(), projection.getLongitude());
                     return new AvailableBusStopDistance(projection, distance);
@@ -60,11 +59,13 @@ public class BusStopQueryService {
     }
 
     public List<LocalDateTime> findAllAvailableBusStopTimes(
-            Direction direction, Long schoolId, double longitude, double latitude
+            Direction direction, Long schoolId, double longitude, double latitude,
+            Set<LocalDateTime> alreadyReserved
     ) {
         List<AllAvailableBusStopProjection> items = busStopQueryRepository.findAllAvailableBusStop(direction, schoolId);
         return items.stream()
-                .filter(projection -> projection.getLocationId() != null)
+                .filter(projection ->
+                    projection.getLocationId() != null && !alreadyReserved.contains(projection.getBusScheduleTime()))
                 .filter(item -> {
                     double distance = GeoUtil.haversine(latitude, longitude, item.getLatitude(), item.getLongitude());
                     return distance <= THRESHOLD_METER;
