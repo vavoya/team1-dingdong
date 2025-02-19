@@ -27,7 +27,7 @@ public class NotificationEventListener {
     private final NotificationManagement notificationManagement;
     private final SocketRepository socketRepository;
     private static final int TICKET_PRICE = 1000;
-    private static final int WELCOME_MONEY = 10000;
+    private static final int WELCOME_MONEY = 30000;
     private static final String ALARM_SOCKET_MSG = "alarm";
     private final BusStopQueryRepository busStopQueryRepository;
 

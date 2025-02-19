@@ -1,5 +1,10 @@
 package com.ddbb.dingdong;
 
+import com.ddbb.dingdong.application.usecase.auth.SignUpUseCase;
+import com.ddbb.dingdong.domain.notification.entity.Notification;
+import com.ddbb.dingdong.domain.notification.entity.vo.NotificationType;
+import com.ddbb.dingdong.domain.notification.repository.NotificationRepository;
+import com.ddbb.dingdong.domain.notification.service.NotificationEventListener;
 import com.ddbb.dingdong.domain.payment.entity.Wallet;
 import com.ddbb.dingdong.domain.payment.repository.WalletRepository;
 import com.ddbb.dingdong.domain.user.entity.Home;
@@ -10,10 +15,12 @@ import com.ddbb.dingdong.domain.user.entity.vo.Role;
 import com.ddbb.dingdong.domain.user.repository.SchoolRepository;
 import com.ddbb.dingdong.domain.user.repository.UserRepository;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.PasswordEncoder;
+import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.SignUpRequestDto;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,8 +33,12 @@ public class ApplicationInitializer {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final WalletRepository walletRepository;
+    private final SignUpUseCase signUpUseCase;
     private static final String adminEmail = "admin@admin.com";
     private static School school;
+    private final NotificationRepository notificationRepository;
+
+    @Transactional
     @PostConstruct
     public void init() {
 
@@ -45,6 +56,13 @@ public class ApplicationInitializer {
 
             for (int i = 0 ; i < 30; i++) {
                 autoSignUp(i, password);
+                Notification notification = new Notification();
+                notification.setUserId((long)(i + 1));
+                notification.setReservationId(null);
+                notification.setType(NotificationType.WELCOME);
+                notification.setMoney(30000);
+
+                notificationRepository.save(notification);
             }
         }
     }
@@ -59,14 +77,28 @@ public class ApplicationInitializer {
         walletRepository.save(wallet);
     }
 
-    private void autoSignUp(int testId, String password) {
-        Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790, "에티버스" ,"학동로 180");
+    public void autoSignUp(int testId, String password) {
+
+//        Home home = new Home(null, 37.5143, 127.0294, 37.513716, 127.029790, "에티버스" ,"학동로 180");
         String email = testId == 0 ? "test@test.com" : "test" +testId + "@test.com";
-        Timetable timetable = new Timetable();
-        User user = new User(null, "test", email, password, Role.USER, LocalDateTime.now(), school, null,timetable);
-        user.associateHome(home);
-        user = userRepository.save(user);
-        Wallet wallet = new Wallet(null, user.getId(), 50000, LocalDateTime.now(), new ArrayList<>());
-        walletRepository.save(wallet);
+        signUpUseCase.execute(
+                new SignUpUseCase.Param(
+                    "테스트계정",
+                        email,
+                        "Abcd1234!@",
+                        new SignUpRequestDto.Home(
+                                37.5143,
+                                127.0294,
+                                "학동로 171"
+                        ),
+                        1L
+                )
+        );
+//        Timetable timetable = new Timetable();
+//        User user = new User(null, "test", email, password, Role.USER, LocalDateTime.now(), school, null,timetable);
+//        user.associateHome(home);
+//        user = userRepository.save(user);
+//        Wallet wallet = new Wallet(null, user.getId(), 50000, LocalDateTime.now(), new ArrayList<>());
+//        walletRepository.save(wallet);
     }
 }
