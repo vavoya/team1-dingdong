@@ -22,7 +22,6 @@ import { useCustomNavigate } from "@/hooks/useNavigate";
 
 import Modal from "@/components/Modal";
 import { transformSchedules } from "@/utils/fixedBusBooking/busTimeScheduleStringToObject";
-import { TEMP_DATE } from "@/constants/busTimeScheduleTempData";
 import { mountModal } from "@/components/Loading";
 import { colors } from "@/styles/colors";
 // import { useGetAvailableBusInfo } from "@/hooks/BusBooking/useFixedBooking";
