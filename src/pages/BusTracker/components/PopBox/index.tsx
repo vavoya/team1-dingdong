@@ -17,7 +17,7 @@ export default function PopBox() {
 
 
 export const Wrapper = styled.button`
-    position: fixed;
+    position: absolute;
     top: 21px;
     left: 12px;
     z-index: 1;

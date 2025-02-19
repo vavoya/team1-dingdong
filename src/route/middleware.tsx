@@ -1,7 +1,13 @@
 import {axiosInstance} from "@/api";
 import {isAxiosError} from "axios";
 import {CustomError} from "@/route/error";
+import {MiddlewareErrorType} from "@/route/error/middleware.tsx";
 
+const sessionRules = new Map([
+    ["/payment/purchase", { sessionKey: "/fixed-bus-select-bus", errorType: MiddlewareErrorType.INVALID_ACCESS_PAYMENT }],
+    ["/payment/reservation", { sessionKey: "/custom-bus-booking", errorType: MiddlewareErrorType.INVALID_ACCESS_CUSTOM_BUS }],
+    ["/fixed-bus-select-bus", { sessionKey: "/fixed-bus-booking", errorType: MiddlewareErrorType.INVALID_ACCESS_FIXED_BUS }],
+]);
 
 export default async function middleware(request: Request) {
     const pathname = new URL(request.url).pathname; // 현재 URL 가져오기
@@ -12,42 +18,33 @@ export default async function middleware(request: Request) {
     }
     catch (error) {
         if (isAxiosError(error)) {
+            console.log(request.url)
             // 인증 X
             if (error.response?.status === 401) {
-                throw new CustomError(1000)
+                if (!(pathname === '/' || pathname.startsWith('/login') || pathname.startsWith('/signup'))) {
+                    // 로그인 안했으면, 해당 페이지 제외 접근 불가
+                    throw new CustomError(MiddlewareErrorType.NOT_LOGGED_IN)
+                }
             }
             // 서버 응답 X
             else {
-                throw new CustomError(1004)
+                throw new CustomError(MiddlewareErrorType.SERVER_NO_RESPONSE)
             }
         }
         // 네트워크 에러 or 기타 에러
         else {
-            throw new CustomError(1005)
+            throw new CustomError(MiddlewareErrorType.NETWORK_ERROR)
         }
+
+        return null;
     }
     if (pathname.startsWith("/login") || pathname.startsWith("/signup")) {
         // 인증 O
-        throw new CustomError(1006)
+        throw new CustomError(MiddlewareErrorType.ALREADY_LOGGED_IN)
     }
 
     // 세션처리
-    switch (pathname) {
-        case "/payment/purchase":
-            // 이전 페이지에서 현재 페이지로 넘겨주는 값이 없다.
-            if (sessionStorage.getItem("/fixed-bus-select-bus") == null) {
-                throw new CustomError(1001)
-            }
-            break;
-        case "/payment/reservation":
-            if (sessionStorage.getItem("/custom-bus-booking") == null) {
-                throw new CustomError(1002)
-            }
-            break;
-        case "/fixed-bus-select-bus":
-            if (sessionStorage.getItem("/fixed-bus-booking") == null) {
-                throw new CustomError(1003)
-            }
-            break;
+    if (sessionRules.has(pathname) && !sessionStorage.getItem(sessionRules.get(pathname)!.sessionKey)) {
+        throw new CustomError(sessionRules.get(pathname)!.errorType);
     }
 }

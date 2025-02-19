@@ -130,3 +130,36 @@ export interface users_wallet_balances_interface {
 export const users_wallet_balances = createQueryFactory<users_wallet_balances_interface>(
     "/api/users/wallet/balance"
 )
+
+export interface users_wallet_history_interface {
+    histories: {
+        content: {
+            timeStamp: string
+            type: "PAY"  | "REFUND" | "FREE_CHARGE"
+            amountMoney: number
+            remainMoney: number
+        } []
+        ,
+        page: {
+            size: number
+            number: number
+            totalElements: number
+            totalPages: number
+        }
+    }
+}
+export const users_wallet_history = createQueryFactory<users_wallet_history_interface>('/api/users/wallet/history')
+
+export interface users_timetable_interface {
+    monStartTime: string | null
+    monEndTime: string | null,
+    tueStartTime: string | null,
+    tueEndTime: string | null,
+    wedStartTime: string | null,
+    wedEndTime: string | null,
+    thuStartTime: string | null,
+    thuEndTime: string | null,
+    friStartTime: string | null,
+    friEndTime: string | null,
+}
+export const users_timetable = createQueryFactory<users_timetable_interface>("/api/users/timetable")

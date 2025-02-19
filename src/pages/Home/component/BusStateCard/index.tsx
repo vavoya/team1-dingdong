@@ -1,5 +1,5 @@
 // React
-import {useLocation, useNavigate} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 // 스타일
 import {
     ArrivalTime,
@@ -18,76 +18,6 @@ import {getKstFormattedLabelPair} from "@/utils/time/getKstFormattedLabelPair.ts
 import {formatKstTime} from "@/utils/time/formatKstTime.ts";
 import {getTravelDuration} from "@/utils/time/getTravelDuration.ts";
 import {useEffect, useState} from "react";
-
-interface BusStateCardProps {
-    type?: number;
-
-}
-export default function BusStateCard({type = 0}: BusStateCardProps) {
-    const location = useLocation();
-
-    return (
-        <Card>
-            <CardHeader>
-                <CardInfo>
-                    <CardTIme>
-                        오늘 12:00
-                    </CardTIme>
-                    <CardLocation>
-                        학동역 탑승
-                    </CardLocation>
-                </CardInfo>
-                {
-                    type !== 0 ?
-                        <CardState>
-                            <CardStateText>
-                                배차 대기
-                            </CardStateText>
-                        </CardState>:
-                        null
-                }
-            </CardHeader>
-            {
-                type === 0 ?
-                    <CardBusInfo>
-                        <BusIcon />
-                        <CardBusNumber>
-                            버스01
-                        </CardBusNumber>
-                        <ArrivalTime>
-                            4분 후 도착
-                        </ArrivalTime>
-                    </CardBusInfo>:
-                    null
-            }
-            <CardDestination>
-                <CardDestinationText>
-                    13:00 학교 도착
-                </CardDestinationText>
-                {
-                    type === 0 ?
-                        <>
-                            <Divider />
-                            <CardDestinationText>
-                                45분 소요
-                            </CardDestinationText>
-                        </>:
-                        null
-                }
-            </CardDestination>
-            {
-                type === 0 && location.pathname !== '/bus-tracker' ?
-                    <CardAction>
-                        <CardActionText>
-                            실시간 버스 위치 확인
-                        </CardActionText>
-                        <ArrowRightIcon />
-                    </CardAction>:
-                    null
-            }
-        </Card>
-    )
-}
 
 
 interface PendingBusStateCardProps {
@@ -195,7 +125,7 @@ export function AllocatedBusStateCard({
                     {busNumber}
                 </CardBusNumber>
                 {
-                    isRun ? <TimeUntilArrival dropOffDate={dropOffDate}/> : null
+                    isRun ? <TimeUntilArrival boardingDate={boardingDate}/> : null
                 }
             </CardBusInfo>
             <CardDestination>
@@ -211,6 +141,7 @@ export function AllocatedBusStateCard({
                 <CardActionText>
                     {isRun ? "실시간 버스 위치 확인" : "버스 경로 확인"}
                 </CardActionText>
+                <ArrowRightIcon />
             </CardAction>
         </Card>
     )
@@ -218,15 +149,19 @@ export function AllocatedBusStateCard({
 
 
 interface TimeUntilArrivalProps {
-    dropOffDate: string
+    boardingDate: string
 }
-export function TimeUntilArrival({dropOffDate}: TimeUntilArrivalProps) {
-    const [_, update] = useState(Symbol())
+export function TimeUntilArrival({boardingDate}: TimeUntilArrivalProps) {
+    const [leaveTIme, setLeaveTIme] = useState<string>("")
+
+    const updateLeaveTime = () => {
+        const time = getTravelDuration(new Date().toISOString(), boardingDate, 1)
+        setLeaveTIme(time)
+    }
 
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            update(Symbol())
-        }, 60 * 1000)
+        updateLeaveTime()
+        const timeout = setTimeout(updateLeaveTime, 60 * 1000)
         return () => {
             clearTimeout(timeout)
         }
@@ -235,7 +170,7 @@ export function TimeUntilArrival({dropOffDate}: TimeUntilArrivalProps) {
 
     return (
         <ArrivalTime>
-            {`${getTravelDuration(new Date().toISOString(), dropOffDate)} 후 도착`}
+            {leaveTIme}
         </ArrivalTime>
     )
 }

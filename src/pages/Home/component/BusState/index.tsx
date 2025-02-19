@@ -45,7 +45,7 @@ export default function BusState({reservations, busStateRef}: BusStateProps) {
             page: fetchInfo.current.page + 1,
             pageSize: fetchInfo.current.pageSize,
             category: 'HOME',
-            sort: 'LATEST'
+            sort: 'OLDEST'
         })).then((result) => {
             const newContent = result.reservationInfos.content
             fetchInfo.current.page = result.reservationInfos.page.number
@@ -196,6 +196,6 @@ const busFunctions = {
     }
 };
 
-function getBusCardFunction(busDirection: Direction, state: State) {
+export function getBusCardFunction(busDirection: Direction, state: State) {
     return busFunctions[busDirection][state]
 }

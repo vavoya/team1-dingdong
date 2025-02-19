@@ -22,7 +22,7 @@ export function useSocket() {
 // 웹소켓 연결 함수 (전역에서 관리)
 function connectWebSocket(setWs: (ws: WebSocket | null) => void) {
     console.log("✅ 웹소켓 연결 시도...");
-    socket = new WebSocket("ws://localhost:5173/ws");
+    socket = new WebSocket(import.meta.env.VITE_WS_BASE_URL);
 
     socket.onopen = () => {
         console.log("🔗 웹소켓 연결됨");

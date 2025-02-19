@@ -51,7 +51,7 @@ export default function LoadingModal({text}: LoadingModalProps) {
 // 헬퍼 함수
 export function mountModal() {
     const modalContainer = document.createElement('div');
-    modalContainer.id = 'loading-modal-container';
+    modalContainer.id = 'modal-container';
     document.body.appendChild(modalContainer);
 
     // React 18의 createRoot를 사용하여 LoadingModal 렌더링

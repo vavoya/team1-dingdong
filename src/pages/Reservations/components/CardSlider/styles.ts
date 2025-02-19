@@ -40,7 +40,6 @@ export const ScheduledDepartures = {
     `,
     Title: styled(Body1Medium)`
         color: ${colors.gray0};
-        font-family: Pretendard,serif;
         font-style: normal;
     `,
     Direction: styled.div`
@@ -53,7 +52,6 @@ export const ScheduledDepartures = {
     `,
     DirectionText: styled(Detail1Medium)`
         color: #FFF;
-        font-family: Pretendard,serif;
         font-style: normal;
     `,
     CardBody: styled.div`
@@ -80,7 +78,6 @@ export const ScheduledDepartures = {
         max-width: 100%;
         text-align: center;
         /* Body 2/Medium */
-        font-family: Pretendard,serif;
         font-style: normal;
         
         white-space: nowrap; /* 줄바꿈 방지 */
@@ -112,7 +109,6 @@ export const ScheduledDepartures = {
     })<{isCurrent?: boolean}>`
         color: ${({isCurrent = false}) => isCurrent ? colors.orange900 : colors.gray70};
         text-align: center;
-        font-family: Pretendard,serif;
         font-size: 14px;
         font-style: normal;
         font-weight: 500;

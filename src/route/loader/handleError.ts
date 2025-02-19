@@ -1,5 +1,6 @@
 import {isAxiosError} from "axios";
 import {CustomError} from "@/route/error";
+import {NetworkErrorType} from "@/route/error/network.tsx";
 
 
 export default function handleError(error: unknown) {
@@ -7,17 +8,22 @@ export default function handleError(error: unknown) {
         const status = error.response.status;
 
         switch (status) {
+            case 400:
+                return new CustomError(NetworkErrorType.BAD_REQUEST)
             case 403:
-                return new CustomError(403)
+                return new CustomError(NetworkErrorType.FORBIDDEN)
             case 404:
-                return new CustomError(404)
+                return new CustomError(NetworkErrorType.NOT_FOUND)
+            case 408:
+                return new CustomError(NetworkErrorType.NETWORK_TIMEOUT)
             case 500:
-                return new CustomError(500)
+                return new CustomError(NetworkErrorType.INTERNAL_SERVER_ERROR)
+            case 503:
+                return new CustomError(NetworkErrorType.SERVICE_UNAVAILABLE)
             default:
-                return new CustomError("network_default")
+                return new CustomError(NetworkErrorType.NETWORK_ERROR)
         }
     }
 
-    // 에러를 다시 throw하여 상위에서 핸들링 가능하도록 유지
-    return new CustomError("network_default")
+    return new CustomError(NetworkErrorType.UNKNOWN_ERROR)
 }

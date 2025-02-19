@@ -22,8 +22,4 @@ export const Text = styled(Body2Regular).withConfig({
     shouldForwardProp: (prop) => prop !== "isActive"
 })<{ isActive: boolean }>`
     color: ${({ isActive }) => (isActive ? colors.orange900 : colors.gray100)};
-
-    /* Body 2/Regular */
-    font-family: Pretendard, serif;
-    font-style: normal;
 `;

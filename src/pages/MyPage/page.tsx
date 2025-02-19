@@ -27,7 +27,7 @@ export default function Page() {
                 <UserProfileBox>
                     <UserProfile>
                         <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44" fill="none">
-                            <g clip-path="url(#clip0_1175_15874)">
+                            <g clipPath="url(#clip0_1175_15874)">
                                 <path d="M21.9996 25.3C25.6447 25.3 28.5996 22.3451 28.5996 18.7C28.5996 15.0549 25.6447 12.1 21.9996 12.1C18.3545 12.1 15.3996 15.0549 15.3996 18.7C15.3996 22.3451 18.3545 25.3 21.9996 25.3Z" fill="#C3C3CF"/>
                                 <path d="M6.59961 45.1C6.59961 36.5948 13.4944 29.7 21.9996 29.7C30.5048 29.7 37.3996 36.5948 37.3996 45.1H6.59961Z" fill="#C3C3CF"/>
                             </g>

@@ -46,8 +46,6 @@ export const SortIndicator = styled.div`
 export const SortText = styled(Body2Regular)`
     color: ${colors.gray70};
 
-    /* Body 2/Regular */
-    font-family: Pretendard, serif;
     font-style: normal;
 `;
 
@@ -83,8 +81,6 @@ export const InfoBox = styled.div`
 export const DateText = styled(Body2Regular)`
     color: ${colors.gray70};
 
-    /* Body 2/Regular */
-    font-family: Pretendard, serif;
     font-style: normal;
 `;
 
@@ -97,8 +93,6 @@ export const TripInfo = styled.div`
 export const TripText = styled(Body2Medium)`
     color: ${colors.gray100};
 
-    /* Body 2/Medium */
-    font-family: Pretendard, serif;
     font-style: normal;
 `;
 
@@ -117,24 +111,18 @@ export const StatusInfo = styled.div`
 export const BusNumber = styled(Body2SemiBold)`
     color: #0080FF;
 
-    /* Body 2/Semibold */
-    font-family: Pretendard, serif;
     font-style: normal;
 `;
 
 export const Status = styled(Detail1Regular)`
     color: ${colors.gray70};
 
-    /* Detail 1/Regular */
-    font-family: Pretendard, serif;
     font-style: normal;
 `;
 
 export const ArrivedAt = styled(Body2Regular)`
     color: #FF1E00;
 
-    /* Body 2/Medium */
-    font-family: Pretendard, serif;
     font-style: normal;
 `;
 

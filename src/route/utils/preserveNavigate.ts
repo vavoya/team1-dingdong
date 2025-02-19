@@ -5,4 +5,7 @@ export default function preserveNavigate(request: Request) {
     if (nextPathname !== window.location.pathname) {
         navigateTo(window.location.pathname)
     }
+    else {
+        throw new Error()
+    }
 }

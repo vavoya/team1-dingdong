@@ -8,9 +8,11 @@ import {
 } from "@/pages/Payment/components/PaymentMethod/styles.ts";
 import DingDongCard from "@/pages/Payment/components/DingDongCard";
 import ArrowRightIcon from "@/components/designSystem/Icons/Home/ArrowRightIcon.tsx";
+import {useNavigate} from "react-router-dom";
 
 
 export default function PaymentMethod() {
+    const naviagate = useNavigate()
 
     return (
         <Wrapper>
@@ -21,7 +23,7 @@ export default function PaymentMethod() {
                 <InfoTitle>
                     딩동머니로 결제
                 </InfoTitle>
-                <RechargeButton>
+                <RechargeButton onClick={() => naviagate('/wallet')}>
                     <RechargeText>
                         충전하기
                     </RechargeText>

@@ -31,7 +31,7 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
         return [...response, schedule];
 
     } catch (error) {
-        handleError(error);
+        return handleError(error);
     }
 }
 
