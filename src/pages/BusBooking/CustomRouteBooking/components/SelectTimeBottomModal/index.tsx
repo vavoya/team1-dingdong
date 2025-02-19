@@ -1,6 +1,6 @@
 import BottomOverlayModal from "@/pages/BusBooking/Components/BottomOverlayModal";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as S from "./styles";
 import CancelButton from "@/components/designSystem/Button/OutlineButton";
 import SolidButton from "@/components/designSystem/Button/SolidButton";
@@ -27,6 +27,7 @@ import {
 } from "@/utils/calendar/timeWheelUtils";
 import Modal from "@/components/Modal";
 import { mountModal } from "@/components/Loading";
+import { useDebounce } from "@/hooks/Debounce/useDebounce";
 
 interface SelectTimeBottomModalProps {
   selectedDate: selectedDateType; // 모달에서 현재 선택된 시간
@@ -57,24 +58,6 @@ export default function SelectTimeBottomModal({
   );
 
   const timeWheelRef = useRef<TimeWheelHandle>(null);
-
-  // 디바운스 훅 생성
-  function useDebounce<T>(callback: (...args: T[]) => void, delay: number) {
-    const timeoutRef = useRef<NodeJS.Timeout>();
-
-    return useCallback(
-      (...args: T[]) => {
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-
-        timeoutRef.current = setTimeout(() => {
-          callback(...args);
-        }, delay);
-      },
-      [callback, delay]
-    );
-  }
 
   const handleTimeChange = useDebounce(
     // 이벤트 발생한지 2초 간 움직임이 없다면 reset
