@@ -13,7 +13,7 @@ import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationType;
 import com.ddbb.dingdong.domain.reservation.service.ReservationManagement;
 import com.ddbb.dingdong.domain.user.entity.Home;
 import com.ddbb.dingdong.domain.user.service.UserManagement;
-import com.ddbb.dingdong.infrastructure.auth.encrypt.TokenManager;
+import com.ddbb.dingdong.infrastructure.auth.encrypt.token.TokenManager;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

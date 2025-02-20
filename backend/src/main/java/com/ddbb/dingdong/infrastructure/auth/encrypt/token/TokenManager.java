@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.infrastructure.auth.encrypt;
+package com.ddbb.dingdong.infrastructure.auth.encrypt.token;
 
 import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.AESEncoder;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.SHA512Encoder;
@@ -69,9 +69,6 @@ public class TokenManager {
     }
 
     public void saveToken(String token) {
-        Token newToken = new Token();
-        newToken.setToken(token);
-        tokenRepository.save(newToken);
+        tokenRepository.save(token);
     }
-
 }

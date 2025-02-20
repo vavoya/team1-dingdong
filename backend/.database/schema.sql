@@ -197,13 +197,6 @@ CREATE TABLE IF NOT EXISTS ticket (
 ALTER TABLE ticket ADD CONSTRAINT UK_ticket_unique2 UNIQUE (reservation_id);
 ALTER TABLE ticket ADD CONSTRAINT FK_ticket_reservation FOREIGN KEY (reservation_id) REFERENCES reservation(id);
 
-CREATE TABLE IF NOT EXISTS token (
-                                     id BIGINT NOT NULL AUTO_INCREMENT,
-                                     token VARCHAR(255) NOT NULL,
-                                     PRIMARY KEY (id)
-) ENGINE=InnoDB;
-ALTER TABLE token ADD CONSTRAINT UK_token UNIQUE (token);
-
 CREATE TABLE IF NOT EXISTS fcmtoken (
                            id BIGINT AUTO_INCREMENT PRIMARY KEY,
                            token VARCHAR(255) NOT NULL,

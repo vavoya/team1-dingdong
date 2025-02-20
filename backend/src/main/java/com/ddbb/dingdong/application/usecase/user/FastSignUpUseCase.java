@@ -12,7 +12,7 @@ import com.ddbb.dingdong.domain.user.entity.User;
 import com.ddbb.dingdong.domain.user.entity.vo.Role;
 import com.ddbb.dingdong.domain.user.repository.SchoolRepository;
 import com.ddbb.dingdong.domain.user.repository.UserRepository;
-import com.ddbb.dingdong.infrastructure.auth.encrypt.PasswordEncoder;
+import com.ddbb.dingdong.infrastructure.auth.encrypt.password.PasswordEncoder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -4,7 +4,6 @@ import com.ddbb.dingdong.application.usecase.auth.SignUpUseCase;
 import com.ddbb.dingdong.domain.notification.entity.Notification;
 import com.ddbb.dingdong.domain.notification.entity.vo.NotificationType;
 import com.ddbb.dingdong.domain.notification.repository.NotificationRepository;
-import com.ddbb.dingdong.domain.notification.service.NotificationEventListener;
 import com.ddbb.dingdong.domain.payment.entity.Wallet;
 import com.ddbb.dingdong.domain.payment.repository.WalletRepository;
 import com.ddbb.dingdong.domain.user.entity.Home;
@@ -14,7 +13,7 @@ import com.ddbb.dingdong.domain.user.entity.User;
 import com.ddbb.dingdong.domain.user.entity.vo.Role;
 import com.ddbb.dingdong.domain.user.repository.SchoolRepository;
 import com.ddbb.dingdong.domain.user.repository.UserRepository;
-import com.ddbb.dingdong.infrastructure.auth.encrypt.PasswordEncoder;
+import com.ddbb.dingdong.infrastructure.auth.encrypt.password.PasswordEncoder;
 import com.ddbb.dingdong.presentation.endpoint.auth.exchanges.SignUpRequestDto;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -83,7 +82,7 @@ public class ApplicationInitializer {
         String email = testId == 0 ? "test@test.com" : "test" +testId + "@test.com";
         signUpUseCase.execute(
                 new SignUpUseCase.Param(
-                    "테스트계정",
+                        "테스트계정",
                         email,
                         "Abcd1234!@",
                         new SignUpRequestDto.Home(
