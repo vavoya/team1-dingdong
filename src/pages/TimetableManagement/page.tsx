@@ -147,7 +147,7 @@ export default function Page() {
                 <ImgRegistrationBox>
                     {/* 서버 이미지 없으면 */}
                     <DefaultImgIcon />
-                    <ImgActionButton>
+                    <ImgActionButton onClick={() => addToast("현재 지원하지 않는 기능입니다.")}>
                         <PlusIcon />
                         <ImgActionText>
                             이미지 등록하기
