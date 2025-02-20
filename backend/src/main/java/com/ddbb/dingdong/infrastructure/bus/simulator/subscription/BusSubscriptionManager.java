@@ -1,7 +1,9 @@
 package com.ddbb.dingdong.infrastructure.bus.simulator.subscription;
 
 import com.ddbb.dingdong.domain.common.exception.DomainException;
+import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.domain.transportation.service.BusErrors;
+import com.ddbb.dingdong.domain.transportation.service.BusScheduleManagement;
 import com.ddbb.dingdong.infrastructure.bus.simulator.BusSubscriptionLockManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,7 @@ import java.util.concurrent.SubmissionPublisher;
 @RequiredArgsConstructor
 public class BusSubscriptionManager {
     private final BusSubscriptionLockManager lockManager;
+    private final BusScheduleManagement busScheduleManagement;
     private final Map<Long, SubmissionPublisher<Point>> publishers = new HashMap<>();
     private final Map<Long, Set<UserSubscription>> subscribers = new HashMap<>();
 
@@ -108,6 +111,8 @@ public class BusSubscriptionManager {
             }
             SubmissionPublisher<Point> publisher = publishers.remove(busId);
             subscribers.remove(busId);
+            busScheduleManagement.updateBusSchedule(busId, OperationStatus.ENDED);
+            lockManager.removeLock(busId);
             publisher.close();
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -131,6 +136,8 @@ public class BusSubscriptionManager {
             }
             publishers.remove(busId);
             subscribers.remove(busId);
+            busScheduleManagement.updateBusSchedule(busId, OperationStatus.ENDED);
+            lockManager.removeLock(busId);
             lock.unlock();
         } catch (Exception e) {
             log.info(e.getMessage());

@@ -111,6 +111,7 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
                 END AS reservedTime
             FROM Reservation r
             WHERE r.status != 'CANCELED'
+            AND r.userId = :userId
     """)
     List<LocalDateTime> findReservedTimeByUserId(@Param("userId") Long userId);
 

@@ -13,6 +13,7 @@ import com.ddbb.dingdong.presentation.endpoint.admin.exchanges.CreateRouteReques
 import com.ddbb.dingdong.presentation.endpoint.admin.exchanges.CreateRouteResponseDTO;
 import com.ddbb.dingdong.presentation.endpoint.admin.exchanges.GetLocationRequestDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
@@ -66,6 +68,7 @@ public class AdminController {
             try {
                 createRouteUseCase.execute(param);
             } catch (Exception ex) {
+                log.info(ex.getMessage());
                 failCount++;
             }
         }

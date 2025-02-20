@@ -36,7 +36,7 @@ public interface BusStopQueryRepository extends JpaRepository<BusStop, Long> {
 
     @Query("SELECT bst.latitude as latitude, bst.longitude as longitude, " +
             "busSchedule.id as busScheduleId, " +
-            "CASE WHEN busSchedule.direction = com.ddbb.dingdong.domain.reservation.entity.vo.Direction.TO_SCHOOL " +
+            "CASE WHEN busSchedule.direction = 'TO_SCHOOL' " +
             "THEN busSchedule.arrivalTime ELSE busSchedule.departureTime END AS busScheduleTime, " +
             "bst.locationId as locationId " +
             "FROM BusStop bst " +
