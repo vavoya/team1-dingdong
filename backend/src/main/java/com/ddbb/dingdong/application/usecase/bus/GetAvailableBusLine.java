@@ -3,8 +3,11 @@ package com.ddbb.dingdong.application.usecase.bus;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import com.ddbb.dingdong.domain.reservation.repository.ReservationQueryRepository;
 import org.springframework.stereotype.Service;
 
 import com.ddbb.dingdong.application.common.Params;
@@ -29,17 +32,20 @@ public class GetAvailableBusLine implements UseCase<GetAvailableBusLine.Param, G
     private final BusScheduleQueryRepository busScheduleQueryRepository;
     private final UserQueryRepository userQueryRepository;
     private final BusStopQueryService busStopQueryService;
+    private final ReservationQueryRepository reservationQueryRepository;
 
     @Override
     public Response execute(Param param) {
         HomeStationProjection homeStation = userQueryRepository.findHomeStationLocationWithSchoolId(param.userId)
                 .orElseThrow(UserErrors.NOT_FOUND::toException);
+        Set<LocalDateTime> times = new TreeSet<>(reservationQueryRepository.findReservedTimeByUserId(param.userId));
         List<AvailableBusStopProjection> busStops = busStopQueryService.findAvailableBusStops(
                 homeStation.getSchoolId(),
                 param.direction,
                 param.time,
                 homeStation.getStationLongitude(),
-                homeStation.getStationLatitude()
+                homeStation.getStationLatitude(),
+                times
         );
         List<Long> busIds = busStops.stream().map(AvailableBusStopProjection::getBusScheduleId).toList();
         Map<Long, Long> reservedCount = busScheduleQueryRepository.findReservedSeatCount(busIds)

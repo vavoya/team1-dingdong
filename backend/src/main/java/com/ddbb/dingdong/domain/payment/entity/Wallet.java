@@ -26,7 +26,7 @@ public class Wallet {
     private Long userId;
 
     @Column(nullable = false)
-    private Integer balance;
+    private int balance;
 
     @Column(nullable = false)
     private LocalDateTime lastUpdatedAt = LocalDateTime.now();
@@ -58,6 +58,13 @@ public class Wallet {
         this.balance += chargePrice;
         lastUpdatedAt = LocalDateTime.now();
         DingdongMoneyUsageHistory history = generateHistory(DingdongMoneyUsageType.FREE_CHARGE, chargePrice, null);
+        this.usageHistory.add(history);
+    }
+
+    public void welcomeMoneyCharge(int chargePrice) {
+        this.balance += chargePrice;
+        lastUpdatedAt = LocalDateTime.now();
+        DingdongMoneyUsageHistory history = generateHistory(DingdongMoneyUsageType.WELCOME_MONEY_CHARGE, chargePrice, null);
         this.usageHistory.add(history);
     }
 

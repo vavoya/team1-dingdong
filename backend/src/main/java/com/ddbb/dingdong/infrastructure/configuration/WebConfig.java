@@ -46,7 +46,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**") // 모든 경로에 대해 CORS 허용
                 .allowedOriginPatterns(
                         "http://localhost:5173",
-                        String.format("%s://%s:%s",CLIENT_SCHEMA, CLIENT_ADDRESS, CLIENT_PORT)
+                        String.format("%s://%s%s",CLIENT_SCHEMA, CLIENT_ADDRESS, CLIENT_PORT)
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("Cookie", "credentials", "Content-Type")

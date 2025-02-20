@@ -33,7 +33,7 @@ public class AuthManagement {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
 
-    private static final int WELCOME_MONEY = 50000;
+    private static final int WELCOME_MONEY = 30000;
 
     public User signUp(String name, String email, String password, SignUpRequestDto.Home home, Long schoolId) {
         School school = schoolRepository.findById(schoolId).orElseThrow(AuthErrors.SCHOOL_NOT_FOUND::toException);
@@ -57,7 +57,11 @@ public class AuthManagement {
                 .timetable(timetable)
                 .build();
         user = userRepository.save(user);
-        Wallet wallet = new Wallet(null, user.getId(), WELCOME_MONEY, LocalDateTime.now(), new ArrayList<>());
+
+        Wallet wallet = new Wallet();
+        wallet.setUserId(user.getId());
+        wallet.welcomeMoneyCharge(WELCOME_MONEY);
+
         walletRepository.save(wallet);
 
         eventPublisher.publishEvent(new SignUpSuccessEvent(user.getId()));

@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS dingdong_money_usage_history (
                                                             refunded_reservation_id BIGINT,
                                                             time_stamp DATETIME(6) NOT NULL,
                                                             wallet_id BIGINT,
-                                                            type ENUM('FREE_CHARGE','PAY','REFUND') NOT NULL,
+                                                            type ENUM('WELCOME_MONEY_CHARGE','FREE_CHARGE','PAY','REFUND') NOT NULL,
                                                             PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 ALTER TABLE dingdong_money_usage_history ADD CONSTRAINT FK_money_usage_wallet FOREIGN KEY (wallet_id) REFERENCES wallet(id);
