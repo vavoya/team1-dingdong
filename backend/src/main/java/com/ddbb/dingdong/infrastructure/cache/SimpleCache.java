@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -19,7 +20,7 @@ import java.util.concurrent.*;
  */
 @Slf4j
 public class SimpleCache<K, V> {
-    private final ConcurrentHashMap<K, CacheEntry<V>> map = new ConcurrentHashMap<>();
+    private final Map<K, CacheEntry<V>> map = new HashMap<>();
     public record CacheEntry<V>(V value, long expiryTimeMillis) { }
     private final ScheduledExecutorService scheduler;
     private final Duration ttl;
