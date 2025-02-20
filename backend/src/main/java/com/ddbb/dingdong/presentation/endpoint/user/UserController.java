@@ -26,6 +26,7 @@ public class UserController {
     private final ChargeDingdongMoneyFreeUseCase chargeDingdongMoneyFreeUseCase;
     private final CheckFreeChargeAvailableUseCase checkFreeChargeAvailableUseCase;
     private final EnrollFCMTokenUseCase enrollFCMTokenUseCase;
+    private final TestFCMNotificationUseCase testFCMNotificationUseCase;
 
     @GetMapping("/me")
     public GetUserInfoUseCase.Result getUserInfo(
@@ -152,5 +153,18 @@ public class UserController {
         }
 
         return ResponseEntity.ok().body(result);
+    }
+
+    @PostMapping("/fcm-token/test")
+    public ResponseEntity<Void> testFcmToken(
+            @LoginUser AuthUser authUser
+    ) {
+        Long userId = authUser.id();
+        try {
+            TestFCMNotificationUseCase.Param param = new TestFCMNotificationUseCase.Param(userId);
+            return ResponseEntity.ok().build();
+        } catch (DomainException e) {
+            throw new APIException(e, HttpStatus.NOT_FOUND);
+        }
     }
 }
