@@ -16,7 +16,6 @@ export const useAddress = (
         setTimeout(checkKakaoLoaded, 100);
       }
     };
-    console.log("상태 체큰");
     checkKakaoLoaded();
   }, []);
 
