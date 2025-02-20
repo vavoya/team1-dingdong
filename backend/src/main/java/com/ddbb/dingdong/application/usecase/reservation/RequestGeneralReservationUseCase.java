@@ -43,10 +43,12 @@ public class RequestGeneralReservationUseCase implements UseCase<RequestGeneralR
 
     private void checkHasDuplicatedReservation(Param param) {
         Long userId = param.userId;
-        List<Param.ReservationInfo> hopeTimes = param.reservationDates;
-        for (RequestGeneralReservationUseCase.Param.ReservationInfo hopeTime : hopeTimes) {
-           reservationManagement.checkHasDuplicatedReservation(userId, hopeTime.date);
-        }
+        List<LocalDateTime> hopeTimes = param.reservationDates
+                .stream()
+                .map(reservationInfo -> reservationInfo.date)
+                .toList();
+
+        reservationManagement.checkHasDuplicatedReservations(userId, hopeTimes);
     }
 
     private void validateReservationDates(Param param) {
