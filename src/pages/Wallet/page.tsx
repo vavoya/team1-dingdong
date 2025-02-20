@@ -19,17 +19,39 @@ import {users_wallet_history_interface} from "@/api/query/users";
 import HistoryList from "@/pages/Wallet/component/HistoryList";
 import {getFreeChargeAvailable} from "@/api/wallet/getFreeChargeAvailable.ts";
 import {postFreeCharge} from "@/api/wallet/postFreeCharge.ts";
+import {FREE_CHARGE_PRICE} from "@/env.ts";
+import {formatKst} from "@/utils/time/formatKst.ts";
+import {useState} from "react";
 
 
 export default function Page() {
     const addToast = useToast();
     const [histories]: [users_wallet_history_interface] = useLoaderData()
+    const [historyList, setHistoryList] = useState<users_wallet_history_interface>({...histories})
+    console.log(historyList)
 
 
     const actFreeCharge = async () => {
         try {
             if ((await getFreeChargeAvailable()).available) {
                 await postFreeCharge()
+
+                setHistoryList((prev) => ({
+                    ...prev,
+                    histories: {
+                        ...prev.histories,
+                        content: [
+                            {
+                                timeStamp: formatKst((new Date).toISOString()),
+                                type: "FREE_CHARGE",
+                                amountMoney: FREE_CHARGE_PRICE,
+                                remainMoney: FREE_CHARGE_PRICE + prev.histories.content[0].remainMoney
+                            },
+                            ...prev.histories.content,
+                        ]
+                    }
+                }))
+
                 addToast("무료 충전이 성공 했습니다.")
             }
             else{
@@ -37,6 +59,7 @@ export default function Page() {
             }
         }
         catch (error) {
+            console.log(error);
             addToast("네트워크에 에러가 발생했어요.")
         }
     }
@@ -67,7 +90,7 @@ export default function Page() {
                     </RechargeButton>
                 </ButtonBox>
                 <PageDivider />
-                <HistoryList histories={histories} />
+                <HistoryList histories={historyList} />
             </Main>
         </PageWrapper>
     )

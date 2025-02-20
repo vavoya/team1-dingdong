@@ -60,7 +60,7 @@ export function PendingBusStateCard({TO_HOME, TO_SCHOOL}: PendingBusStateCardPro
                         {
                             // 등교
                             TO_SCHOOL != null ?
-                                `${TO_SCHOOL.dropOffPoint} 탑승` : null
+                                `${TO_SCHOOL.boardingPoint} 탑승` : null
                         }
                     </CardLocation>
                 </CardInfo>
@@ -129,7 +129,7 @@ export function AllocatedBusStateCard({
                     {busNumber}
                 </CardBusNumber>
                 {
-                    isRun ? <TimeUntilArrival boardingDate={boardingDate}/> : null
+                    isRun ? <TimeUntilArrival boardingDate={boardingDate} dropOffDate={dropOffDate}/> : null
                 }
             </CardBusInfo>
             <CardDestination>
@@ -138,7 +138,7 @@ export function AllocatedBusStateCard({
                 </CardDestinationText>
                 <Divider />
                 <CardDestinationText>
-                    {`${getTravelDuration(boardingDate, dropOffDate)} 소요`}
+                    {`${getTravelDuration(boardingDate, dropOffDate)}`}
                 </CardDestinationText>
             </CardDestination>
             {
@@ -157,12 +157,13 @@ export function AllocatedBusStateCard({
 
 interface TimeUntilArrivalProps {
     boardingDate: string
+    dropOffDate: string
 }
-export function TimeUntilArrival({boardingDate}: TimeUntilArrivalProps) {
+export function TimeUntilArrival({boardingDate, dropOffDate}: TimeUntilArrivalProps) {
     const [leaveTIme, setLeaveTIme] = useState<string>("")
 
     const updateLeaveTime = () => {
-        const time = getTravelDuration(new Date().toISOString(), boardingDate, 1)
+        const time = getTravelDuration(boardingDate, dropOffDate, 1)
         setLeaveTIme(time)
     }
 

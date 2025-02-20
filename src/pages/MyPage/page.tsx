@@ -13,12 +13,32 @@ import {
 import {useLoaderData, useNavigate} from "react-router-dom";
 import ArrowRightIcon from "@/components/designSystem/Icons/MyPage/ArrowRightIcon.tsx";
 import {users_me_interface} from "@/api/query/users";
+import useToast from "@/hooks/useToast";
+import {axiosInstance} from "@/api";
+import {isAxiosError} from "axios";
 
 
 export default function Page() {
     const navigate = useNavigate();
     const [user]: [users_me_interface] = useLoaderData()
+    const addToast = useToast();
 
+
+    const logout = async () => {
+        try {
+            await axiosInstance.post("/api/auth/logout")
+            navigate("/")
+        }
+        catch (error) {
+            if (isAxiosError(error) && error.response) {
+                // 이미 로그아웃 or 로그인 안된 사용자
+                if (error.response.status === 401) {
+                    navigate("/");
+                }
+            }
+            addToast("서버와 통신이 원활하지 않습니다. 잠시후 다시 시도해주세요.")
+        }
+    }
 
     return (
         <PageWrapper>
@@ -53,12 +73,18 @@ export default function Page() {
                     <Item text={'딩동 머니 충전'} onClick={() => navigate('/wallet')}/>
                     <Item text={'시간표 관리'} onClick={() => navigate('/timetable-management')}/>
                     <ItemDivde />
-                    <Item text={'비밀번호 재설정'}/>
-                    <Item text={'알림 설정'}/>
+                    {
+                        /*
+                        <Item text={'비밀번호 재설정'} onClick={() => addToast("현재 지원하지 않는 기능입니다.")}/>
+                    <Item text={'알림 설정'} onClick={() => addToast("현재 지원하지 않는 기능입니다.")}/>
                     <ItemDivde />
-                    <Item text={'안내 사항'}/>
-                    <Item text={'고객 센터'}/>
-                    <Item text={'FAQ'}/>
+                    <Item text={'안내 사항'} onClick={() => addToast("현재 지원하지 않는 기능입니다.")}/>
+                    <Item text={'고객 센터'} onClick={() => addToast("현재 지원하지 않는 기능입니다.")}/>
+                    <Item text={'FAQ'} onClick={() => addToast("현재 지원하지 않는 기능입니다.")}/>
+                    <ItemDivde />
+                         */
+                    }
+                    <Item text={'로그아웃'} onClick={logout}/>
                 </ul>
             </Main>
         </PageWrapper>

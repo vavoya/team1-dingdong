@@ -34,7 +34,10 @@ export default function ActionButton({token, schedule, wallet}: ActionButtonProp
             })
 
             // 결제 성공
-            await queryClient.invalidateQueries({queryKey: ['/api/users/reservations']});
+            await queryClient.invalidateQueries({
+                queryKey: ['/api/users/wallet/history', '/api/users/wallet/balance', '/api/users/reservations'],
+                exact: false
+            });
             sessionStorage.removeItem('/custom-bus-booking')
             navigate('/payment/success')
         }

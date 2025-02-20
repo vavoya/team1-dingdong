@@ -9,6 +9,7 @@ export const ActionButton = styled.button`
     padding: 10px;
     justify-content: center;
     align-items: center;
+    min-width: fit-content;
 
     border-radius: 4px;
     border: 1px solid ${colors.gray30};

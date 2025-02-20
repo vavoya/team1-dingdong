@@ -32,7 +32,11 @@ export default function ActionButton({token, busStopId, busScheduleId, wallet}: 
             })
 
             // 결제 성공
-            await queryClient.invalidateQueries({queryKey: ['/api/users/reservations']});
+            // 결제 내역 & 잔고 & 예매내역 초기화
+            await queryClient.invalidateQueries({
+                queryKey: ['/api/users/wallet/history', '/api/users/wallet/balance', '/api/users/reservations'],
+                exact: false
+            });
             sessionStorage.removeItem('/fixed-bus-select-bus')
             navigate('/payment/success')
         }

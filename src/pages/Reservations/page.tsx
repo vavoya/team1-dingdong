@@ -12,7 +12,7 @@ import {
 
 
 export default function Page() {
-    const [allReservations, allocatedReservations, pendingReservations, endedReservations, canceledReservations, me]: [users_reservations_interface, users_reservations_interface,users_reservations_interface,users_reservations_interface,users_reservations_interface, users_me_interface]  = useLoaderData();
+    const [allReservations, allocatedReservations, pendingReservations, failAllocatedReservations, endedReservations, canceledReservations, me]: [users_reservations_interface, users_reservations_interface, users_reservations_interface,users_reservations_interface,users_reservations_interface,users_reservations_interface, users_me_interface]  = useLoaderData();
 
 
     return (
@@ -26,6 +26,7 @@ export default function Page() {
                     allReservations={allReservations}
                     allocatedReservations={allocatedReservations}
                     pendingReservations={pendingReservations}
+                    failAllocatedReservations={failAllocatedReservations}
                     endedReservations={endedReservations}
                     canceledReservations={canceledReservations}/>
             </PageMain>

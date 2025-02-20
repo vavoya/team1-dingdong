@@ -31,6 +31,7 @@ export const CardHeader = styled.div`
 
 export const CardInfo = styled.div`
     display: flex;
+    text-align: left;
     gap: 8px;
 `
 export const CardTIme = styled(Heading2Bold)`
@@ -48,8 +49,8 @@ export const CardState = styled.div`
     height: 28px;
     padding: 10px 8px;
     justify-content: center;
+    min-width: fit-content;
     align-items: center;
-    gap: 10px;
     border-radius: 4px;
     background: ${colors.gray20};
 `

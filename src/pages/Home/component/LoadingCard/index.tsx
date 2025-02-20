@@ -38,7 +38,10 @@ export default function LoadingCard({getNextBusState}: LoadingCardProps) {
         <Wrapper ref={ref}>
             {
                 isError ?
-                    <button onClick={() => getNextBusState(() => setIsError(true))}>
+                    <button onClick={() => {
+                        setIsError(false)
+                        getNextBusState(() => setIsError(true))
+                    }}>
                         <span>불러오기 실패 (클릭하여 다시 시도)</span>
                     </button> :
                     <LoadingSpinner />

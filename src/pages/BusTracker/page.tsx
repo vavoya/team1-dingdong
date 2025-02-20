@@ -18,7 +18,7 @@ import {useLoaderData} from "react-router-dom";
 import {bus_bus_stop_location_interface, bus_path_interface} from "@/route/loader/bus-tracker/loader.tsx";
 import PopBox from "@/pages/BusTracker/components/PopBox";
 import {TO_HOME_ALLOCATED, TO_SCHOOL_ALLOCATED, users_me_interface} from "@/api/query/users";
-import {getBusCardFunction} from "@/pages/Home/component/BusState";
+import {getBusCardFunction} from "@/pages/Home/utils/getBusCardFunction.tsx";
 
 export interface PositionType {
     lat: number;
