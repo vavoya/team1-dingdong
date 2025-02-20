@@ -20,6 +20,7 @@ import {
 } from "@/hooks/BusBooking/useFixedBooking";
 
 import { ISOStringToDateDayFormat } from "@/utils/fixedBusBooking/ISOStringToDateDay";
+import LoadingModal, { mountModal } from "@/components/Loading";
 
 const BUS_INFO_ARRAY = [
   // 임시 값.
@@ -86,7 +87,7 @@ const BUS_PATH = [
     },
   ],
 ];
-
+const { render, unmountModal } = mountModal();
 export default function FixedRouteBookingSelectBus() {
   const userLocation = useCurrentLocation();
 
@@ -133,13 +134,23 @@ export default function FixedRouteBookingSelectBus() {
     setMapCenterLocation({ center: { ...userBusStop }, isPanto: false });
   }, [selectedBusCardIndex]);
 
-  const selectedBusPath = useGetBusPath(
+  const { data: selectedBusPath, isBusPathLoading } = useGetBusPath(
     busInfoArray[selectedBusCardIndex].busScheduleId
   );
 
+  useEffect(() => {
+    if (isBusPathLoading) {
+      render(<LoadingModal text={"버스 경로를 불러오는 중"} />);
+    } else {
+      console.log("왜 안돼", isBusPathLoading);
+      console.log("unmountModal 실행됨!");
+      unmountModal();
+    }
+  }, [isBusPathLoading]); // data.isLoading이 변경될 때마다 실행
+
   const selectedBusPathPoints =
-    selectedBusPath.data?.data?.points.length > 0
-      ? selectedBusPath.data?.data.points
+    selectedBusPath.data?.points.length > 0
+      ? selectedBusPath?.data?.points
       : BUS_PATH[selectedBusCardIndex];
 
   const [busPathPoints, setBusPathPoints] = useState(selectedBusPathPoints);
@@ -170,7 +181,7 @@ export default function FixedRouteBookingSelectBus() {
   useEffect(() => {
     setBusPathPoints(selectedBusPathPoints);
     setBusStopName(busInfoArray[selectedBusCardIndex].busStop.name);
-  }, [selectedBusCardIndex]);
+  }, [busInfoArray]);
 
   return (
     <>

@@ -30,5 +30,6 @@ export const useGetBusPath = (busScheduleId: number) => {
 
   return {
     data,
+    isBusPathLoading: data.isLoading,
   };
 };
