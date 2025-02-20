@@ -1,4 +1,3 @@
-
 import { useRef, useState } from "react";
 
 import {
@@ -37,7 +36,6 @@ export default function SetLocationHomeMap({
   useKakaoLoader();
   const mapRef = useRef<kakao.maps.Map>();
 
-
   const [houseAndStationInfo] = useLoaderData();
 
   const { stationInfo: serverStationInfo } = houseAndStationInfo;
@@ -47,22 +45,20 @@ export default function SetLocationHomeMap({
   });
   useAddress(centerPosition, setRoadAddress);
 
-  const currentStationPosition = {
-    lat: serverStationInfo.latitude,
-    lng: serverStationInfo.longitude,
-  };
-
   // 지도 중심 좌표가 변경될 때 호출되는 함수
   const handleCenterChanged = () => {
     if (!mapRef.current) return;
 
     const center = mapRef.current.getCenter();
 
-    setCenterPosition(currentStationPosition);
+    console.log(center.getLat(), center.getLng(), "좌표 좌푠");
+    setCenterPosition({
+      lat: center.getLat(),
+      lng: center.getLng(),
+    });
     setStationInfo({
       latitude: center.getLat(),
       longitude: center.getLng(),
-
     });
     setShowBottomSheet(true);
   };
