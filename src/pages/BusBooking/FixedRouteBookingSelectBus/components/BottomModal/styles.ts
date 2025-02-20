@@ -72,6 +72,7 @@ export const BusSelectionCard = styled.div<{ $isSelected: boolean }>`
   border: 2px solid
     ${(props) => (props.$isSelected ? colors.blue100 : colors.gray30)};
   background: white;
+  flex: 1;
 `;
 
 export const Time = styled.div`
