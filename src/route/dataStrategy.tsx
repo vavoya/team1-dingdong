@@ -55,7 +55,6 @@ async function executeLoaders(matches:  DataStrategyMatch[]) {
 
     const results = await Promise.all(
         matchesToLoad.map(async (match) => {
-            console.log(`Processing ${match.route.id}`);
             // Don't override anything - just resolve route.lazy + call loader
             const result = await match.resolve();
 
