@@ -39,7 +39,7 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
         AND (
             (:category = 0)
             OR
-            (:category = 1 AND CAST(r.status AS STRING) = 'ALLOCATED')
+            (:category = 1 AND CAST(r.status AS STRING) = 'ALLOCATED' AND bs_arrival.status != 'ENDED')
             OR
             (:category = 2 AND CAST(r.status AS STRING) = 'PENDING')
             OR
@@ -60,11 +60,12 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
     FROM Reservation r
     LEFT JOIN Ticket t ON r.id = t.reservation.id
     LEFT JOIN Location l ON l.reservationId = r.id
+    LEFT JOIN BusSchedule bs_arrival ON bs_arrival.id = t.busScheduleId
     WHERE r.userId = :userId
         AND (
             (:category = 0)
             OR
-            (:category = 1 AND CAST(r.status AS STRING) = 'ALLOCATED')
+            (:category = 1 AND CAST(r.status AS STRING) = 'ALLOCATED' AND bs_arrival.status != 'ENDED')
             OR
             (:category = 2 AND CAST(r.status AS STRING) = 'PENDING')
             OR
