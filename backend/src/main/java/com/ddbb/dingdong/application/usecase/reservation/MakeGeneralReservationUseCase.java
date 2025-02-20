@@ -57,11 +57,12 @@ public class MakeGeneralReservationUseCase implements UseCase<MakeGeneralReserva
 
     private void checkHasDuplicatedReservation(Param param) {
         Long userId = param.reservationInfo.userId;
-        List<Param.ReservationInfo.ReservationDate> hopeTimes = param.reservationInfo.reservationDates;
+        List<LocalDateTime> hopeTimes = param.reservationInfo.reservationDates
+                .stream()
+                .map(Param.ReservationInfo.ReservationDate::getDate)
+                .toList();
 
-        for (Param.ReservationInfo.ReservationDate hopeTime : hopeTimes) {
-            reservationManagement.checkHasDuplicatedReservation(userId, hopeTime.date);
-        }
+        reservationManagement.checkHasDuplicatedReservations(userId, hopeTimes);
     }
 
     private void reserve(Param param) {

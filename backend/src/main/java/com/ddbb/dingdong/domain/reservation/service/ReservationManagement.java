@@ -5,6 +5,7 @@ import com.ddbb.dingdong.domain.reservation.entity.Ticket;
 import com.ddbb.dingdong.domain.reservation.entity.vo.Direction;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationStatus;
 import com.ddbb.dingdong.domain.reservation.entity.vo.ReservationType;
+import com.ddbb.dingdong.domain.reservation.repository.ReservationQueryRepository;
 import com.ddbb.dingdong.domain.reservation.repository.ReservationRepository;
 import com.ddbb.dingdong.domain.reservation.service.event.AllocationFailedEvent;
 import com.ddbb.dingdong.domain.reservation.service.event.AllocationSuccessEvent;
@@ -27,6 +28,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 public class ReservationManagement {
     private final ReservationRepository reservationRepository;
+    private final ReservationQueryRepository reservationQueryRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     public Reservation reserve(Reservation reservation) {
@@ -102,6 +104,13 @@ public class ReservationManagement {
     public void checkHasDuplicatedReservation(Long userId, LocalDateTime hopeTime) {
         if (reservationRepository.existsActiveReservation(hopeTime, userId)) {
             throw ReservationErrors.ALREADY_HAS_SAME_RESERVATION.toException();
+        }
+    }
+
+    public void checkHasDuplicatedReservations(Long userId, List<LocalDateTime> localDateTimes) {
+        List<LocalDateTime> duplicated = reservationQueryRepository.findDuplicatedReservationTime(userId, localDateTimes);
+        if (!duplicated.isEmpty()) {
+            throw new DuplicatedReservationError(duplicated).toException();
         }
     }
 
