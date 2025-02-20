@@ -103,7 +103,7 @@ export default function CustomRouteBooking() {
       <BottomContainer>
         <InfoTextBox>
           <InfoIcon />
-          <DetailText>탑승권은 2일 전까지 예매 가능해요.</DetailText>
+          <DetailText>탑승권은 2일 후부터 예매 가능해요.</DetailText>
         </InfoTextBox>
 
         <TotalEditableViewButton>
