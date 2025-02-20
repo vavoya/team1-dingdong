@@ -25,7 +25,7 @@ export default function SetLocationBottomModal({
   roadAddress,
   showBottomSheet,
 }: setLocationBottomModalProps) {
-  const setToast = useToast("-300px");
+  const setToast = useToast("-250px");
 
   const [houseAndStationInfo] = useLoaderData();
 
@@ -62,10 +62,10 @@ export default function SetLocationBottomModal({
       },
       {
         onSuccess: () => {
-          setToast("주소 설정이 완료되었습니다.");
+          setToast("✅ 주소 설정이 완료되었습니다.");
         },
         onError: () => {
-          setToast("!!주소 설정에 실패했습니다.");
+          setToast("‼️ 주소 설정에 실패했습니다.");
         },
       }
     );
