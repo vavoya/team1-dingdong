@@ -17,28 +17,31 @@ public interface NotificationQueryRepository extends JpaRepository<Notification,
         n.isRead AS isRead,
         r.id AS reservationId,
         CASE
-            WHEN r.direction = 'TO_SCHOOL' THEN l.stationName
-            ELSE u.school.name
+            WHEN r.direction = 'TO_HOME' THEN u.school.name
+            WHEN n.type = 'ALLOCATION_FAILED' THEN "우리집"
+            ELSE l.stationName
         END AS startStationName,
         CASE
             WHEN r.direction = 'TO_SCHOOL' THEN u.school.name
+            WHEN n.type = 'ALLOCATION_FAILED' THEN "우리집"
             ELSE l.stationName
         END AS endStationName,
         r.startDate AS startDate,
         CASE
             WHEN n.type = 'BUS_START' THEN bs.expectedArrivalTime
+            WHEN n.type = 'ALLOCATION_FAILED' THEN r.departureTime
             WHEN r.direction = 'TO_HOME' THEN r.departureTime
             ELSE l.expectedArrivalTime
         END AS expectedStartTime,
         CASE
-            WHEN n.type = 'BUS_START' THEN busSchedule.arrivalTime
+            WHEN n.type = 'BUS_START' THEN ( SELECT bs2.arrivalTime FROM BusSchedule bs2 WHERE bs2.id = r.ticket.busScheduleId )
+            WHEN n.type = 'ALLOCATION_FAILED' THEN r.arrivalTime
             WHEN r.direction = 'TO_HOME' THEN l.expectedArrivalTime
             ELSE r.arrivalTime
         END AS expectedEndTime
     FROM Notification n
     JOIN User u ON n.userId = u.id
     LEFT JOIN Reservation r ON n.reservationId = r.id
-    LEFT JOIN BusSchedule busSchedule ON r.ticket.busScheduleId = busSchedule.id
     LEFT JOIN BusStop bs ON r.ticket.busStopId = bs.id
     LEFT JOIN Location l ON l.id = bs.locationId
     WHERE n.userId = :userId
