@@ -90,12 +90,16 @@ public class SimpleCache<K, V> {
 
     /**
      * 캐시에 해당 키가 존재하는지 확인합니다.
+     * lazy expiration 전략을 사용합니다.
      *
      * @param key 조회할 키
      * @return 키가 존재하면 true, 아니면 false
      */
     public boolean containsKey(K key) {
         CacheEntry<V> entry = map.get(key);
+        if (entry != null && System.currentTimeMillis() > entry.expiryTimeMillis) {
+            map.remove(key);
+        }
         return entry != null;
     }
 
