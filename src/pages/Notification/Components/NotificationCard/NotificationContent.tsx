@@ -14,12 +14,14 @@ export interface NotificationContentProps {
   reservationInfo: ReservationInfo | null;
   type: NotificationType;
   isRead: boolean;
+  money: number | null;
 }
 
 export default function NotificationContent({
   reservationInfo,
   type,
   isRead,
+  money,
 }: NotificationContentProps) {
   const navigate = useNavigate();
 
@@ -33,9 +35,11 @@ export default function NotificationContent({
     </AlarmText>
   );
 
-  const renderWelcomeContent = () => (
+  const renderWelcomeContent = (welcomeDingDongMoney: number) => (
     <AlarmText>
-      <Description>웰컴 포인트로 체험권 2회분이 적립되었어요.</Description>
+      <Description>
+        웰컴 딩동머니로 {welcomeDingDongMoney}원이 적립되었어요.
+      </Description>
       <LinkBox onClick={() => navigate("/home")}>
         버스를 예매해 볼까요?
         <ChevronRightIcon size={18} fill={colors.orange900} />
@@ -51,21 +55,23 @@ export default function NotificationContent({
           reservationInfo={reservationInfo}
           type={type}
           isRead={isRead}
+          money={money}
         />
       );
     case "ALLOCATION_FAILED":
       return (
         <>
-          {renderFailedContent(reservationInfo!.money!)}
+          {renderFailedContent(money!)}
           <TicketCardContent
             isRead={isRead}
             type={type}
+            money={money}
             reservationInfo={reservationInfo}
           />
         </>
       );
     case "WELCOME":
-      return renderWelcomeContent();
+      return renderWelcomeContent(money!);
     default:
       return null;
   }

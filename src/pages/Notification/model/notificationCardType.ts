@@ -11,7 +11,6 @@ export interface ReservationInfo {
   startDate: string; // 2025-02-28 형식
   expectedStartTime: string | null; // ISO date-time
   expectedEndTime: string; // ISO date-time
-  money: number | null; // 환불 금액
 }
 
 export interface NotificationCardType {
@@ -19,56 +18,5 @@ export interface NotificationCardType {
   timeStamp: string; // ISO date-time
   reservationInfo: ReservationInfo | null;
   read: boolean;
+  money: number | null;
 }
-
-// type BaseNotification = {
-//   time: string;
-//   title: string;
-//   departurePoint?: string;
-//   destination?: string;
-//   departureTime?: string;
-//   arrivalTime?: string;
-//   isRead?: boolean;
-// };
-
-// type DepartureNotification = BaseNotification & {
-//   type: "departure";
-//   afterHour: number;
-// };
-
-// type ConfirmedNotification = BaseNotification & {
-//   type: "confirmed";
-//   afterHour: number;
-// };
-
-// type FailedNotification = BaseNotification & {
-//   type: "failed";
-//   bookingDate: number;
-//   refundAmount: number;
-// };
-
-// type WelcomeNotification = BaseNotification & {
-//   type: "welcome";
-// };
-
-// export type NotificationProps =
-//   | WelcomeNotification
-//   | DepartureNotification
-//   | ConfirmedNotification
-//   | FailedNotification;
-
-// interface ReservationInfo {
-//   reservationId: number;
-//   startStationName: string;
-//   endStationName: string;
-//   startDate: string;
-//   expectedStartTime: string;
-//   expectedEndTime: string;
-// }
-
-// interface NotificationResponse {
-//   type: "ALLOCATION_SUCCESS";
-//   timeStamp: string;
-//   reservationInfo: ReservationInfo;
-//   read: boolean;
-// }

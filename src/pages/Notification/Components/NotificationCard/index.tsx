@@ -40,6 +40,7 @@ export default function NotificationCard({
         type={notificationData.type}
         reservationInfo={notificationData.reservationInfo}
         isRead={notificationData.read}
+        money={notificationData.money}
       />
     </Wrapper>
   );
