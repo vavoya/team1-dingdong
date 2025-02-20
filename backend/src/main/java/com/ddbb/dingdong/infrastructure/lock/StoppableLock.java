@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.infrastructure.bus.simulator.subscription;
+package com.ddbb.dingdong.infrastructure.lock;
 
 import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.domain.transportation.service.BusErrors;

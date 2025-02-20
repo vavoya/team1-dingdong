@@ -1,17 +1,13 @@
 package com.ddbb.dingdong.infrastructure.bus.simulator;
 
-import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.StoppableLock;
+import com.ddbb.dingdong.infrastructure.lock.StoppableLock;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Condition;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class BusSubscriptionLockManagerTest {
     private static final Logger log = LoggerFactory.getLogger(BusSubscriptionLockManagerTest.class);

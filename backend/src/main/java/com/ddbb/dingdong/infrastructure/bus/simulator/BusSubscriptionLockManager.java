@@ -1,9 +1,8 @@
 package com.ddbb.dingdong.infrastructure.bus.simulator;
 
 
-import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.domain.transportation.repository.BusScheduleQueryRepository;
-import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.StoppableLock;
+import com.ddbb.dingdong.infrastructure.lock.StoppableLock;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
