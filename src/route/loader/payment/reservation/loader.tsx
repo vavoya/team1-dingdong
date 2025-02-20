@@ -4,6 +4,9 @@ import {queryClient} from "@/main.tsx";
 import {users_home_locations, users_me, users_wallet_balances} from "@/api/query/users";
 import {formatKst} from "@/utils/time/formatKst.ts";
 import handleError from "@/route/loader/handleError.ts";
+import {isAxiosError} from "axios";
+import {PaymentErrorType} from "@/route/error/payment/reservation.tsx";
+import {CustomError} from "@/route/error";
 
 
 export default async function loader({ request, params }: LoaderFunctionArgs) {
@@ -31,6 +34,12 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
         return [...response, schedule];
 
     } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            const code = error.response.data.code;
+            if (code === "ALREADY_HAS_SAME_RESERVATION") {
+                return new CustomError(PaymentErrorType.DUPLICATE_BOOKING)
+            }
+        }
         return handleError(error);
     }
 }
