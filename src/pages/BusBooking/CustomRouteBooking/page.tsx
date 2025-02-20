@@ -57,7 +57,7 @@ export default function CustomRouteBooking() {
           text: "나가기",
           onClick: () => {
             unmountModal();
-            navigate(-1);
+            navigate("/home");
           },
         }}
       />
