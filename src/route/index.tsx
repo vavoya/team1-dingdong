@@ -2,6 +2,7 @@ import {createBrowserRouter} from "react-router-dom";
 import Layout from "@/pages/layout.tsx";
 import dataStrategy from "@/route/dataStrategy.tsx";
 import ErrorPage from "@/pages/Error/page.tsx";
+import {INIT_PAGE, INIT_PAGE_SIZE} from "@/env.ts";
 
 export const router = createBrowserRouter(
     [
@@ -9,6 +10,8 @@ export const router = createBrowserRouter(
             path: "/",
             Component: Layout,
             errorElement: <></>,
+            loader: () => null,
+            shouldRevalidate: () => true,
             children: [
                 {
                     index: true,
@@ -34,8 +37,8 @@ export const router = createBrowserRouter(
                                 return [
                                     usersModule.users_me(),
                                     usersModule.users_reservations({
-                                        page: 0,
-                                        pageSize: 5,
+                                        page: INIT_PAGE,
+                                        pageSize: INIT_PAGE_SIZE,
                                         category: "HOME",
                                         sort: "OLDEST",
                                     }),
@@ -208,31 +211,37 @@ export const router = createBrowserRouter(
                             Component: ReservationsPage,
                             loader: createLoader(() => [
                                 usersModule.users_reservations({
-                                    page: 0,
-                                    pageSize: 10,
+                                    page: INIT_PAGE,
+                                    pageSize: INIT_PAGE_SIZE,
                                     category: "ALL",
                                     sort: "LATEST",
                                 }),
                                 usersModule.users_reservations({
-                                    page: 0,
+                                    page: INIT_PAGE,
                                     category: "ALLOCATED",
                                     sort: "OLDEST",
                                 }),
                                 usersModule.users_reservations({
-                                    page: 0,
-                                    pageSize: 10,
+                                    page: INIT_PAGE,
+                                    pageSize: INIT_PAGE_SIZE,
                                     category: "PENDING",
                                     sort: "OLDEST",
                                 }),
                                 usersModule.users_reservations({
-                                    page: 0,
-                                    pageSize: 10,
+                                    page: INIT_PAGE,
+                                    pageSize: INIT_PAGE_SIZE,
+                                    category: "FAIL_ALLOCATED",
+                                    sort: "OLDEST",
+                                }),
+                                usersModule.users_reservations({
+                                    page: INIT_PAGE,
+                                    pageSize: INIT_PAGE_SIZE,
                                     category: "ENDED",
                                     sort: "OLDEST",
                                 }),
                                 usersModule.users_reservations({
-                                    page: 0,
-                                    pageSize: 10,
+                                    page: INIT_PAGE,
+                                    pageSize: INIT_PAGE_SIZE,
                                     category: "CANCELED",
                                     sort: "OLDEST",
                                 }),
