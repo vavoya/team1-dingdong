@@ -45,7 +45,6 @@ export default function BusSelectMap({
   useKakaoLoader();
 
   const { houseInfo } = useLoaderData()[1];
-  console.log(houseInfo, "!!!!!!!");
 
   const { startPoint, endPoint } = locationToMarkOnMap;
   const userLocation = useCurrentLocation();
@@ -90,7 +89,6 @@ export default function BusSelectMap({
     return () => window.removeEventListener("resize", handleResize);
   }, [locationToMarkOnMap]);
 
-  console.log(houseInfo.latitude);
   return (
     <MapWrapper>
       <Map
