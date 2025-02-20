@@ -26,7 +26,7 @@ public class WebPushNotificationEventListener {
     private final BusScheduleQueryRepository busScheduleQueryRepository;
 
     @Async
-    @EventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     protected void sendAllocationSuccessNotification(AllocationSuccessEvent event) {
         NotificationMessage successMessage = messageFormatter.allocateSuccess();
@@ -34,7 +34,7 @@ public class WebPushNotificationEventListener {
     }
 
     @Async
-    @EventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     protected void sendAllocationFailNotification(AllocationFailedEvent event) {
         NotificationMessage notificationMessage = messageFormatter.allocateFail();
@@ -42,7 +42,7 @@ public class WebPushNotificationEventListener {
     }
 
     @Async
-    @EventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     protected void sendBusStartNotification(BusDepartureEvent event) {
         List<BusStopArrivalTime> arrivalTimes = busScheduleQueryRepository.findBusStopArrivalTime(event.getBusStopIds());
