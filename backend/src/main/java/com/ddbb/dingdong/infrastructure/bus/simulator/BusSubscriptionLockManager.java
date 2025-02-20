@@ -1,16 +1,33 @@
 package com.ddbb.dingdong.infrastructure.bus.simulator;
 
 
+import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
+import com.ddbb.dingdong.domain.transportation.repository.BusScheduleQueryRepository;
 import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.StoppableLock;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+@RequiredArgsConstructor
 public class BusSubscriptionLockManager {
+    private final BusScheduleQueryRepository busScheduleQueryRepository;
     private final Map<Long, StoppableLock> locks = new ConcurrentHashMap<>();
+
+    @PostConstruct
+    private void init() {
+        List<Long> busSchedules = busScheduleQueryRepository.findLiveBusSchedule();
+        for (Long busScheduleId : busSchedules) {
+            System.out.println(busScheduleId);
+            locks.put(busScheduleId, new StoppableLock());
+        }
+    }
+
 
     public Optional<StoppableLock> getLock(long busScheduleId) {
         StoppableLock stampedLock = locks.get(busScheduleId);
