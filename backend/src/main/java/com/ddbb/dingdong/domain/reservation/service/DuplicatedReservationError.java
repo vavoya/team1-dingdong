@@ -19,4 +19,9 @@ public class DuplicatedReservationError implements ErrorInfo {
         times.forEach(time -> desc.append(time).append("\n"));
         return desc.toString();
     }
+
+    @Override
+    public String getCode() {
+        return "ALREADY_HAS_SAME_RESERVATION";
+    }
 }
