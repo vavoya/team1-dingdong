@@ -48,7 +48,7 @@ export default function SchoolAuthSignUp() {
         setDuplicateEmail(true);
       },
     });
-  }, 1500);
+  }, 500);
 
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
     // 몇 초에 한 번씩만 post 요청 보내서 중복 체크.
@@ -70,7 +70,7 @@ export default function SchoolAuthSignUp() {
     });
   };
   useEffect(() => {
-    if (isValidEmailFormat(email) && selectdSchoolId > 0) {
+    if (isValidEmailFormat(email) && selectdSchoolId > 0 && !duplicateEmail) {
       setNextButtonActive(true);
     } else setNextButtonActive(false);
   }, [email, selectdSchoolId]);
