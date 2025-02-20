@@ -78,9 +78,7 @@ export default function CalendarView({
       );
       setRecommendationDates(finalRecommendationDates);
     }
-
   }, [TimeTableRecommendationArray, currentMonthIndex]);
-
 
   const makingTimeTableSuggestion = () => {
     const { render, unmountModal } = mountModal();
@@ -135,21 +133,19 @@ export default function CalendarView({
     }
   }, [isTimeSelectModalOpen]);
 
-  console.log(recommendationDates);
   const handleAIRecommendation = () => {
     // AI 추천 로직 (API 호출 등)
     setToolTipOn(false);
+
     if (AIBtnToggles[currentMonthIndex]) {
       dispatch(
         timeScheduleActions.clearAIRecommendations({
-          year: selectedDate.year,
-          month: selectedDate.month,
+          year: currentDate.year,
+          month: currentDate.month + 1, // 현재 달력에서 선택된 날짜.
         })
       );
     } else {
-
       if (recommendationDates?.length === 0) {
-
         // 모달 호출
         makingTimeTableSuggestion();
         return;
