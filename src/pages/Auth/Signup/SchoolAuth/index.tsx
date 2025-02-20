@@ -17,10 +17,15 @@ import CustomFormWrapper from "../../Components/FormWrapper";
 import { isValidEmailFormat } from "@/utils/login/emailValidation";
 import Dropdown from "../../Components/Dropdown";
 
+import { usePostCheckDuplicateEmail } from "@/hooks/SignUp/useSignUp";
+import { useDebounce } from "@/hooks/Debounce/useDebounce";
+
 export default function SchoolAuthSignUp() {
   const { schools: schoolList } = useLoaderData()[0];
 
   const [email, setEmail] = useState("");
+  const { postPostCheckDuplicateEmailMutation } = usePostCheckDuplicateEmail();
+
   const [emailFormatHasError, setEmailFormatHasError] = useState(false);
 
   const [nextButtonActive, setNextButtonActive] = useState(false);
@@ -32,7 +37,25 @@ export default function SchoolAuthSignUp() {
 
   const navigate = useNavigate();
 
+  const [duplicateEmail, setDuplicateEmail] = useState(false);
+
+  const debounceCheckEmail = useDebounce((email: string) => {
+    postPostCheckDuplicateEmailMutation(email, {
+      onSuccess: () => {
+        setDuplicateEmail(false);
+      },
+      onError: () => {
+        setDuplicateEmail(true);
+      },
+    });
+  }, 1500);
+
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
+    // 몇 초에 한 번씩만 post 요청 보내서 중복 체크.
+    if (isValidEmailFormat(e.target.value)) {
+      debounceCheckEmail(e.target.value);
+    }
+
     setEmail(e.target.value);
   };
 
@@ -74,10 +97,16 @@ export default function SchoolAuthSignUp() {
               onChange={handleEmailChange}
             />
           </EmailInputWrapper>
-          {emailFormatHasError && (
+          {emailFormatHasError ? (
             <VerificationTimeText $hasError={emailFormatHasError}>
               올바른 이메일 형식이 아닙니다.
             </VerificationTimeText>
+          ) : duplicateEmail ? (
+            <VerificationTimeText $hasError={duplicateEmail}>
+              중복된 이메일입니다.
+            </VerificationTimeText>
+          ) : (
+            <></>
           )}
         </EmailFormWrapper>
 

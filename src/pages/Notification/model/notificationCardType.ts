@@ -1,7 +1,8 @@
 export type NotificationType =
   | "ALLOCATION_SUCCESS"
   | "ALLOCATION_FAILED"
-  | "BUS_START";
+  | "BUS_START"
+  | "WELCOME";
 
 export interface ReservationInfo {
   reservationId: number;
@@ -16,7 +17,7 @@ export interface ReservationInfo {
 export interface NotificationCardType {
   type: NotificationType;
   timeStamp: string; // ISO date-time
-  reservationInfo: ReservationInfo;
+  reservationInfo: ReservationInfo | null;
   read: boolean;
 }
 

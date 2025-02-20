@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { colors } from "@/styles/colors";
 import { Body1Medium, Body2Regular } from "@/styles/typography";
 
-export const PageWrapper = styled.div``;
 export const RouteMarkHeader = styled.div`
   display: flex;
   justify-content: space-between;

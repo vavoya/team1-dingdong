@@ -6,11 +6,13 @@ import NotificationContent from "./NotificationContent";
 import NotificationIcon from "./NotificationIcon";
 
 interface NotificationCardProps {
+  $cursorPointer: boolean;
   onClick: () => void;
   notificationData: NotificationCardType;
 }
 
 export default function NotificationCard({
+  $cursorPointer,
   onClick,
   notificationData,
 }: NotificationCardProps) {
@@ -18,10 +20,15 @@ export default function NotificationCard({
     ALLOCATION_SUCCESS: "배차 확정 안내!",
     ALLOCATION_FAILED: "배차 실패 입금",
     BUS_START: "출발 안내",
+    WELCOME: "환영 해요",
   };
 
   return (
-    <Wrapper $isRead={notificationData.read} onClick={onClick}>
+    <Wrapper
+      $isRead={notificationData.read}
+      onClick={onClick}
+      $cursorPointer={$cursorPointer}
+    >
       <Subtitle>
         <Title>
           <NotificationIcon type={notificationData.type} />

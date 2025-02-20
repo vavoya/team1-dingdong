@@ -2,7 +2,10 @@ import { colors } from "@/styles/colors";
 import { Body2Regular, Body2SemiBold } from "@/styles/typography";
 import styled from "styled-components";
 
-export const Wrapper = styled.div<{ $isRead?: boolean }>`
+export const Wrapper = styled.div<{
+  $isRead?: boolean;
+  $cursorPointer: boolean;
+}>`
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -10,7 +13,7 @@ export const Wrapper = styled.div<{ $isRead?: boolean }>`
   position: relative;
 
   background-color: ${({ $isRead }) => ($isRead ? "white" : colors.orange50)};
-  cursor: pointer;
+  cursor: ${({ $cursorPointer }) => ($cursorPointer ? "pointer" : "default")};
   border-bottom: 1px solid ${colors.gray20};
 `;
 

@@ -21,18 +21,20 @@ interface setLocationBottomModalProps {
   showBottomSheet: boolean;
 }
 export default function SetLocationBottomModal({
+  stationInfo,
   roadAddress,
   showBottomSheet,
 }: setLocationBottomModalProps) {
-  const setToast = useToast("-500px");
+  const setToast = useToast("-300px");
 
   const [houseAndStationInfo] = useLoaderData();
-  const { stationInfo } = houseAndStationInfo;
+
+  const { stationInfo: serverStationInfo } = houseAndStationInfo;
 
   const { putHomeLocationMutation } = usePutStationLocation();
 
   const [addressNickname, setAddressNickname] = useState(
-    stationInfo ? stationInfo.name : ""
+    serverStationInfo ? serverStationInfo.name : ""
   );
   const [isNicknameValid, setIsNicknameValid] = useState(
     nicknameValidator(addressNickname)

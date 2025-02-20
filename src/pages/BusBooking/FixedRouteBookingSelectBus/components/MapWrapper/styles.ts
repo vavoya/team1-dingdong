@@ -4,9 +4,9 @@ import { Detail1Medium } from "@/styles/typography";
 import styled from "styled-components";
 
 // 위치
-export const MapContainer = styled.div``;
+
 export const MapWrapper = styled.section`
-  height: calc(100% - 60px);
+  height: calc(100% - 60px - 57px - 280px);
 `;
 
 export const PinContainer = styled.div`
@@ -20,10 +20,25 @@ export const HomePinContainer = styled.div`
   align-items: center;
 `;
 
-export const HomePinMark = styled.div`
+export const UserHomePinContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const UserHomePinMark = styled.div`
   display: flex;
   width: auto;
-
+  height: 30px;
+  width: 30px;
+  justify-content: center;
+  border-radius: 8px;
+  align-items: center;
+  background-color: ${colors.orange900};
+`;
+export const HomePinMark = styled.div`
+  display: flex;
+  height: 36px;
   width: auto;
   justify-content: center;
   border-radius: 8px;

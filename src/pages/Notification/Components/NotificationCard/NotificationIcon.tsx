@@ -16,7 +16,7 @@ export default function NotificationIcon({ type }: NotificationIconProps) {
     BUS_START: <BellIcon />,
     ALLOCATION_SUCCESS: <BusIcon fill={colors.gray90} width={15} height={18} />,
     ALLOCATION_FAILED: <BusFailIcon />,
-    welcome: <SmileIcon />,
+    WELCOME: <SmileIcon />,
   };
 
   return iconMap[type] || null;

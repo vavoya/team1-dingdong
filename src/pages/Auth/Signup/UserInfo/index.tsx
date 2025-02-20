@@ -11,7 +11,6 @@ import { useDaumPostcodePopup } from "react-daum-postcode";
 import { SCRIPT_URLS } from "@/constants/daumPostCode";
 import {
   isValidNameFormat,
-  isValidPhoneNumber,
   phoneNumberFormat,
 } from "@/utils/signUp/userInfoFormatValidation";
 import { usePostUserInfo } from "@/hooks/SignUp/useSignUp";
@@ -22,6 +21,9 @@ import {
 
 import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader";
 import { handleAllowNotification } from "@/webPushNotification/handleAllowNotification";
+import { AxiosError } from "axios";
+import { mountModal } from "@/components/Loading";
+import Modal from "@/components/Modal";
 
 // 예시 타입들
 
@@ -40,18 +42,16 @@ export default function UserInfoSignup() {
   const [formData, setFormData] = useState({
     name: "",
     address: "",
-    addressNickname: "",
-    phoneNumber: "",
+    addressNickname: "우리집",
   });
   const [homeGeoLocation, setHomeGeoLocation] =
     useState<GeoLocationType | null>(null);
 
   useEffect(() => {
-    // 직접 링크 접속시, 데이터가 없다면 다시 이동.
-    // if (!location.state) {
-    //   navigate("/signup");
-    //   return;
-    // }
+    if (!location.state) {
+      navigate("/signup");
+      return;
+    }
 
     userInfoFromPreviousStep.current = location.state;
   }, []);
@@ -88,6 +88,17 @@ export default function UserInfoSignup() {
 
   useGeoLocationAddress(formData.address, setHomeGeoLocation);
 
+  const renderSignUpErrorModal = (errorMessage: string) => {
+    const { render, unmountModal } = mountModal();
+    render(
+      <Modal
+        title={["❗회원가입 실패"]}
+        text={[`${errorMessage}`]}
+        leftButton={{ text: "확인", onClick: unmountModal }}
+      />
+    );
+  };
+
   const handleClick = () => {
     open({ onComplete: handleComplete });
   };
@@ -99,8 +110,7 @@ export default function UserInfoSignup() {
   const submitButtonActive =
     isValidNameFormat(formData.name) &&
     formData.address.length > 0 &&
-    formData.addressNickname.length > 0 &&
-    isValidPhoneNumber(formData.phoneNumber);
+    formData.addressNickname.length > 0;
 
   const submitUserInfoHandler = () => {
     if (!homeGeoLocation) return;
@@ -121,8 +131,13 @@ export default function UserInfoSignup() {
         navigate("/home");
         handleAllowNotification(); // 웹 푸시 알림 셋팅을 위한 요청.
       },
-      onError: () => {
-        // 에러 핸들링. 회원 가입 실패 에러 모달
+      onError: (error: Error) => {
+        const err = error as AxiosError<{ message: string }>;
+        if (err.response) {
+          renderSignUpErrorModal(err.response.data.message);
+        } else {
+          console.log("Unknown error occurred");
+        }
       },
     });
   };
@@ -149,7 +164,8 @@ export default function UserInfoSignup() {
           label="주소"
           value={formData.address}
           onChange={handleChange}
-          placeholder="주소를 입력해주세요"
+          placeholder="클릭해서 주소를 선택해주세요"
+          readonly={true}
         />
 
         <CustomInput
@@ -158,14 +174,6 @@ export default function UserInfoSignup() {
           value={formData.addressNickname}
           onChange={handleChange}
           placeholder="주소 별칭을 설정해주세요"
-        />
-        <CustomInput
-          name="phoneNumber"
-          label="연락처"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-          placeholder="연락처를 입력해주세요"
-          maxLength={13}
         />
       </CustomFormWrapper>
       <NextButtonWrapper>

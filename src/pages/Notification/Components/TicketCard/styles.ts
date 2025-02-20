@@ -32,7 +32,11 @@ export const CardContainer = styled.div`
 `;
 
 export const Banner = styled(Body2SemiBold).attrs({ as: "div" })<{
-  $cardType: "ALLOCATION_SUCCESS" | "ALLOCATION_FAILED" | "BUS_START";
+  $cardType:
+    | "ALLOCATION_SUCCESS"
+    | "ALLOCATION_FAILED"
+    | "BUS_START"
+    | "WELCOME";
 }>`
   background-color: ${({ $cardType }) =>
     $cardType === "ALLOCATION_SUCCESS" || "BUS_START"

@@ -13,7 +13,7 @@ export interface StationLocationInfo {
 
 export const useGetHomeLocation = () => {
   const { data } = useQuery({
-    queryKey: ["houseInfo"],
+    queryKey: ["stationInfo"],
     queryFn: getHomeLocationAndStation,
   });
 
@@ -30,7 +30,7 @@ export const usePutStationLocation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["setHomeLocation"],
+        queryKey: ["/api/users/home/locations"],
       });
     },
   });

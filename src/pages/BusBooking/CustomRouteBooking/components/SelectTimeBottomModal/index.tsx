@@ -1,6 +1,6 @@
 import BottomOverlayModal from "@/pages/BusBooking/Components/BottomOverlayModal";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as S from "./styles";
 import CancelButton from "@/components/designSystem/Button/OutlineButton";
 import SolidButton from "@/components/designSystem/Button/SolidButton";
@@ -27,6 +27,7 @@ import {
 } from "@/utils/calendar/timeWheelUtils";
 import Modal from "@/components/Modal";
 import { mountModal } from "@/components/Loading";
+import { useDebounce } from "@/hooks/Debounce/useDebounce";
 
 interface SelectTimeBottomModalProps {
   selectedDate: selectedDateType; // 모달에서 현재 선택된 시간
@@ -57,24 +58,6 @@ export default function SelectTimeBottomModal({
   );
 
   const timeWheelRef = useRef<TimeWheelHandle>(null);
-
-  // 디바운스 훅 생성
-  function useDebounce<T>(callback: (...args: T[]) => void, delay: number) {
-    const timeoutRef = useRef<NodeJS.Timeout>();
-
-    return useCallback(
-      (...args: T[]) => {
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-
-        timeoutRef.current = setTimeout(() => {
-          callback(...args);
-        }, delay);
-      },
-      [callback, delay]
-    );
-  }
 
   const handleTimeChange = useDebounce(
     // 이벤트 발생한지 2초 간 움직임이 없다면 reset
@@ -109,14 +92,17 @@ export default function SelectTimeBottomModal({
       const { render, unmountModal } = mountModal();
 
       const { hour, minute, morningOrNoon } = timeAvailability;
+
       // 오전 hour: minute ~ 오후 6시나 9시. 버스 예매 가능 시간대를 선택해 주세요.
       const noonOrNot = morningOrNoon === 1 ? "오후" : "오전";
       const lastTime = commuteType === "등교" ? 6 : 9;
       const minMinute = minute <= 0 ? "" : `${minute}분`;
-      const des = `${noonOrNot} ${hour}시 ${minMinute} ~ 오후 ${lastTime}시 까지 가능해요`;
+      const des = `${noonOrNot} ${
+        hour > 12 ? hour - 12 : hour
+      }시 ${minMinute} ~ 오후 ${lastTime}시 까지 가능해요`;
       render(
         <Modal
-          title={[`버스 예약 시간을\n 조정해주세요.`]}
+          title={[`버스 예약 시간을 조정해주세요.`]}
           text={[`${des}`]}
           isError={false}
           leftButton={{

@@ -13,6 +13,7 @@ interface CustomInputProps {
   type?: string;
   starNeed?: boolean;
   maxLength?: number;
+  readonly?: boolean;
 }
 
 export default function CustomInput({
@@ -26,6 +27,7 @@ export default function CustomInput({
   type = "text",
   starNeed = true,
   onClick,
+  readonly = false,
 }: CustomInputProps) {
   return (
     <InputWrapper>
@@ -42,6 +44,7 @@ export default function CustomInput({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
+          readOnly={readonly}
         />
       </InputContainer>
     </InputWrapper>

@@ -22,8 +22,8 @@ import { useCustomNavigate } from "@/hooks/useNavigate";
 
 import Modal from "@/components/Modal";
 import { transformSchedules } from "@/utils/fixedBusBooking/busTimeScheduleStringToObject";
-import { TEMP_DATE } from "@/constants/busTimeScheduleTempData";
 import { mountModal } from "@/components/Loading";
+import { colors } from "@/styles/colors";
 // import { useGetAvailableBusInfo } from "@/hooks/BusBooking/useFixedBooking";
 
 export interface SelectedTimeType {
@@ -67,7 +67,7 @@ export default function FixedRouteBooking() {
   const busTimeSchedule =
     busTimeResponse?.data?.data?.schedules.length > 0
       ? busTimeResponse?.data?.data?.schedules
-      : TEMP_DATE;
+      : [];
 
   const sortedBusTimeSchedule = busTimeSchedule.sort(
     (a: string, b: string) => new Date(a).getTime() - new Date(b).getTime()
@@ -150,7 +150,14 @@ export default function FixedRouteBooking() {
         setCommuteType={setCommuteType}
       />
 
-      <DescriptionText>일자를 선택해 시각을 선택해주세요</DescriptionText>
+      {busTimeSchedule.length === 0 ? (
+        <DescriptionText $color={colors.orange900}>
+          ‼️ 현재 {commuteType}시 확정된 버스가 없습니다
+        </DescriptionText>
+      ) : (
+        <DescriptionText>일자를 선택해 시각을 선택해주세요</DescriptionText>
+      )}
+
       <FixedBookingCalendarView
         busTimeSchedule={sortedBusTimeSchedule}
         selectedDate={selectedDate}

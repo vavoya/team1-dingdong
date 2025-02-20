@@ -12,6 +12,10 @@ export const handleAllowNotification = async () => {
       return "denied";
     } else if (status === "granted") {
       try {
+        if (!("Notification" in window) || !("serviceWorker" in navigator)) {
+          console.log("해당 브라우저는 웹 푸시 알림을 지원하지 않습니다.");
+          return;
+        }
         // 서비스 워커 등록 완료를 기다림
         await registerServiceWorker();
         const token = await getDeviceToken(); // 최대 3번까지 재시도

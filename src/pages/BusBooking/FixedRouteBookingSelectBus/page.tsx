@@ -90,7 +90,6 @@ const BUS_PATH = [
 export default function FixedRouteBookingSelectBus() {
   const userLocation = useCurrentLocation();
 
- 
   // const schoolLocation = { latitue: 37.4602, longitude: 126.9517 }; // 임시 값. 서울대
 
   const { direction, timeSchedule } = JSON.parse(
@@ -122,8 +121,6 @@ export default function FixedRouteBookingSelectBus() {
 
   const mapJitter = useRef<number>(0.00000001);
 
-
-
   const userBusStop = {
     // 유저 승차지 또는 하자치 위치
     lat: busInfoArray[selectedBusCardIndex].busStop.latitude,
@@ -136,12 +133,9 @@ export default function FixedRouteBookingSelectBus() {
     setMapCenterLocation({ center: { ...userBusStop }, isPanto: false });
   }, [selectedBusCardIndex]);
 
- 
-
   const selectedBusPath = useGetBusPath(
     busInfoArray[selectedBusCardIndex].busScheduleId
   );
-  
 
   const selectedBusPathPoints =
     selectedBusPath.data?.data?.points.length > 0
@@ -177,8 +171,6 @@ export default function FixedRouteBookingSelectBus() {
     setBusPathPoints(selectedBusPathPoints);
     setBusStopName(busInfoArray[selectedBusCardIndex].busStop.name);
   }, [selectedBusCardIndex]);
-
-
 
   return (
     <>
