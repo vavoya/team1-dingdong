@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.infrastructure.bus.simulator.subscription;
+package com.ddbb.dingdong.infrastructure.bus.subscription;
 
 import com.ddbb.dingdong.domain.common.exception.DomainException;
 import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;

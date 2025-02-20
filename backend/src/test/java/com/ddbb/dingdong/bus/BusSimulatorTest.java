@@ -1,13 +1,13 @@
 package com.ddbb.dingdong.bus;
 
 import com.ddbb.dingdong.infrastructure.bus.simulator.BusSubscriptionLockManager;
-import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.BusSubscriptionManager;
-import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.UserSubscription;
+import com.ddbb.dingdong.infrastructure.bus.subscription.BusSubscriptionManager;
+import com.ddbb.dingdong.infrastructure.bus.subscription.UserSubscription;
 import com.ddbb.dingdong.domain.transportation.service.BusPublishService;
 import com.ddbb.dingdong.infrastructure.bus.simulator.segment.RouteSegmentProvider;
 import com.ddbb.dingdong.infrastructure.bus.simulator.segment.impl.TMapStubRouteSegmentProvider;
 import com.ddbb.dingdong.infrastructure.bus.simulator.BusSimulatorFactory;
-import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.subscriber.StubConsoleSubscriber;
+import com.ddbb.dingdong.infrastructure.bus.subscription.subscriber.StubConsoleSubscriber;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.*;

@@ -3,7 +3,7 @@ package com.ddbb.dingdong.infrastructure.bus.simulator;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.source.BusSimulator;
+import com.ddbb.dingdong.infrastructure.bus.subscription.source.BusSimulator;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 

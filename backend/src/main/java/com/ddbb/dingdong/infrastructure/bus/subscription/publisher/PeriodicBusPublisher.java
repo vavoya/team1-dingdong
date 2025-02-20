@@ -1,6 +1,6 @@
-package com.ddbb.dingdong.infrastructure.bus.simulator.subscription.publisher;
+package com.ddbb.dingdong.infrastructure.bus.subscription.publisher;
 
-import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.BusSubscriptionManager;
+import com.ddbb.dingdong.infrastructure.bus.subscription.BusSubscriptionManager;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.*;
