@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.infrastructure.auth.encrypt;
+package com.ddbb.dingdong.infrastructure.auth.encrypt.token;
 
 import com.ddbb.dingdong.domain.common.exception.ErrorInfo;
 

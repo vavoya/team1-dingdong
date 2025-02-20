@@ -1,7 +1,7 @@
 package com.ddbb.dingdong.auth;
 
 import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.SHA512Encoder;
-import com.ddbb.dingdong.infrastructure.auth.encrypt.PasswordEncoder;
+import com.ddbb.dingdong.infrastructure.auth.encrypt.password.PasswordEncoder;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

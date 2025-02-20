@@ -15,7 +15,7 @@ import com.ddbb.dingdong.domain.transportation.entity.BusSchedule;
 import com.ddbb.dingdong.domain.transportation.entity.BusStop;
 import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.domain.transportation.repository.BusScheduleRepository;
-import com.ddbb.dingdong.infrastructure.auth.encrypt.TokenManager;
+import com.ddbb.dingdong.infrastructure.auth.encrypt.token.TokenManager;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

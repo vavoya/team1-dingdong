@@ -1,4 +1,4 @@
-package com.ddbb.dingdong.infrastructure.auth.encrypt;
+package com.ddbb.dingdong.infrastructure.auth.encrypt.password;
 
 import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.SHA512Encoder;
 import lombok.RequiredArgsConstructor;

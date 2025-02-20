@@ -10,7 +10,7 @@ import com.ddbb.dingdong.domain.reservation.service.ReservationManagement;
 import com.ddbb.dingdong.domain.transportation.entity.BusSchedule;
 import com.ddbb.dingdong.domain.transportation.entity.BusStop;
 import com.ddbb.dingdong.domain.transportation.repository.BusScheduleRepository;
-import com.ddbb.dingdong.infrastructure.auth.encrypt.TokenManager;
+import com.ddbb.dingdong.infrastructure.auth.encrypt.token.TokenManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
