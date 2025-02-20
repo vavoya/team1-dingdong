@@ -39,12 +39,20 @@ export const ArrivalTime = styled.p`
 
 export const SelectedScheduleWrapper = styled.div`
   margin-top: 4px;
+    display: flex
+    flex-direction: column;
+    gap: 10px;
+    padding: 0px 20px 20px 20px;
+`;
+
+export const ScheduleBoxWrapper = styled.div<{ $maxHeight: string }>`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 0px 20px 44px 20px;
+  max-height: ${(props) =>
+    props.$maxHeight === "editable" ? "430px" : "320px"};
+  overflow: scroll;
 `;
-
 export const ScheduleBox = styled.div`
   display: flex;
   padding: 4px 0px;
