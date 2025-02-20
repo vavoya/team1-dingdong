@@ -14,10 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.YearMonth;
+import java.time.*;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -76,9 +73,8 @@ public class ReservationManagement {
     }
 
     public void validateGeneralReservationDate(LocalDateTime reservationDate , Direction direction) {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime deadLine = reservationDate.minusHours(48).minusMinutes(5);
-        LocalDateTime maxDate = now.plusMonths(2);
+        LocalDate allowedDate = LocalDate.now().plusDays(2);
+        LocalDate maxAllowedDate = allowedDate.plusMonths(2);
 
         if(reservationDate.getMinute() != 0 && reservationDate.getMinute() != 30) {
             throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
@@ -92,10 +88,12 @@ public class ReservationManagement {
                 throw ReservationErrors.NOT_SUPPORTED_RESERVATION_TIME.toException();
             }
         }
-        if(now.isAfter(deadLine)){
+
+        LocalDate reservationDay = reservationDate.toLocalDate();
+        if (reservationDay.isBefore(allowedDate)) {
             throw ReservationErrors.EXPIRED_RESERVATION_DATE.toException();
         }
-        if(reservationDate.isAfter(maxDate)){
+        if (reservationDay.isAfter(maxAllowedDate)) {
             throw ReservationErrors.EXCEEDED_RESERVATION_DATE.toException();
         }
 
