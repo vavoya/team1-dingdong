@@ -59,9 +59,8 @@ export const isBookingTimeAvailable = (
   commuteType: CommuteType
 ): BookingTimeResult => {
   const now = new Date();
-  const TWO_DAYS_AND_FIVE_MINUTES = 48 * 60 * 60 + 5 * 60; // in seconds
+
   const TWO_DAYS = 48 * 60 * 60; // in seconds
-  const ONE_DAY = 24 * 60 * 60; // in seconds
 
   // 버스 운영시간
   const busOperatingHours: Record<CommuteType, BusOperatingHours> = {
@@ -72,66 +71,15 @@ export const isBookingTimeAvailable = (
   const operatingHours = busOperatingHours[commuteType];
 
   // 초기 최소 예약 가능 시간 (48시간 + 5분 후)
-  let minDate = new Date(now.getTime() + TWO_DAYS_AND_FIVE_MINUTES * 1000);
+  let minDate = new Date(now.getTime() + TWO_DAYS * 1000);
 
-  // 운영 종료 시간 이후인 경우만 다음날로 설정
-  if (minDate.getHours() >= operatingHours.end) {
-    minDate = new Date(minDate.getTime() + ONE_DAY * 1000);
-    minDate.setHours(operatingHours.start, 0, 0, 0);
-  }
+  minDate.setHours(0, 0, 0, 0);
 
   // 초기 최대 예약 가능 시간 (48시간 후 + 2달)
   let maxDate = new Date(now.getTime() + TWO_DAYS * 1000);
-  maxDate.setMonth(maxDate.getMonth() + 2);
+  maxDate.setHours(0, 0, 0, 0);
 
-  // 운영 시작 시간 이전인 경우만 전날로 설정
-  if (maxDate.getHours() < operatingHours.start) {
-    maxDate = new Date(maxDate.getTime() - ONE_DAY * 1000);
-    maxDate.setHours(operatingHours.end - 1, 59, 59, 999);
-  }
-
-  // 선택된 날짜가 첫째 날인지 확인
-  const isFirstDay = selectedDate.toDateString() === minDate.toDateString();
-  // 선택된 날짜가 마지막 날인지 확인
-  const isLastDay = selectedDate.toDateString() === maxDate.toDateString();
-
-  // 1. 첫째 날 선택 시
-  if (isFirstDay) {
-    if (selectedDate.getTime() < minDate.getTime()) {
-      const minutes = minDate.getMinutes();
-      if (minutes > 0 && minutes < 30) {
-        return {
-          isAvailable: false,
-          suggestedTime: {
-            hour: minDate.getHours(),
-            minute: 30,
-          },
-        };
-      }
-      return {
-        isAvailable: false,
-        suggestedTime: {
-          hour: minDate.getHours() + 1,
-          minute: 0,
-        },
-      };
-    }
-  }
-
-  // 2. 마지막 날 선택 시
-  if (isLastDay) {
-    if (selectedDate.getTime() > maxDate.getTime()) {
-      return {
-        isAvailable: false,
-        suggestedTime: {
-          hour: maxDate.getHours(),
-          minute: 0,
-        },
-      };
-    }
-  }
-
-  // 3. 운영 시간 체크
+  //  운영 시간 체크
   const currentHour = selectedDate.getHours();
   const currentMinutes = selectedDate.getMinutes();
 
