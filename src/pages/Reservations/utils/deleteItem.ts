@@ -58,6 +58,8 @@ export async function deleteItem (deletedReservationId: number, reservationsObj:
 
     // 예매 취소 캐시 제거
     removeReservationCache('CANCELED')
+    removeReservationCache('ALL')
+    removeReservationCache('HOME')
 
     // 배차 대기는 쿼리 데이터를 직접 수정해서 필요 없을 듯
 
