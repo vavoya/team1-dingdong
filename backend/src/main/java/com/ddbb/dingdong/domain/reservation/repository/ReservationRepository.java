@@ -23,4 +23,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     AND r.userId = :userId
     AND CAST(r.status AS STRING) IN ('PENDING', 'ALLOCATED')
     """)
-    boolean existsActiveReservation(@Param("time") LocalDateTime time, @Param("userId") Long userId);}
+    boolean existsActiveReservation(@Param("time") LocalDateTime time, @Param("userId") Long userId);
+}
