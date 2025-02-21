@@ -10,7 +10,6 @@ import { queryClient } from "@/main";
 import { bus_info_array_interface } from "@/api/query/fixedBusSelect.ts";
 
 export const fixedRouteBookingLoader = async () => {
-  console.log("✅ loader 실행됨!");
 
   const [userMe, userHomeLocation] = await Promise.all([
     queryClient.ensureQueryData(users_me()),

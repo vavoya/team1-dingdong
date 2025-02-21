@@ -21,7 +21,6 @@ export const useAddress = (
 
   useEffect(() => {
     if (!isKakaoLoaded || !position) return;
-    console.log(position);
     const fetchAddress = async () => {
       try {
         const address = await getAddressFromCoords(position.lat, position.lng);

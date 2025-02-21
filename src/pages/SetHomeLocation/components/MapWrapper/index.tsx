@@ -51,7 +51,6 @@ export default function SetLocationHomeMap({
 
     const center = mapRef.current.getCenter();
 
-    console.log(center.getLat(), center.getLng(), "좌표 좌푠");
     setCenterPosition({
       lat: center.getLat(),
       lng: center.getLng(),
