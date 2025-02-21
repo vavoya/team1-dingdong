@@ -1,5 +1,5 @@
 import {Wrapper} from "@/pages/Wallet/component/HistoryList/styles.ts";
-import {users_wallet_history, users_wallet_history_interface} from "@/api/query/users";
+import {users_wallet_history_interface} from "@/api/query/users";
 import {
     History,
     HistoryAmount,
@@ -8,47 +8,25 @@ import {
     HistoryStatus,
     HistoryStatusBox
 } from "@/pages/Wallet/component/HistoryList/styles.ts";
-import {useEffect, useRef, useState} from "react";
 import {getKstFormattedLabelPair} from "@/utils/time/getKstFormattedLabelPair.ts";
 import LoadingCard from "@/pages/Home/component/LoadingCard";
-import {queryClient} from "@/main.tsx";
+import {getNextHistories} from "@/pages/Wallet/utils/getNextHistories.ts";
+import {useRevalidator} from "react-router-dom";
 
 
-export default function HistoryList({histories}: {histories: users_wallet_history_interface}) {
-    const [contents, setContents] = useState<users_wallet_history_interface['histories']['content']>([...histories.histories.content]);
-    const contentSizeRef = useRef({
-        page: histories.histories.page.number,
-        pageSize: 20,
-    })
-    const [isLast, setIsLast] = useState<boolean>(false);
-
-    const getNextHistories = (errorCallbackF: Function) => {
-        queryClient.fetchQuery(users_wallet_history({
-            page: contentSizeRef.current.page + 1,
-            pageSize: contentSizeRef.current.pageSize,
-        })).then((result) => {
-            const newContent = result.histories.content
-            contentSizeRef.current.page = result.histories.page.number
-            setIsLast(result.histories.page.number >= (result.histories.page.totalPages - 1))
-            setContents([...contents, ...newContent])
-        }).catch((err) => {
-            errorCallbackF(err)
-        })
-    }
-
-    useEffect(() => {
-        setContents(histories.histories.content)
-    }, [histories]);
+export default function HistoryList({histories}: {histories: users_wallet_history_interface['histories']}) {
+    const { revalidate, state } = useRevalidator()
 
     return (
         <Wrapper>
             {
-                contents.map((content, index) => (
+                histories.content.map((content, index) => (
                     <HistoryItem key={index} content={content}/>
                 ))
             }
             {
-                !isLast ? <LoadingCard getNextBusState={getNextHistories}/> : null
+                histories.page.number < (histories.page.totalPages - 1) ?
+                    <LoadingCard getNextBusState={(errorCallbackF) => getNextHistories(errorCallbackF, histories, revalidate, state)}/> : null
             }
         </Wrapper>
     )
