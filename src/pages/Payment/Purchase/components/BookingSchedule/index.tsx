@@ -42,7 +42,7 @@ export default function BookingSchedule({direction, busStopName, time}: BookingS
                     <CardBodyItem>
                         <ClockIcon />
                         <CardBodyItemText>
-                            {`${formatKstTime(time)} 탑승`}
+                            {`${formatKstTime(time)} ${direction === 'TO_HOME' ? '하차' : '승차'}`}
                         </CardBodyItemText>
                     </CardBodyItem>
                     <CardBodyItem>
