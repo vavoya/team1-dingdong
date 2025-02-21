@@ -114,9 +114,6 @@ export const isDateDisabled = (
   maxDate.setDate(now.getDate() + 2);
   maxDate.setMonth(maxDate.getMonth() + 2);
 
-  // 등하교 시간 제한 체크
-  const limitHour = commuteType === "등교" ? 18 : 21; // 등교 18시(오후6시), 하교 21시(오후9시)
-
   // 날짜만 비교하기 위한 복사본
   const compareDateDateOnly = new Date(date);
   // const minDateDateOnly = new Date(minDate);

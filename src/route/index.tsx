@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "@/pages/layout.tsx";
 import dataStrategy from "@/route/dataStrategy.tsx";
 import ErrorPage from "@/pages/Error/page.tsx";
-import { fixedRouteBookingLoader } from "./loader/fixedRouteBooking/fixedRouteBookingLoader";
 
 export const router = createBrowserRouter(
   [
