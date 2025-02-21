@@ -35,14 +35,15 @@ const notificationHandlers: Record<Notifications['notifications']['content'][num
     // 배차 실패 -> 배차 대기 & 배차 실패 캐시 지우기
     ALLOCATION_FAILED: (addToast) => {
         removeReservationCache('PENDING')
+        removeReservationCache('FAIL_ALLOCATED')
         removeReservationCache('ALL')
         removeReservationCache('HOME')
-        removeReservationCache('FAIL_ALLOCATED')
         addToast("예매한 차량 중 배차가 실패한 건이 있어요.")
     },
     // 배차 성공 -> 배차 대기 캐시 지우기
     ALLOCATION_SUCCESS: (addToast) => {
         removeReservationCache('PENDING')
+        removeReservationCache('ALLOCATED')
         removeReservationCache('ALL')
         removeReservationCache('HOME')
         addToast("예매한 차량 중 배차가 완료된 건이 있어요.")
