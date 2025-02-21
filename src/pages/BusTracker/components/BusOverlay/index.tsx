@@ -7,7 +7,7 @@ import {axiosInstance} from "@/api";
 import {useSocket} from "@/hooks/useSocket";
 import {useSearchParams} from "react-router-dom";
 
-export default function BusOverlay() {
+export default function BusOverlay({isRunning}: {isRunning: boolean}) {
     const [busLocation, setBusLocation] = useState<PositionType>({
         lat: 0,
         lng: 0
@@ -16,9 +16,8 @@ export default function BusOverlay() {
     const [searchParams] = useSearchParams();
     const busScheduleId = searchParams.get("busScheduleId");
 
-
     useEffect(() => {
-        if (ws instanceof WebSocket && busScheduleId != null) {
+        if (ws instanceof WebSocket && busScheduleId != null && isRunning) {
             // 메시지 처리
             const handleMessage = (message: MessageEvent) => {
                 const data = JSON.parse(message.data);

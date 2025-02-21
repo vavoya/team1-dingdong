@@ -7,7 +7,7 @@ import {
     TextBox,
     Wrapper,
     Title
-} from "@/pages/Home/component/BusReservation/styles.ts";
+} from "@/pages/Home/component/BusState/component/BusReservation/styles.ts";
 import {useNavigate} from "react-router-dom";
 
 

@@ -1,4 +1,4 @@
-import {FetchQueryOptions} from "@tanstack/react-query";
+import {EnsureQueryDataOptions} from "@tanstack/react-query";
 import {LoaderFunctionArgs} from "react-router-dom";
 import {AxiosResponse} from "axios";
 import Modal from "@/components/Modal";
@@ -6,7 +6,7 @@ import {queryClient} from "@/main.tsx";
 import {ReactNode} from "react";
 import handleError from "@/route/loader/handleError.ts";
 
-type CallbackF = () => FetchQueryOptions<any, Error, any>[];
+type CallbackF = () =>  EnsureQueryDataOptions<any, Error, any>[];
 type CallbackF2 = () => (() => Promise<AxiosResponse<any, any>>)[];
 
 /**
@@ -48,11 +48,10 @@ export function createLoader(callbackF: CallbackF, callbackF2?: CallbackF2) {
             return null;
         }
 
-
         try {
             // 서버 요청 실행
             return await Promise.all([
-                ...queries.map((query) => queryClient.fetchQuery({...query})),
+                ...queries.map((query) => queryClient.ensureQueryData({...query})),
                 ...fetches.map((fn) => fn()), // 여기서 fetches를 실행
             ]);
         } catch (error) {

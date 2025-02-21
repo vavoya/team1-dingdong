@@ -35,7 +35,6 @@ export const middlewareErrorHandler: Record<MiddlewareErrorType, (request: Reque
     },
     [MiddlewareErrorType.SERVER_NO_RESPONSE]: (request) => {
         showErrorModal(["서버 응답이 없음"], ["서버에서 응답을 받을 수 없습니다."], "확인")
-        console.log("몇번 호출?")
         preserveNavigate(request)
     },
     [MiddlewareErrorType.NETWORK_ERROR]: (request) => {

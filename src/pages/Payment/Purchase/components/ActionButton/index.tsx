@@ -1,11 +1,9 @@
 
 import {unitPrice} from "@/env.ts";
-import {axiosInstance} from "@/api";
 import {useNavigate} from "react-router-dom";
-import {queryClient} from "@/main.tsx";
 import useToast from "@/hooks/useToast";
-import {isAxiosError} from "axios";
 import ActionButtonLayout from "@/pages/Payment/components/ActionButtonLayout";
+import {confirmPurchase} from "@/pages/Payment/utils/confirmPurchase.ts";
 
 interface ActionButtonProps {
     token: string
@@ -19,36 +17,7 @@ export default function ActionButton({token, busStopId, busScheduleId, wallet}: 
     const addToast = useToast()
 
 
-    const confirmPurchase = async () => {
-        if (!isPaymentAvailable) {
-            navigate('/wallet')
-        }
-
-        try {
-            await axiosInstance.post('/api/users/reservations/together', {
-                token,
-                busStopId,
-                busScheduleId
-            })
-
-            // 결제 성공
-            await queryClient.invalidateQueries({queryKey: ['/api/users/reservations']});
-            sessionStorage.removeItem('/fixed-bus-select-bus')
-            navigate('/payment/success')
-        }
-        catch (error) {
-            // 결제 실패
-            if (isAxiosError(error) && error.response?.status === 400) {
-                addToast("결제 실패: 잘못된 결제 정보 입니다.")
-            }
-            else {
-                addToast("결제 실패: 네트워크 오류. 다시 시도해주세요.")
-            }
-        }
-
-    }
-
     return (
-        <ActionButtonLayout confirmPurchase={confirmPurchase} isPaymentAvailable={isPaymentAvailable} />
+        <ActionButtonLayout confirmPurchase={() => confirmPurchase(isPaymentAvailable, navigate, token, addToast, {type: 'together', busScheduleId, busStopId})} isPaymentAvailable={isPaymentAvailable} />
     )
 }

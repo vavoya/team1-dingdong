@@ -2,6 +2,7 @@ import {LoaderFunctionArgs} from "react-router-dom";
 import {queryClient} from "@/main.tsx";
 import {axiosInstance} from "@/api";
 import handleError from "@/route/loader/handleError.ts";
+import {users_me} from "@/api/query/users";
 
 
 export default async function loader({ request, params }: LoaderFunctionArgs) {
@@ -16,7 +17,7 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
     try {
         // 서버 요청 실행
         return await Promise.all([
-            queryClient.fetchQuery({
+            queryClient.ensureQueryData({
                 queryKey: [`/api/bus/path${busScheduleId}`],
                 queryFn: async () => {
                     const response = await axiosInstance.get(`/api/bus/path/${busScheduleId}`)
@@ -24,7 +25,7 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
                 },
                 staleTime: 1000 * 60, // 1분 동안 캐싱
             }),
-            queryClient.fetchQuery({
+            queryClient.ensureQueryData({
                 queryKey: [`/api/bus/bus-stop/location${busScheduleId}`],
                 queryFn: async () => {
                     const response = await axiosInstance.get(`/api/bus/bus-stop/location/${busScheduleId}`)
@@ -32,17 +33,18 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
                 },
                 staleTime: 1000 * 60, // 1분 동안 캐싱
             }),
-            queryClient.fetchQuery({
+            queryClient.ensureQueryData({
                 queryKey: [`/api/reservations/busSchedules/${busScheduleId}`],
                 queryFn: async () => {
-                    const response = await axiosInstance.get(`/api/reservations/busSchedules/${busScheduleId}`)
+                    const response = await axiosInstance.get(`/api/users/reservations/busSchedules/${busScheduleId}`)
                     return response.data;
                 },
                 staleTime: 1000 * 60, // 1분 동안 캐싱
             }),
+            queryClient.ensureQueryData(users_me())
         ]);
     } catch (error) {
-        handleError(error);
+        return handleError(error);
     }
 }
 

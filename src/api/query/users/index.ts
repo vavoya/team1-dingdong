@@ -135,7 +135,7 @@ export interface users_wallet_history_interface {
     histories: {
         content: {
             timeStamp: string
-            type: "PAY"  | "REFUND" | "FREE_CHARGE"
+            type: "PAY"  | "REFUND" | "FREE_CHARGE" | "WELCOME_MONEY_CHARGE"
             amountMoney: number
             remainMoney: number
         } []
