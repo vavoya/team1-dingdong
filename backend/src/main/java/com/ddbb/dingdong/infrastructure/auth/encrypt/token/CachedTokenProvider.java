@@ -1,12 +1,16 @@
 package com.ddbb.dingdong.infrastructure.auth.encrypt.token;
 
 import com.ddbb.dingdong.infrastructure.cache.SimpleCache;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+
 @Component
+@RequiredArgsConstructor
 public class CachedTokenProvider implements TokenRepository {
-    private static final int TOKEN_VALIDATE_MINUTES = 5;
-    private final SimpleCache<String, String> tokenSimpleCache = new SimpleCache<>(TOKEN_VALIDATE_MINUTES);
+    private static final Duration TTL = Duration.ofMinutes(5);
+    private final SimpleCache tokenSimpleCache;
 
     @Override
     public boolean existsByToken(String token) {
@@ -18,6 +22,6 @@ public class CachedTokenProvider implements TokenRepository {
         if (tokenSimpleCache.containsKey(token)) {
             throw TokenErrors.ALREADY_USED.toException();
         }
-        tokenSimpleCache.put(token, token);
+        tokenSimpleCache.put(token, TTL);
     }
 }
