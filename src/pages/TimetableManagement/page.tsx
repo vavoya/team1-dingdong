@@ -5,7 +5,7 @@ import {
     PageDescription, PageInfoSection, PageInfoTextBox,
     PageMain,
     PageTitle, SaveButton, SaveButtonText,
-    TableCell, TableCellText, TableHeader,
+    TableHeader,
     TableHeaderText, TableWrapper
 } from "@/pages/TimetableManagement/styles.ts";
 // 컴포넌트
@@ -13,56 +13,15 @@ import PopHeader from "@/components/Headers/PopHeader";
 import DefaultImgIcon from "@/components/designSystem/Icons/TimeTableManagement/DefaultImgIcon.tsx";
 import PlusIcon from "@/components/designSystem/Icons/TimeTableManagement/PlusIcon.tsx";
 import InfoIcon from "@/components/designSystem/Icons/TimeTableManagement/InfoIcon.tsx";
-import DeleteIcon from "@/components/designSystem/Icons/TimeTableManagement/DeleteIcon.tsx";
 import EasyTable, {ColumnInferface, RowInterace} from "@/pages/TimetableManagement/components/EasyTable";
 import {colors} from "@/styles/colors.ts";
-import {Fragment, useEffect, useRef, useState} from "react";
+import {useRef} from "react";
 import {useLoaderData} from "react-router-dom";
 import {users_timetable_interface} from "@/api/query/users";
-import {mountModal} from "@/components/Loading";
-import TimePicker from "@/pages/TimetableManagement/components/TimePicker";
 import useToast from "@/hooks/useToast";
-import {putTimetable} from "@/api/timetable/putTimetable.ts";
-import {isAxiosError} from "axios";
-import {queryClient} from "@/main.tsx";
+import {fetchTimetable} from "@/pages/TimetableManagement/utils/fetchTimetable.ts";
+import {renderTableRow} from "@/pages/TimetableManagement/utils/renderTableRow.tsx";
 
-
-const fetchTimetable = async (timetable: users_timetable_interface, addToast: (message: string) => void) => {
-    // 등교 하교 시간 검증. 등교 < 하교
-    const timeArray = Object.values(timetable) as (keyof users_timetable_interface)[]
-    for (let i = 0; i < 10; i += 2) {
-        const time1 = parseInt((timeArray[i] ?? '00:00').split(':').join(), 10)
-        const time2 = parseInt((timeArray[i + 1] ?? '00:00').split(':').join(), 10)
-
-        if ((time1 > time2) && timeArray[i] && timeArray[i + 1]) {
-            addToast("하교 시간은 등교 시간 이후여야 합니다.")
-            return
-        }
-    }
-
-    try {
-        await putTimetable(timetable)
-        addToast("시간표가 성공적으로 저장되었습니다.")
-        await queryClient.invalidateQueries({
-            queryKey: ["/api/users/timetable"]
-        })
-    }
-    catch (error) {
-        if (isAxiosError(error) && error.response) {
-            const { status } = error.response;
-
-            if (status === 400) {
-                return addToast("하교 시간은 등교 시간 이후여야 합니다.");
-            }
-
-            return addToast("알 수 없는 오류가 발생했습니다."); // 400 이외의 다른 응답 코드
-        }
-
-        addToast("네트워크 오류가 발생했습니다."); // AxiosError가 아닐 때 (예: 인터넷 끊김)
-    }
-
-
-}
 
 export default function Page() {
     const [timetable]: [users_timetable_interface] = useLoaderData()
@@ -170,78 +129,4 @@ export default function Page() {
     )
 }
 
-
-
-interface RenderTableRowProps {
-    timetable: users_timetable_interface
-    setTimetable: (key: string, value: string | null) => void
-}
-function renderTableRow({ timetable, setTimetable }: RenderTableRowProps) {
-    let data2: {key: keyof users_timetable_interface, time: string}[] = []
-    const data: {key: keyof users_timetable_interface, time: string}[][] = []
-
-    Object.keys(timetable).forEach((key, index) => {
-        const typedKey = key as keyof users_timetable_interface
-        const date = timetable[typedKey]?.split(':').slice(0, 2).join(':') ?? '-'
-        if (index % 2 === 0) {
-            data2 = [{
-                key: typedKey,
-                time: date
-            }]
-            data.push(data2)
-        }
-        else {
-            data2.push({
-                key: typedKey,
-                time: date
-            })
-        }
-    })
-
-
-    return data.map((data, index) => (
-        <Fragment key={index}>
-            <TableItem timeKey={data[0].key} time={data[0].time} setTimetable={setTimetable} />
-            <TableItem timeKey={data[1].key} time={data[1].time} setTimetable={setTimetable} />
-        </Fragment>
-    ));
-}
-
-
-interface TableItemProps {
-    timeKey: string
-    time: string
-    setTimetable: (key: string, value: string | null) => void
-}
-function TableItem({ timeKey, time, setTimetable }: TableItemProps) {
-    const [timeState, setTimeState] = useState(time)
-
-    useEffect(() => {
-        setTimetable(timeKey, timeState === '-' ? null : timeState)
-    }, [timeState])
-
-
-    return (
-        <TableCell onClick={() => {
-            const {render, unmountModal} = mountModal()
-            render(
-                <TimePicker
-                    unmountModal={unmountModal}
-                    timeState={timeState}
-                    setTimeState={setTimeState}/>)
-        }}>
-            <TableCellText>
-                {timeState}
-            </TableCellText>
-            {!(timeState === '-') && (
-                <button onClick={(e) => {
-                    e.stopPropagation()
-                    setTimeState('-')
-                }}>
-                    <DeleteIcon />
-                </button>
-            )}
-        </TableCell>
-    )
-}
 
