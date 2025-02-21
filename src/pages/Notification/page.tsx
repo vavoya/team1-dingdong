@@ -24,7 +24,7 @@ export default function Notification() {
 
   useEffect(() => {
     // 다시 접속을 했을 때 업데이트된 알림 항목을 가져오기 위해, 키를 무효화 시킵니다.
-    queryClient.invalidateQueries({
+    queryClient.removeQueries({
       queryKey: ["/api/users/notifications"],
     });
   }, []);
