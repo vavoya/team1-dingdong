@@ -57,7 +57,7 @@ export default function BasicMap() {
                 {/* 버스 정류장 오버레이 */}
                 <BusStopOverlay lat={busStopLocation.latitude} lng={busStopLocation.longitude} />
                 {/* 버스 위치 오버레이 */}
-                <BusOverlay />
+                <BusOverlay isRunning={busSchedule.operationInfo.busStatus === 'RUNNING'}/>
                 {/* 사용자 위치 오버레이 */}
                 <UserOverlay lat={userLocation.lat} lng={userLocation.lng} />
             </Map>
