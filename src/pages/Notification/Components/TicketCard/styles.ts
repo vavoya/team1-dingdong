@@ -66,6 +66,7 @@ export const Content = styled.div`
 
 export const StationInfo = styled.div`
   text-align: center;
+  flex: 1;
 `;
 
 export const StationName = styled.div`
