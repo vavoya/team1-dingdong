@@ -17,7 +17,7 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
     try {
         // 서버 요청 실행
         return await Promise.all([
-            queryClient.fetchQuery({
+            queryClient.ensureQueryData({
                 queryKey: [`/api/bus/path${busScheduleId}`],
                 queryFn: async () => {
                     const response = await axiosInstance.get(`/api/bus/path/${busScheduleId}`)
@@ -25,7 +25,7 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
                 },
                 staleTime: 1000 * 60, // 1분 동안 캐싱
             }),
-            queryClient.fetchQuery({
+            queryClient.ensureQueryData({
                 queryKey: [`/api/bus/bus-stop/location${busScheduleId}`],
                 queryFn: async () => {
                     const response = await axiosInstance.get(`/api/bus/bus-stop/location/${busScheduleId}`)
@@ -33,7 +33,7 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
                 },
                 staleTime: 1000 * 60, // 1분 동안 캐싱
             }),
-            queryClient.fetchQuery({
+            queryClient.ensureQueryData({
                 queryKey: [`/api/reservations/busSchedules/${busScheduleId}`],
                 queryFn: async () => {
                     const response = await axiosInstance.get(`/api/users/reservations/busSchedules/${busScheduleId}`)
@@ -41,10 +41,10 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
                 },
                 staleTime: 1000 * 60, // 1분 동안 캐싱
             }),
-            queryClient.fetchQuery(users_me())
+            queryClient.ensureQueryData(users_me())
         ]);
     } catch (error) {
-        handleError(error);
+        return handleError(error);
     }
 }
 

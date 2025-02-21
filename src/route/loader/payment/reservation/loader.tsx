@@ -26,9 +26,9 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
                     date: formatKst(date)
                 }))
             }).then(res => res.data),
-            queryClient.fetchQuery(users_me()),
-            queryClient.fetchQuery(users_home_locations()),
-            queryClient.fetchQuery(users_wallet_balances()),
+            queryClient.ensureQueryData(users_me()),
+            queryClient.ensureQueryData(users_home_locations()),
+            queryClient.ensureQueryData(users_wallet_balances()),
         ])
 
         return [...response, schedule];

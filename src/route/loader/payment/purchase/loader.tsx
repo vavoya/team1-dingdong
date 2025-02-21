@@ -20,7 +20,7 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
                 busStopId: schedule.busStopId,
                 busScheduleId: schedule.busId
                 }).then(res => res.data),
-            queryClient.fetchQuery(users_wallet_balances()),
+            queryClient.ensureQueryData(users_wallet_balances()),
         ])
 
         return [...response, schedule]
