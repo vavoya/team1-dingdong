@@ -18,7 +18,6 @@ export default async function middleware(request: Request) {
     }
     catch (error) {
         if (isAxiosError(error)) {
-            console.log(request.url)
             // 인증 X
             if (error.response?.status === 401) {
                 if (!(pathname === '/' || pathname.startsWith('/login') || pathname.startsWith('/signup'))) {

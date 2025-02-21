@@ -28,7 +28,7 @@ export default function Page() {
                 <BusSelection />
                 <HomeSchool stationName={home.stationInfo.name} schoolName={me.schoolName}/>
                 {/* type 에 따라 예매 내역 유무*/}
-                <BusState busStateRef={ref} reservations={reservations.reservationInfos}/>
+                <BusState busStateRef={ref} reservations={reservations.reservationInfos} schoolName={me.schoolName}/>
             </PageMain>
         </PageWrapper>
     );

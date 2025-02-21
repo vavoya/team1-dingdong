@@ -21,9 +21,9 @@ export default function PricingInfo({count, wallet}: PricingInfoProps) {
                 <InfoTitleBox>
                     <InfoTitle>금액</InfoTitle>
                     <InfoTitle>|</InfoTitle>
-                    <InfoTitle>1회</InfoTitle>
+                    <InfoTitle>{count}회</InfoTitle>
                 </InfoTitleBox>
-                <InfoText>{unitPrice.toLocaleString()}원</InfoText>
+                <InfoText>{`${count} * ${unitPrice.toLocaleString()}`}원</InfoText>
             </InfoLine>
             <InfoLine>
                 <InfoTitle>딩동머니 잔액</InfoTitle>

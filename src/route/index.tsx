@@ -2,6 +2,7 @@ import {createBrowserRouter} from "react-router-dom";
 import Layout from "@/pages/layout.tsx";
 import dataStrategy from "@/route/dataStrategy.tsx";
 import ErrorPage from "@/pages/Error/page.tsx";
+import {INIT_WALLET_PAGE_SIZE, INIT_WALLET_PAGE} from "@/env.ts";
 
 export const router = createBrowserRouter(
     [
@@ -9,6 +10,8 @@ export const router = createBrowserRouter(
             path: "/",
             Component: Layout,
             errorElement: <></>,
+            loader: () => null,
+            shouldRevalidate: () => true,
             children: [
                 {
                     index: true,
@@ -22,28 +25,13 @@ export const router = createBrowserRouter(
                 {
                     path: "home",
                     lazy: async () => {
-                        const [{ default: Home }, { createLoader }] = await Promise.all([
+                        const [{ default: Home }, { default: HomeLoader }] = await Promise.all([
                             import("@/pages/Home/page.tsx"),
-                            import("@/route/loader/createLoader.tsx"),
+                            import("@/route/loader/home/loader.tsx"),
                         ]);
-                        const usersModule = await import("@/api/query/users");
                         return {
                             Component: Home,
-                            loader: createLoader(() => {
-
-                                return [
-                                    usersModule.users_me(),
-                                    usersModule.users_reservations({
-                                        page: 0,
-                                        pageSize: 5,
-                                        category: "HOME",
-                                        sort: "OLDEST",
-                                    }),
-                                    usersModule.users_notifications_checkUnread(),
-                                    usersModule.users_home_locations(),
-                                ];
-                            })
-
+                            loader: HomeLoader
                         };
                     },
                 },
@@ -198,45 +186,14 @@ export const router = createBrowserRouter(
                 {
                     path: "reservations",
                     lazy: async () => {
-                        const [{ default: ReservationsPage }, { createLoader }] =
+                        const [{ default: ReservationsPage }, { default: ReservationsLoader }] =
                             await Promise.all([
                                 import("@/pages/Reservations/page.tsx"),
-                                import("@/route/loader/createLoader.tsx"),
+                                import("@/route/loader/reservations/loader.tsx"),
                             ]);
-                        const usersModule = await import("@/api/query/users");
                         return {
                             Component: ReservationsPage,
-                            loader: createLoader(() => [
-                                usersModule.users_reservations({
-                                    page: 0,
-                                    pageSize: 10,
-                                    category: "ALL",
-                                    sort: "LATEST",
-                                }),
-                                usersModule.users_reservations({
-                                    page: 0,
-                                    category: "ALLOCATED",
-                                    sort: "OLDEST",
-                                }),
-                                usersModule.users_reservations({
-                                    page: 0,
-                                    pageSize: 10,
-                                    category: "PENDING",
-                                    sort: "OLDEST",
-                                }),
-                                usersModule.users_reservations({
-                                    page: 0,
-                                    pageSize: 10,
-                                    category: "ENDED",
-                                    sort: "OLDEST",
-                                }),
-                                usersModule.users_reservations({
-                                    page: 0,
-                                    pageSize: 10,
-                                    category: "CANCELED",
-                                    sort: "OLDEST",
-                                }),
-                            ]),
+                            loader: ReservationsLoader,
                         };
                     },
                 },
@@ -330,7 +287,7 @@ export const router = createBrowserRouter(
                             ]);
                         const usersModule = await import("@/api/query/users");
                         return { Component: Wallet, loader: createLoader(()=> [
-                                usersModule.users_wallet_history({page: 0, pageSize: 20})
+                                usersModule.users_wallet_history({page: INIT_WALLET_PAGE, pageSize: INIT_WALLET_PAGE_SIZE})
                             ]) };
                     },
                 },

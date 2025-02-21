@@ -1,4 +1,4 @@
-import {ActionButton, ActionText} from "@/pages/Reservations/components/BookingActionButton/styles.ts";
+import {ActionButton, ActionText} from "./styles.ts";
 import {mountModal} from "@/components/Loading";
 import Modal from "@/components/Modal";
 

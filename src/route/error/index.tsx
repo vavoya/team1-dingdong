@@ -2,11 +2,13 @@ import {middlewareErrorHandler, MiddlewareErrorType} from "@/route/error/middlew
 import {networkErrorHandler, NetworkErrorType} from "@/route/error/network.tsx";
 import Modal from "@/components/Modal";
 import {mountModal} from "@/components/Loading";
+import {paymentErrorHandler, PaymentErrorType,} from "@/route/error/payment/reservation.tsx";
 
-export type errorType = MiddlewareErrorType | NetworkErrorType
+export type errorType = MiddlewareErrorType | NetworkErrorType | PaymentErrorType
 export const errorHandlers: Record<errorType, Function> = {
     ...middlewareErrorHandler,
-    ...networkErrorHandler
+    ...networkErrorHandler,
+    ...paymentErrorHandler
 }
 
 export class CustomError {

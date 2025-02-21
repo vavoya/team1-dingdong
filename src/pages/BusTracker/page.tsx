@@ -17,8 +17,8 @@ import LocateMeButton from "@/pages/BusTracker/components/LocateMeButton";
 import {useLoaderData} from "react-router-dom";
 import {bus_bus_stop_location_interface, bus_path_interface} from "@/route/loader/bus-tracker/loader.tsx";
 import PopBox from "@/pages/BusTracker/components/PopBox";
-import {TO_HOME_ALLOCATED, TO_SCHOOL_ALLOCATED} from "@/api/query/users";
-import {getBusCardFunction} from "@/pages/Home/component/BusState";
+import {TO_HOME_ALLOCATED, TO_SCHOOL_ALLOCATED, users_me_interface} from "@/api/query/users";
+import {getBusCardFunction} from "@/pages/Home/utils/getBusCardFunction.tsx";
 
 export interface PositionType {
     lat: number;
@@ -28,13 +28,14 @@ export interface PositionType {
 export default function BasicMap() {
     useKakaoLoader()
     const userLocation = useCurrentLocation();
-    const [busPath, busStopLocation, busSchedule]: [bus_path_interface, bus_bus_stop_location_interface, TO_SCHOOL_ALLOCATED | TO_HOME_ALLOCATED] = useLoaderData();
+    const [busPath, busStopLocation, busSchedule, me]: [bus_path_interface, bus_bus_stop_location_interface, TO_SCHOOL_ALLOCATED | TO_HOME_ALLOCATED, users_me_interface] = useLoaderData();
     const [location, setLocation] = useState({
         // 지도의 초기 위치
         center: { lat: busStopLocation.latitude, lng: busStopLocation.longitude },
         // 지도 위치 변경시 panto를 이용할지에 대해서 정의
         isPanto: false,
     })
+    busSchedule.reservationStatus = 'ALLOCATED'
     // 중심 이동 좌표가 동일하면 지도 이동이 안됨. 그것을 약간 씩 조절 해주는 값
     const mapJitter = useRef<number>(0.00000001);
 
@@ -56,7 +57,7 @@ export default function BasicMap() {
                 {/* 버스 정류장 오버레이 */}
                 <BusStopOverlay lat={busStopLocation.latitude} lng={busStopLocation.longitude} />
                 {/* 버스 위치 오버레이 */}
-                <BusOverlay />
+                <BusOverlay isRunning={busSchedule.operationInfo.busStatus === 'RUNNING'}/>
                 {/* 사용자 위치 오버레이 */}
                 <UserOverlay lat={userLocation.lat} lng={userLocation.lng} />
             </Map>
@@ -71,7 +72,7 @@ export default function BasicMap() {
                     }
                 }}/>
                 {
-                    getBusCardFunction(busSchedule.direction, busSchedule.reservationStatus)(busSchedule, 0)
+                    getBusCardFunction(busSchedule.direction, busSchedule.reservationStatus)(busSchedule, 0, me.schoolName, false)
                 }
             </BusCardSection>
             <PopBox />

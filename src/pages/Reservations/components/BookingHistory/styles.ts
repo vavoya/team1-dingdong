@@ -68,6 +68,7 @@ export const HistoryList = styled.ul`
 export const HistoryItem = styled.li`
     display: flex;
     width: 100%;
+    gap: 10px;
     justify-content: space-between;
     align-items: center;
 `;

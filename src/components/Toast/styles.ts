@@ -6,10 +6,9 @@ export const ToastWrapper = styled.div.withConfig({
 })<{ translateY: string }>`
   position: fixed;
   z-index: 1000;
-  left: 20px;
-  right: 20px;
+  left: 50%;
   bottom: 0;
-  transform: ${({ translateY }) => `translateY(${translateY})`};
+  transform: ${({ translateY }) => `translate(-50%, ${translateY})`};
   transition: transform 0.3s ease-in-out;
   border-radius: 8px;
   background: ${colors.gray90};
@@ -17,6 +16,12 @@ export const ToastWrapper = styled.div.withConfig({
 
   /* Background Blur */
   backdrop-filter: blur(0.75px);
+
+  width: calc(100% - 40px);
+
+  @media (min-width: 440px) {
+    width: calc(375px - 40px);
+  }
 
   span {
     color: ${colors.gray0};

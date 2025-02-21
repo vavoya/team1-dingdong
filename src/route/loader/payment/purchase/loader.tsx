@@ -3,6 +3,9 @@ import {axiosInstance} from "@/api";
 import {queryClient} from "@/main.tsx";
 import { users_wallet_balances} from "@/api/query/users";
 import handleError from "@/route/loader/handleError.ts";
+import {isAxiosError} from "axios";
+import {PaymentErrorType} from "@/route/error/payment/reservation.tsx";
+import {CustomError} from "@/route/error";
 
 
 export default async function loader({ request, params }: LoaderFunctionArgs) {
@@ -17,11 +20,17 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
                 busStopId: schedule.busStopId,
                 busScheduleId: schedule.busId
                 }).then(res => res.data),
-            queryClient.fetchQuery(users_wallet_balances()),
+            queryClient.ensureQueryData(users_wallet_balances()),
         ])
 
         return [...response, schedule]
     } catch (error) {
+        if (isAxiosError(error) && error.response) {
+            const code = error.response.data.code;
+            if (code === "ALREADY_HAS_SAME_RESERVATION") {
+                return new CustomError(PaymentErrorType.DUPLICATE_BOOKING)
+            }
+        }
         return handleError(error);
     }
 }

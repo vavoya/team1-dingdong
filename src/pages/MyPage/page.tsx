@@ -13,12 +13,14 @@ import {
 import {useLoaderData, useNavigate} from "react-router-dom";
 import ArrowRightIcon from "@/components/designSystem/Icons/MyPage/ArrowRightIcon.tsx";
 import {users_me_interface} from "@/api/query/users";
+import useToast from "@/hooks/useToast";
+import {logout} from "@/pages/MyPage/utils/logout.ts";
 
 
 export default function Page() {
     const navigate = useNavigate();
     const [user]: [users_me_interface] = useLoaderData()
-
+    const addToast = useToast();
 
     return (
         <PageWrapper>
@@ -53,12 +55,18 @@ export default function Page() {
                     <Item text={'딩동 머니 충전'} onClick={() => navigate('/wallet')}/>
                     <Item text={'시간표 관리'} onClick={() => navigate('/timetable-management')}/>
                     <ItemDivde />
-                    <Item text={'비밀번호 재설정'}/>
-                    <Item text={'알림 설정'}/>
+                    {
+                        /*
+                        <Item text={'비밀번호 재설정'} onClick={() => addToast("현재 지원하지 않는 기능입니다.")}/>
+                    <Item text={'알림 설정'} onClick={() => addToast("현재 지원하지 않는 기능입니다.")}/>
                     <ItemDivde />
-                    <Item text={'안내 사항'}/>
-                    <Item text={'고객 센터'}/>
-                    <Item text={'FAQ'}/>
+                    <Item text={'안내 사항'} onClick={() => addToast("현재 지원하지 않는 기능입니다.")}/>
+                    <Item text={'고객 센터'} onClick={() => addToast("현재 지원하지 않는 기능입니다.")}/>
+                    <Item text={'FAQ'} onClick={() => addToast("현재 지원하지 않는 기능입니다.")}/>
+                    <ItemDivde />
+                         */
+                    }
+                    <Item text={'로그아웃'} onClick={() => logout(addToast, navigate)}/>
                 </ul>
             </Main>
         </PageWrapper>
