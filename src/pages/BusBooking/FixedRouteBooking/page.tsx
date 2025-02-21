@@ -93,7 +93,7 @@ export default function FixedRouteBooking() {
           text: "나가기",
           onClick: () => {
             unmountModal();
-            navigate(-1);
+            navigate("/home");
           },
         }}
       />

@@ -81,23 +81,25 @@ export default function TimeViewBottomModal({
             {commuteType === "등교" ? "학교 도착 시각" : "집으로 출발 시각"}
           </S.ArrivalTime>
         </S.SubHeader>
-        {convertToFormattedTime(selectedTimeSchduleArray).map(
-          ([dateInfo, time], timeScheduleIndex) => (
-            <S.ScheduleBox key={dateInfo}>
-              <S.DateInfo>{dateInfo}</S.DateInfo>
-              <S.TimeInfo>
-                <S.Time>{time.toString().padStart(2, "0")}</S.Time>
-                {modalType === "editable" && (
-                  <S.EditIconWrapper
-                    onClick={() => editIconHandler(timeScheduleIndex)}
-                  >
-                    <ChevronRightIcon size={20} />
-                  </S.EditIconWrapper>
-                )}
-              </S.TimeInfo>
-            </S.ScheduleBox>
-          )
-        )}
+        <S.ScheduleBoxWrapper $maxHeight={modalType}>
+          {convertToFormattedTime(selectedTimeSchduleArray).map(
+            ([dateInfo, time], timeScheduleIndex) => (
+              <S.ScheduleBox key={dateInfo}>
+                <S.DateInfo>{dateInfo}</S.DateInfo>
+                <S.TimeInfo>
+                  <S.Time>{time.toString().padStart(2, "0")}</S.Time>
+                  {modalType === "editable" && (
+                    <S.EditIconWrapper
+                      onClick={() => editIconHandler(timeScheduleIndex)}
+                    >
+                      <ChevronRightIcon size={20} />
+                    </S.EditIconWrapper>
+                  )}
+                </S.TimeInfo>
+              </S.ScheduleBox>
+            )
+          )}
+        </S.ScheduleBoxWrapper>
       </S.SelectedScheduleWrapper>
 
       {modalType === "lastStep" && (

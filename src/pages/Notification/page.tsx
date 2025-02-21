@@ -4,6 +4,8 @@ import { NotificationCardWrapper, NotificationLimit } from "./styles";
 import NotificationCard from "./Components/NotificationCard";
 import { NotificationCardType } from "./model/notificationCardType";
 import { useLoaderData, useNavigate } from "react-router-dom";
+import { queryClient } from "@/main";
+import { useEffect } from "react";
 
 export default function Notification() {
   const {
@@ -19,6 +21,13 @@ export default function Notification() {
   };
   const notificationsServerData =
     notificationArray?.length > 0 ? notificationArray : [];
+
+  useEffect(() => {
+    // 다시 접속을 했을 때 업데이트된 알림 항목을 가져오기 위해, 키를 무효화 시킵니다.
+    queryClient.removeQueries({
+      queryKey: ["/api/users/notifications"],
+    });
+  }, []);
   return (
     <>
       <PopHeader text="알림"></PopHeader>

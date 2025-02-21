@@ -178,6 +178,7 @@ export default function UserInfoSignup() {
       </CustomFormWrapper>
       <NextButtonWrapper>
         <SolidButton
+          type="submit"
           text="완료"
           onClick={submitUserInfoHandler}
           active={submitButtonActive}

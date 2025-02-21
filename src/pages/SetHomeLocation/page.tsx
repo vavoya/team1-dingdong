@@ -13,18 +13,9 @@ export interface LocationInfo {
 }
 export default function SetHomeLocation() {
   useKakaoLoader();
-  // api 요청 후, 온보딩에서 지정한 주소를 지도 center위치로,
-  // 별칭 string과 도로명 주소를 props로 전달한다.
-
-  //  위도 + 별칭 + 도로명 주소
-
-  //   const { homeLocationInfo, putHomeLocationMutation } = useHomeLocation();
-  //   const [roadAddress, setRoadAddress] = useState<string | null>(
-  //     homeLocationInfo.data?.data.address
-  //   );
 
   const [houseAndStationInfo] = useLoaderData();
-  
+
   const { houseInfo } = houseAndStationInfo;
 
   const [roadAddress, setRoadAddress] = useState<string | null>("");
@@ -37,10 +28,6 @@ export default function SetHomeLocation() {
   });
   const [showBottomSheet, setShowBottomSheet] = useState(false);
 
-  // const initHomePosition = {
-  //   lat: stationInfoServer.latitude,
-  //   lng: stationInfoServer.longitude,
-  // };
   const initHomePosition = {
     lat: houseInfo.latitude,
     lng: houseInfo.longitude,

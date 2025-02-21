@@ -10,13 +10,12 @@ export const useAddress = (
   // 카카오맵 로드 상태 체크
   useEffect(() => {
     const checkKakaoLoaded = () => {
-      if (window.kakao && window.kakao.maps) {
+      if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
         setIsKakaoLoaded(true);
       } else {
         setTimeout(checkKakaoLoaded, 100);
       }
     };
-
     checkKakaoLoaded();
   }, []);
 
@@ -25,10 +24,11 @@ export const useAddress = (
     const fetchAddress = async () => {
       try {
         const address = await getAddressFromCoords(position.lat, position.lng);
+
         setRoadAddress(address);
       } catch (error) {
         console.error(error);
-        setRoadAddress(null);
+        setRoadAddress("주소를 가져올 수 없습니다");
       }
     };
 

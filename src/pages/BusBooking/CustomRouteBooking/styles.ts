@@ -28,7 +28,7 @@ export const TotalEditableViewButton = styled.button`
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  border-top: solid ${colors.gray30};
+  border-top: 1px solid ${colors.gray30};
 `;
 export const ButtonTitle = styled.p`
   color: ${colors.gray70};

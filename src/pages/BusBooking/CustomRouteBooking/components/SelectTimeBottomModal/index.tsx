@@ -62,15 +62,16 @@ export default function SelectTimeBottomModal({
   const handleTimeChange = useDebounce(
     // 이벤트 발생한지 2초 간 움직임이 없다면 reset
     (amPm: string, hour: string, minute: string) => {
+
       const newTime = parseAndCreateTime(selectedDate, amPm, hour, minute);
 
-      const timeAvailability = handleTimeAvailability(newTime, commuteType);
 
+      const timeAvailability = handleTimeAvailability(newTime, commuteType);
       if (timeAvailability) {
         updateScrollPosition(
           timeAvailability.reset,
           timeAvailability.morningOrNoon!,
-          timeAvailability.hour, // 스크롤 셋팅시 index방식이라 + 1
+          timeAvailability.hour - 1, // 스크롤 셋팅시 index방식이라 + 1
           timeAvailability.minute,
           timeWheelRef
         );
@@ -178,7 +179,6 @@ export default function SelectTimeBottomModal({
       return { initHour: INIT_GO_SCHOOL_TIME, initMinute: 0 };
     }
     const { hour, minute } = initTimeResult!;
-
     return { initHour: hour - 1, initMinute: minute };
   }, [selectedTimeSchedule, selectedDate, commuteType]); // 의존성 배열에 필요한 값들 추가
 

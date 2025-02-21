@@ -121,6 +121,7 @@ export default function PasswordSignup() {
 
       <NextButtonWrapper>
         <SolidButton
+          type="submit"
           active={buttonActive}
           text="다음"
           onClick={() =>

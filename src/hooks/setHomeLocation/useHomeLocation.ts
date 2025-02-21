@@ -29,7 +29,7 @@ export const usePutStationLocation = () => {
       return updateStationLocationAndNickname(data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      queryClient.removeQueries({
         queryKey: ["/api/users/home/locations"],
       });
     },

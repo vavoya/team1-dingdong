@@ -15,7 +15,6 @@ import { AxiosError } from "axios";
 import { mountModal } from "@/components/Loading";
 import Modal from "@/components/Modal";
 
-
 import { handleAllowNotification } from "@/webPushNotification/handleAllowNotification";
 
 const Login = () => {
@@ -77,7 +76,7 @@ const Login = () => {
       <CustomFormWrapper>
         <CustomInput
           hasError={emailFormatHasError}
-          label="학교 이메일"
+          label="이메일"
           value={email}
           onChange={handleEmailChange}
           placeholder="이메일을 입력해주세요"
@@ -108,7 +107,8 @@ const Login = () => {
 
       <NextButtonWrapper>
         <SolidButton
-          text="다음"
+          type="submit"
+          text="로그인"
           active={
             !emailFormatHasError && password.length > 0 && email.length > 0
           }

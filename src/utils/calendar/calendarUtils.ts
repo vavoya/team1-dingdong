@@ -72,7 +72,7 @@ export const getDaysInMonth = (year: number, month: number) => {
 export const availableBookingMinDate = () => {
   const now = new Date();
 
-  const TWO_DAYS_AND_FIVE_MINUTES_TO_SECONDS = 48 * 60 * 60 + 5 * 60;
+  const TWO_DAYS_AND_FIVE_MINUTES_TO_SECONDS = 48 * 60 * 60;
   const minDate = new Date(
     now.getTime() + TWO_DAYS_AND_FIVE_MINUTES_TO_SECONDS * 1000
   );
@@ -84,6 +84,7 @@ export const isDateDisabled = (
   commuteType: CommuteType,
   calendarType = "customBooking"
 ) => {
+  void commuteType;
   if (calendarType !== "customBooking") {
     const now = new Date();
     const compareDate = new Date(date);
@@ -105,46 +106,22 @@ export const isDateDisabled = (
   const now = new Date();
 
   const compareDate = new Date(date);
-  compareDate.setHours(
-    now.getHours(),
-    now.getMinutes(),
-    now.getSeconds(),
-    now.getMilliseconds()
-  );
+  compareDate.setHours(0, 0, 0, 0);
 
-  const TWO_DAYS_AND_FIVE_MINUTES_TO_SECONDS = 48 * 60 * 60 + 5 * 60;
-  const minDate = new Date(
-    now.getTime() + TWO_DAYS_AND_FIVE_MINUTES_TO_SECONDS * 1000
-  );
+  const minDate = new Date();
+  minDate.setDate(now.getDate() + 2);
 
-  const maxDate = new Date(now.getTime() + 48 * 60 * 60 * 1000);
+  const maxDate = new Date();
+  maxDate.setDate(now.getDate() + 2);
   maxDate.setMonth(maxDate.getMonth() + 2);
-
-  // 등하교 시간 제한 체크
-  const limitHour = commuteType === "등교" ? 18 : 21; // 등교 18시(오후6시), 하교 21시(오후9시)
 
   // 날짜만 비교하기 위한 복사본
   const compareDateDateOnly = new Date(date);
-  const minDateDateOnly = new Date(minDate);
+  // const minDateDateOnly = new Date(minDate);
 
   compareDateDateOnly.setHours(0, 0, 0, 0);
-  minDateDateOnly.setHours(0, 0, 0, 0);
-
-  // minDate의 시간이 해당 등하교 제한 시간을 넘어가는지 체크
-  const minDateHour = minDate.getHours();
-  const minDateMinutes = minDate.getMinutes();
-
-  // 선택날짜가 minDate와 같은 날인 경우
-  if (compareDateDateOnly.getTime() === minDateDateOnly.getTime()) {
-    // 최소 예약 가능 시각이 등하교 제한 시간을 넘어가면 비활성화
-    if (
-      minDateHour >= limitHour ||
-      (minDateHour === limitHour && minDateMinutes > 0)
-    ) {
-      return true; // 비활성화
-    }
-    return false; // 활성화
-  }
+  minDate.setHours(0, 0, 0, 0);
+  maxDate.setHours(0, 0, 0, 0);
 
   return compareDate < minDate || compareDate > maxDate;
 };

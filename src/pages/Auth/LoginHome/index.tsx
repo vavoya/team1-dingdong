@@ -28,7 +28,7 @@ export default function LoginHomeScreen() {
       <LoginHome.ButtonWrapper>
         <SolidButton onClick={() => navigate("/login")} text={"로그인 하기"} />
         <LoginHome.SignUpButton onClick={() => navigate("/signup")}>
-          학교 이메일로 회원가입
+          이메일로 회원가입
         </LoginHome.SignUpButton>
       </LoginHome.ButtonWrapper>
       <LoginHome.FooterText>
