@@ -6,6 +6,7 @@ import com.ddbb.dingdong.infrastructure.auth.encrypt.token.TokenErrors;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.token.TokenManager;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.AESEncoder;
 import com.ddbb.dingdong.infrastructure.auth.encrypt.utils.SHA512Encoder;
+import com.ddbb.dingdong.infrastructure.cache.SimpleCache;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ import java.util.concurrent.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TokenConcurrentTest {
-    private final TokenManager tokenManager = new TokenManager(new SHA512Encoder(), new AESEncoder(), new CachedTokenProvider());
+    private final TokenManager tokenManager = new TokenManager(new SHA512Encoder(), new AESEncoder(), new CachedTokenProvider(new SimpleCache()));
 
     static class DummyTarget {
         private String data;
