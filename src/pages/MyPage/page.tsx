@@ -14,31 +14,13 @@ import {useLoaderData, useNavigate} from "react-router-dom";
 import ArrowRightIcon from "@/components/designSystem/Icons/MyPage/ArrowRightIcon.tsx";
 import {users_me_interface} from "@/api/query/users";
 import useToast from "@/hooks/useToast";
-import {axiosInstance} from "@/api";
-import {isAxiosError} from "axios";
+import {logout} from "@/pages/MyPage/utils/logout.ts";
 
 
 export default function Page() {
     const navigate = useNavigate();
     const [user]: [users_me_interface] = useLoaderData()
     const addToast = useToast();
-
-
-    const logout = async () => {
-        try {
-            await axiosInstance.post("/api/auth/logout")
-            navigate("/")
-        }
-        catch (error) {
-            if (isAxiosError(error) && error.response) {
-                // 이미 로그아웃 or 로그인 안된 사용자
-                if (error.response.status === 401) {
-                    navigate("/");
-                }
-            }
-            addToast("서버와 통신이 원활하지 않습니다. 잠시후 다시 시도해주세요.")
-        }
-    }
 
     return (
         <PageWrapper>
@@ -84,7 +66,7 @@ export default function Page() {
                     <ItemDivde />
                          */
                     }
-                    <Item text={'로그아웃'} onClick={logout}/>
+                    <Item text={'로그아웃'} onClick={() => logout(addToast, navigate)}/>
                 </ul>
             </Main>
         </PageWrapper>
