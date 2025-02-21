@@ -65,6 +65,7 @@ public class CreateRouteUseCase implements UseCase<CreateRouteUseCase.Param, Voi
         Map<Long, Long> allocatedReservation = new HashMap<>();
         Set<Long> locatedId = new HashSet<>();
         for(Location location : locations) {
+            location.setClusterLabel("DONE");
             locationMap.put(location.getId(), location);
             allocatedReservation.put(location.getReservationId(), location.getId());
             locatedId.add(location.getId());
