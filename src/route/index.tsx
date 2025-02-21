@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "@/pages/layout.tsx";
 import dataStrategy from "@/route/dataStrategy.tsx";
 import ErrorPage from "@/pages/Error/page.tsx";
+import { fixedRouteBookingLoader } from "./loader/fixedRouteBooking/fixedRouteBookingLoader";
 
 export const router = createBrowserRouter(
   [
@@ -162,20 +163,18 @@ export const router = createBrowserRouter(
           // 함께 타기 버스 선택하기
           path: "fixed-bus-select-bus",
           lazy: async () => {
-            const [{ default: FixedRouteBookingSelectBus }, { createLoader }] =
-              await Promise.all([
-                import(
-                  "@/pages/BusBooking/FixedRouteBookingSelectBus/page.tsx"
-                ),
-                import("@/route/loader/createLoader.tsx"),
-              ]);
-            const usersModule = await import("@/api/query/users");
+            const [
+              { default: FixedRouteBookingSelectBus },
+              { fixedRouteBookingLoader },
+            ] = await Promise.all([
+              import("@/pages/BusBooking/FixedRouteBookingSelectBus/page.tsx"),
+              import(
+                "@/route/loader/fixedRouteBooking/fixedRouteBookingLoader"
+              ),
+            ]);
             return {
               Component: FixedRouteBookingSelectBus,
-              loader: createLoader(() => [
-                usersModule.users_me(),
-                usersModule.users_home_locations(),
-              ]),
+              loader: fixedRouteBookingLoader,
             };
           },
         },
