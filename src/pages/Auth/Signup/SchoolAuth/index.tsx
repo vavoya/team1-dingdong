@@ -127,6 +127,7 @@ export default function SchoolAuthSignUp() {
 
       <NextButtonWrapper>
         <SolidButton
+          type="submit"
           text="다음"
           onClick={checkVerificationCodeHandler}
           active={nextButtonActive}
