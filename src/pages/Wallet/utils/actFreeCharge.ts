@@ -13,7 +13,7 @@ export async function actFreeCharge (revalidate: () => void, addToast: (msg: str
     try {
         if ((await getFreeChargeAvailable()).available) {
             await postFreeCharge()
-
+            addToast("무료 충전이 성공 했습니다.")
             queryClient.setQueryData<users_wallet_history_interface>(
                 ['/api/users/wallet/history', {page: INIT_WALLET_PAGE, pageSize: INIT_WALLET_PAGE_SIZE}],
                 (oldData) => {
@@ -37,10 +37,8 @@ export async function actFreeCharge (revalidate: () => void, addToast: (msg: str
                     return newData
                 }
             )
-
             // loader 재실행
             revalidate()
-            addToast("무료 충전이 성공 했습니다.")
         }
         else{
             addToast("무료 충전은 1일 한번 입니다.")
