@@ -14,96 +14,19 @@ import {
 } from "./styles";
 import LocateMeButton from "@/pages/BusTracker/components/LocateMeButton";
 import useCurrentLocation from "@/hooks/useCurrentLoaction/useCurrentLocation";
-import {
-  useGetAvailableBusInfo,
-  useGetBusPath,
-} from "@/hooks/BusBooking/useFixedBooking";
+import { useGetBusPath } from "@/hooks/BusBooking/useFixedBooking";
 
 import { ISOStringToDateDayFormat } from "@/utils/fixedBusBooking/ISOStringToDateDay";
 import LoadingModal, { mountModal } from "@/components/Loading";
+import { useLoaderData } from "react-router-dom";
 
-const BUS_INFO_ARRAY = [
-  // 임시 값.
-  {
-    busScheduleId: 1,
-    busStop: {
-      name: "학동역",
-      time: "2025-02-15T03:00:00Z",
-      longitude: 127.0316881,
-      latitude: 37.514298092, // 위도
-    },
-    busInfo: {
-      name: "01",
-      reservedSeat: 12,
-      totalSeat: 15,
-    },
-  },
-  {
-    busScheduleId: 2,
-    busStop: {
-      name: "신사역",
-      time: "2025-02-15T04:30:00Z",
-      longitude: 127.02059,
-      latitude: 37.5165612,
-    },
-    busInfo: {
-      name: "42",
-      reservedSeat: 10,
-      totalSeat: 15,
-    },
-  },
-];
-
-const BUS_PATH = [
-  [
-    {
-      lat: 37.514298092, //학동역
-      lng: 127.0316881,
-    },
-    {
-      lat: 37.50583, // 고터역
-      lng: 127.00444,
-    },
-    { lat: 37.4770008, lng: 126.9816814 }, // 사당역
-
-    {
-      lat: 37.4602, //서울대
-      lng: 126.9517,
-    },
-  ],
-  [
-    {
-      lat: 37.5165612, //신사역
-      lng: 127.02059,
-    },
-    {
-      lat: 37.50583, // 고터역
-      lng: 127.00444,
-    },
-    { lat: 37.4770008, lng: 126.9816814 }, // 사당역
-    {
-      lat: 37.4602, //서울대
-      lng: 126.9517,
-    },
-  ],
-];
-const { render, unmountModal } = mountModal();
 export default function FixedRouteBookingSelectBus() {
+  const { render, unmountModal } = useMemo(() => mountModal(), []);
   const userLocation = useCurrentLocation();
+  const { userHomeLocation, busInfoArray, busPath, direction, timeSchedule } =
+    useLoaderData();
 
-  // const schoolLocation = { latitue: 37.4602, longitude: 126.9517 }; // 임시 값. 서울대
-
-  const { direction, timeSchedule } = JSON.parse(
-    sessionStorage.getItem("/fixed-bus-booking")!
-  ); // 이전 예약 정보.
   const commuteType = direction === "TO_SCHOOL" ? "등교" : "하교";
-
-  // 버스 정보 불러오기.
-  const busInfo = useGetAvailableBusInfo(direction, timeSchedule);
-  const busInfoArray =
-    busInfo.data?.data.result.length > 0
-      ? busInfo.data?.data.result
-      : BUS_INFO_ARRAY;
 
   const [selectedBusCardIndex, setSelectedBusCardIndex] = useState(0); // 첫번째 버스의 id넣기.
   const [mapCenterLocation, setMapCenterLocation] = useState({
@@ -142,16 +65,11 @@ export default function FixedRouteBookingSelectBus() {
     if (isBusPathLoading) {
       render(<LoadingModal text={"버스 경로를 불러오는 중"} />);
     } else {
-      console.log("왜 안돼", isBusPathLoading);
-      console.log("unmountModal 실행됨!");
       unmountModal();
     }
   }, [isBusPathLoading]); // data.isLoading이 변경될 때마다 실행
 
-  const selectedBusPathPoints =
-    selectedBusPath.data?.points.length > 0
-      ? selectedBusPath?.data?.points
-      : BUS_PATH[selectedBusCardIndex];
+  const selectedBusPathPoints = busPath;
 
   const [busPathPoints, setBusPathPoints] = useState(selectedBusPathPoints);
 
@@ -198,6 +116,7 @@ export default function FixedRouteBookingSelectBus() {
         </BusTicketInfo>
       </RouteMarkHeader>
       <BusSelectMap
+        houseInfo={userHomeLocation.houseInfo}
         commuteType={commuteType}
         mapCenterLocation={mapCenterLocation}
         locationToMarkOnMap={locationToMarkOnMap}

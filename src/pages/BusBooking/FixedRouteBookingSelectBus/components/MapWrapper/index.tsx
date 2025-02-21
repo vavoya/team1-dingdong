@@ -19,10 +19,14 @@ import useCurrentLocation from "@/hooks/useCurrentLoaction/useCurrentLocation";
 import UserOverlay from "@/pages/BusTracker/components/UserOverlay";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
 import BusRoute from "@/pages/BusTracker/components/BusRoute";
-import { useLoaderData } from "react-router-dom";
 import HomeIcon from "@/components/designSystem/Icons/HomeIcon";
 
+interface HouseInfo {
+  latitude: number;
+  longitude: number;
+}
 interface SetLocationHomeMapProps {
+  houseInfo: HouseInfo;
   commuteType: CommuteType;
   mapCenterLocation: {
     center: { lat: number; lng: number };
@@ -38,13 +42,12 @@ interface SetLocationHomeMapProps {
 }
 
 export default function BusSelectMap({
+  houseInfo,
   mapCenterLocation,
   locationName,
   locationToMarkOnMap,
 }: SetLocationHomeMapProps) {
   useKakaoLoader();
-
-  const { houseInfo } = useLoaderData()[1];
 
   const { startPoint, endPoint } = locationToMarkOnMap;
   const userLocation = useCurrentLocation();
