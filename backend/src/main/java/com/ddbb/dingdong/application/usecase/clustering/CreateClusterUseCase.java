@@ -46,6 +46,7 @@ public class CreateClusterUseCase implements UseCase<CreateClusterUseCase.Param,
     private void handleFail(List<Location> clusters) {
         for(Location location : clusters) {
             if(location.getClusterLabel() == null) {
+                location.setClusterLabel("FAILED");
                 reservationManagement.fail(location.getReservationId());
             }
         }
