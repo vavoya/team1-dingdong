@@ -22,7 +22,6 @@ public class BusSubscriptionLockManager {
     private void init() {
         List<Long> busSchedules = busScheduleQueryRepository.findLiveBusSchedule();
         for (Long busScheduleId : busSchedules) {
-            System.out.println(busScheduleId);
             locks.put(busScheduleId, new StoppableLock());
         }
     }
