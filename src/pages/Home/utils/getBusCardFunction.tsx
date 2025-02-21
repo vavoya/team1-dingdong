@@ -7,7 +7,8 @@ import {
     TO_SCHOOL_NOT_ALLOCATED,
     users_reservations_interface
 } from "@/api/query/users";
-import {AllocatedBusStateCard, PendingBusStateCard} from "@/pages/Home/component/BusStateCard";
+import {PendingBusStateCard} from "@/pages/Home/component/BusState/component/BusStateCard/PendingBusStateCard";
+import {AllocatedBusStateCard} from "@/pages/Home/component/BusState/component/BusStateCard/AllocatedBusStateCard";
 
 type BaseReservationInfo = users_reservations_interface["reservationInfos"]["content"][number];
 
