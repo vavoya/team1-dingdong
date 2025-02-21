@@ -1,6 +1,7 @@
 package com.ddbb.dingdong.domain.transportation.repository;
 
 import com.ddbb.dingdong.domain.transportation.entity.BusSchedule;
+import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.domain.transportation.repository.projection.*;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -65,4 +66,7 @@ public interface BusScheduleQueryRepository extends JpaRepository<BusSchedule, L
         WHERE bs.id in :busStopIds
     """)
     List<BusStopArrivalTime> findBusStopArrivalTime(@Param("busStopIds") List<Long> busStopIds);
+
+    @Query("SELECT bs.id FROM BusSchedule bs WHERE bs.status = 'RUNNING' OR bs.status = 'READY'")
+    List<Long> findLiveBusSchedule();
 }

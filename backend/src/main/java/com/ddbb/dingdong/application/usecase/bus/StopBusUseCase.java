@@ -5,7 +5,7 @@ import com.ddbb.dingdong.application.common.UseCase;
 import com.ddbb.dingdong.domain.transportation.entity.vo.OperationStatus;
 import com.ddbb.dingdong.domain.transportation.service.BusScheduleManagement;
 import com.ddbb.dingdong.infrastructure.bus.simulator.BusSubscriptionLockManager;
-import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.BusSubscriptionManager;
+import com.ddbb.dingdong.infrastructure.bus.subscription.BusSubscriptionManager;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

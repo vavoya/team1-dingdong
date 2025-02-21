@@ -21,7 +21,6 @@ public class NotificationMessageFormatter {
         long hour = totalHour % 24;
         long day = totalHour / 24;
         StringBuilder content = new StringBuilder().append("버스가 ");
-        System.out.printf("%d \n", totalSecond);
         if (hour > 0) {
             content.append(hour).append("시간 ");
         }

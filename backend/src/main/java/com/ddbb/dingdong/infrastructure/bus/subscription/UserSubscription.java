@@ -1,6 +1,6 @@
-package com.ddbb.dingdong.infrastructure.bus.simulator.subscription;
+package com.ddbb.dingdong.infrastructure.bus.subscription;
 
-import com.ddbb.dingdong.infrastructure.bus.simulator.subscription.subscriber.CancelableSubscriber;
+import com.ddbb.dingdong.infrastructure.bus.subscription.subscriber.CancelableSubscriber;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.geo.Point;
