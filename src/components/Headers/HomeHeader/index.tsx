@@ -4,37 +4,19 @@ import {NavButton, NavList, Title, Wrapper} from "@/components/Headers/HomeHeade
 import {users_notifications_checkUnread_interface} from "@/api/query/users";
 import {useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {useSocket} from "@/hooks/useSocket";
 import {colors} from "@/styles/colors.ts";
+import useNotificationSync from "@/hooks/useNotificationSync";
 
 interface HomeHeaderProps {
     busStateRef: React.RefObject<HTMLDivElement>;
     unreadNotification: users_notifications_checkUnread_interface
 }
 export default function HomeHeader({busStateRef, unreadNotification}: HomeHeaderProps) {
-    const [isNotification, setIsNotification] = useState<[boolean]>([unreadNotification.hasUnreadNotifications]);
     const navigate = useNavigate()
-    const ws = useSocket()
+    const isNotification = useNotificationSync({hasUnreadNotifications: unreadNotification.hasUnreadNotifications})
     const headerRef = useRef<HTMLDivElement>(null);
     const [headerColor, setHeaderColor] = useState<string>(colors.gray20)
 
-    // 알림 구독
-    useEffect(() => {
-        if (ws instanceof WebSocket) {
-            const handleMessage = (message: MessageEvent) => {
-                const data: string = message.data;
-                if (data === 'alarm') {
-                    setIsNotification([true]);
-                }
-            };
-
-            ws.addEventListener("message", handleMessage);
-
-            return () => {
-                ws.removeEventListener("message", handleMessage); // 언마운트 시 이벤트 리스너 삭제
-            };
-        }
-    }, [ws]); // `ws`가 변경될 때마다 실행
 
     useEffect(() => {
         const handleScroll = () => {
