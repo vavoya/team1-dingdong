@@ -123,9 +123,8 @@ public interface ReservationQueryRepository extends JpaRepository<Reservation, L
         FROM Reservation r
         WHERE r.userId = :userId
         AND r.status != 'CANCELED'
-        AND (r.arrivalTime is not null and r.arrivalTime in :time) OR
-            (r.departureTime is not null and r.departureTime in :time)
+        AND ((r.arrivalTime is not null and r.arrivalTime in :time) OR
+            (r.departureTime is not null and r.departureTime in :time))
     """)
     List<LocalDateTime> findDuplicatedReservationTime(@Param("userId") Long userId, @Param("time") List<LocalDateTime> times);
-
 }
