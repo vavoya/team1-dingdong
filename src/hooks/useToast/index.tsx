@@ -74,7 +74,7 @@ export default function useToast(bottom: string = "-20px") {
 // 헬퍼 함수
 function mountToastContainer() {
   const toastContainer = document.createElement("div");
-  toastContainer.id = "loading-modal-container";
+  toastContainer.id = "toast-container";
   document.body.appendChild(toastContainer);
 
   // React 18의 createRoot를 사용하여 LoadingModal 렌더링
@@ -136,23 +136,27 @@ function updateToast({
 }: UpdateToastProps) {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      let totalHeight = 0;
+      try {
+        let totalHeight = 0;
 
-      const toastElementList = Array.from(toastContainer.childNodes);
-      const toastList = Array.from(toastSet);
-      toastList.forEach((toast, index) => {
-        // 언마운트 예약된 녀석이면 무시
-        if (toast.reserveUnmount) return;
+        const toastElementList = Array.from(toastContainer.childNodes);
+        const toastList = Array.from(toastSet);
+        toastList.forEach((toast, index) => {
+          // 언마운트 예약된 녀석이면 무시
+          if (toast.reserveUnmount) return;
 
-        toast.bottom = `calc(${bottom} - ${totalHeight}px)`;
+          toast.bottom = `calc(${bottom} - ${totalHeight}px)`;
 
-        const height = (toastElementList[index] as HTMLElement).offsetHeight;
-        totalHeight += height;
+          const height = (toastElementList[index] as HTMLElement).offsetHeight;
+          totalHeight += height;
 
-        // 이거는 토스트 간격
-        totalHeight += 10;
-      });
-      renderToast({ toastSet, root });
+          // 이거는 토스트 간격
+          totalHeight += 10;
+        });
+        renderToast({ toastSet, root });
+      } catch (error) {
+        // url 변경되면 토스트 높이 계산 에러 뜨는데, 무시해도 되니깐 여기서 에러 잡아주기
+      }
     });
   });
 }
