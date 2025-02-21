@@ -58,6 +58,7 @@ export async function deleteItem (deletedReservationId: number, reservationsObj:
 
     // 예매 취소 캐시 제거
     removeReservationCache('CANCELED')
+    removeReservationCache('PENDING')
     removeReservationCache('ALL')
     removeReservationCache('HOME')
 
