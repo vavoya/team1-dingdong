@@ -84,6 +84,7 @@ export const isDateDisabled = (
   commuteType: CommuteType,
   calendarType = "customBooking"
 ) => {
+  void commuteType;
   if (calendarType !== "customBooking") {
     const now = new Date();
     const compareDate = new Date(date);
