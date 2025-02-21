@@ -10,8 +10,8 @@ import {
 import {formatKstDate} from "@/utils/time/formatKstDate.ts";
 import {formatKstTime} from "@/utils/time/formatKstTime.ts";
 import BusIcon from "@/components/designSystem/Icons/Home/BusIcon.tsx";
-import {TimeUntilArrival} from "@/pages/Home/component/BusStateCard";
 import BookingActionButton from "../../BookingActionButton";
+import {TimeUntilArrival} from "@/pages/Home/component/BusState/component/BusStateCard/TimeUntilArriaval";
 
 interface AllocatedItemProps {
     status: TO_SCHOOL_ALLOCATED['operationInfo']['busStatus'] | TO_HOME_ALLOCATED['operationInfo']['busStatus'];

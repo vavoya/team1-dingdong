@@ -1,8 +1,8 @@
-import { ScheduledDepartures } from "../CardSlider/styles"
 import ArrowRight2Icon from "@/components/designSystem/Icons/Reservations/ArrowRight2Icon.tsx";
 import CalenderIcon from "@/components/designSystem/Icons/Reservations/CalenderIcon.tsx";
 import LocationIcon from "@/components/designSystem/Icons/Reservations/LocationIcon.tsx";
 import ClockIcon from "@/components/designSystem/Icons/Reservations/ClockIcon.tsx";
+import {ScheduledDepartures} from "@/pages/Reservations/components/CardSlider/styles.ts";
 
 /* 종속적인 컴포넌트(모듈) */
 type CardProps = {

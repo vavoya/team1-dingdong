@@ -36,7 +36,7 @@ export default function NotAllocatedItem({TO_HOME, TO_SCHOOL, reservationId, del
         },
         onSuccess: async () => {
             deleteItem(reservationId)
-            revalidate()
+            await revalidate()
         },
         onError: error => {
             console.error('삭제 에러', error)

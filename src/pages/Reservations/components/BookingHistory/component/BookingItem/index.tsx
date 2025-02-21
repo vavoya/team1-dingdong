@@ -17,7 +17,7 @@ interface RenderBookingItemList {
 }
 export default function RenderBookingItemList({reservationsObj, filterType, schoolName}: RenderBookingItemList) {
     const addToast = useToast();
-    const { revalidate } = useRevalidator();
+    const { revalidate, state } = useRevalidator();
 
     return (
         <>
@@ -62,7 +62,8 @@ export default function RenderBookingItemList({reservationsObj, filterType, scho
                                 status={item.reservationStatus}
                                 deleteItem={async (deletedReservationId) => {
                                     try {
-                                        await deleteItem(deletedReservationId, reservationsObj, filterType)
+                                        await deleteItem(deletedReservationId, reservationsObj, filterType, revalidate, state)
+                                        addToast("예매가 성공적으로 취소 되었습니다.")
                                     }
                                     catch (error) {
                                         addToast("예매 취소 중에 문제가 발생했습니다.")
@@ -80,7 +81,7 @@ export default function RenderBookingItemList({reservationsObj, filterType, scho
             }
             {
                 reservationsObj[filterType].page.number < (reservationsObj[filterType].page.totalPages - 1) ?
-                    <LoadingCard getNextBusState={(errorCallbackF) => getNextBusState(errorCallbackF, reservationsObj, filterType, revalidate)}/> : null
+                    <LoadingCard getNextBusState={(errorCallbackF) => getNextBusState(errorCallbackF, reservationsObj, filterType, revalidate, state)}/> : null
 
             }
         </>
