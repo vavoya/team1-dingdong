@@ -78,7 +78,7 @@ export default function CalendarView({
       );
       setRecommendationDates(finalRecommendationDates);
     }
-  }, [TimeTableRecommendationArray, currentMonthIndex]);
+  }, [TimeTableRecommendationArray, currentMonthIndex, commuteType]);
 
   const makingTimeTableSuggestion = () => {
     const { render, unmountModal } = mountModal();
