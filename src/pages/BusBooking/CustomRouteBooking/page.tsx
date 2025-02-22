@@ -106,14 +106,14 @@ export default function CustomRouteBooking() {
           <DetailText>탑승권은 2일 후부터 예매 가능해요.</DetailText>
         </InfoTextBox>
 
-        <TotalEditableViewButton>
+        <TotalEditableViewButton
+          onClick={() => {
+            setTimeViewModalOpen(true);
+            setOverlayBottomModalType("editable");
+          }}
+        >
           <ButtonTitle>선택한 일정</ButtonTitle>
-          <CountViewBox
-            onClick={() => {
-              setTimeViewModalOpen(true);
-              setOverlayBottomModalType("editable");
-            }}
-          >
+          <CountViewBox>
             {/* 전체 일정을 들고오기. 그 중 빠른 일자를 앞으로. 없으면- */}
             <ScheduleCount>
               {cachedSelectedTimeSchedules.length > 0
