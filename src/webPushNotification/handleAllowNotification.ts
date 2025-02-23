@@ -1,6 +1,7 @@
 import { getToken } from "firebase/messaging";
 import { messaging } from "./settingFCM";
-import { postDeviceToken } from "@/api/webPushNotification/notification";
+
+import { fcmTokenUtils } from "@/utils/fcmToken/fcmTokenStorage";
 const VAPID_KEY = import.meta.env.VITE_FCM_VAPID_KEY;
 
 export const handleAllowNotification = async () => {
@@ -19,7 +20,10 @@ export const handleAllowNotification = async () => {
         // 서비스 워커 등록 완료를 기다림
         await registerServiceWorker();
         const token = await getDeviceToken(); // 최대 3번까지 재시도
-        await postDeviceToken(token);
+
+        const { saveFCMTokenToStorage } = fcmTokenUtils();
+        saveFCMTokenToStorage(token);
+
         return "granted";
       } catch (error) {
         console.error(error);

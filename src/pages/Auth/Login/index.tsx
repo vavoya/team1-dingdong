@@ -14,6 +14,8 @@ import { useLogin } from "@/hooks/Login/useLogin";
 import { AxiosError } from "axios";
 import { mountModal } from "@/components/Loading";
 import Modal from "@/components/Modal";
+import { fcmTokenUtils } from "@/utils/fcmToken/fcmTokenStorage";
+import { postDeviceToken } from "@/api/webPushNotification/notification";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -50,10 +52,14 @@ const Login = () => {
   };
 
   const loginHandler = () => {
+    const { hasStoredToken } = fcmTokenUtils();
     const loginFormData = { email, password };
     postLoginMutation(loginFormData, {
       onSuccess: () => {
         navigate("/home");
+        if (hasStoredToken()) {
+          postDeviceToken();
+        }
       },
       onError: (error: Error) => {
         const err = error as AxiosError<{ message: string }>;

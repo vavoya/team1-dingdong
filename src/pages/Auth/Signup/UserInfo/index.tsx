@@ -23,6 +23,8 @@ import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader";
 import { AxiosError } from "axios";
 import { mountModal } from "@/components/Loading";
 import Modal from "@/components/Modal";
+import { postDeviceToken } from "@/api/webPushNotification/notification";
+import { fcmTokenUtils } from "@/utils/fcmToken/fcmTokenStorage";
 
 // 예시 타입들
 
@@ -60,19 +62,13 @@ export default function UserInfoSignup() {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === "phoneNumber") {
-      const converted = phoneNumberFormat(value);
-      setFormData((prev) => ({
-        ...prev,
-        [name]: converted,
-      }));
-      return;
-    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
+
   const navigate = useNavigate();
   const open = useDaumPostcodePopup(SCRIPT_URLS.daumPostCode);
 
@@ -113,6 +109,7 @@ export default function UserInfoSignup() {
 
   const submitUserInfoHandler = () => {
     if (!homeGeoLocation) return;
+    const { hasStoredToken } = fcmTokenUtils();
     const splitAddress = formData.address.split(" ").slice(-2).join(" ");
     const finalUserInfo = {
       email: userInfoFromPreviousStep.current.email,
@@ -126,8 +123,11 @@ export default function UserInfoSignup() {
       schoolId: userInfoFromPreviousStep.current.schoolId,
     };
     postUserInfoMutation(finalUserInfo, {
-      onSuccess: () => {
+      onSuccess: async () => {
         navigate("/home");
+        if (hasStoredToken()) {
+          postDeviceToken();
+        }
       },
       onError: (error: Error) => {
         const err = error as AxiosError<{ message: string }>;
