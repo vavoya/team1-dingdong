@@ -15,6 +15,7 @@ import {
 } from "@/utils/calendar/timeViewBottomModalUtil";
 
 import { selectedDateType } from "../../types/selectedDateType";
+import { useEffect } from "react";
 
 interface TimeViewBottomModalProps {
   setSelectedDate: React.Dispatch<React.SetStateAction<selectedDateType>>;
@@ -61,6 +62,15 @@ export default function TimeViewBottomModal({
     });
     // 세션에 저장.
   };
+
+  useEffect(() => {
+    // 모달이 열리면 스크롤을 막음
+    if (isEditablTimeViewModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isEditablTimeViewModalOpen]);
 
   return (
     <BottomOverlayModal
