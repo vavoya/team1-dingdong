@@ -1,16 +1,16 @@
 import styled from "styled-components";
-import {radius} from "@/styles/radius.ts";
-import {colors} from "@/styles/colors.ts";
-import {Body2Medium, Heading1Bold} from "@/styles/typography.ts";
+import { radius } from "@/styles/radius.ts";
+import { colors } from "@/styles/colors.ts";
+import { Body2Medium, Heading1Bold } from "@/styles/typography.ts";
 
 const ButtonWrapper = styled.button`
-    display: flex;
-    justify-content: center;
-    height: 200px;
-    flex: 1;
-    padding: 20px;
-    flex-shrink: 0;
-    border-radius: ${radius.medium}px;
+  display: flex;
+  justify-content: center;
+  height: 200px;
+  flex: 1;
+  padding: 20px;
+  flex-shrink: 0;
+  border-radius: ${radius.medium}px;
 `;
 
 export const Wrapper = styled.section`
@@ -21,11 +21,15 @@ export const Wrapper = styled.section`
 `;
 
 export const LeftButton = styled(ButtonWrapper)`
-  background: linear-gradient(204deg, ${colors.orange200} 5.11%, ${colors.orange500} 93.09%);
+  background: linear-gradient(
+    204deg,
+    ${colors.orange200} 5.11%,
+    ${colors.orange500} 93.09%
+  );
 `;
 
 export const RightButton = styled(ButtonWrapper)`
-  background: linear-gradient(157deg, #DDEFFF 25.41%, #AFD5FF 95.5%);
+  background: linear-gradient(157deg, #ddefff 25.41%, #afd5ff 95.5%);
 `;
 
 export const Content = styled.div`
@@ -45,6 +49,7 @@ export const Info = styled.div`
 export const Title = styled(Heading1Bold)`
   font-family: Pretendard, serif;
   font-style: normal;
+  color: ${colors.gray100};
 `;
 
 export const Detail = styled(Body2Medium)`
