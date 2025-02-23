@@ -9,10 +9,7 @@ import { SIGNUP_TEXT } from "@/constants/signupTexts";
 
 import { useDaumPostcodePopup } from "react-daum-postcode";
 import { SCRIPT_URLS } from "@/constants/daumPostCode";
-import {
-  isValidNameFormat,
-  phoneNumberFormat,
-} from "@/utils/signUp/userInfoFormatValidation";
+import { isValidNameFormat } from "@/utils/signUp/userInfoFormatValidation";
 import { usePostUserInfo } from "@/hooks/SignUp/useSignUp";
 import {
   GeoLocationType,
