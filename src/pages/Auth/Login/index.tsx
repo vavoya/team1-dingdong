@@ -15,8 +15,6 @@ import { AxiosError } from "axios";
 import { mountModal } from "@/components/Loading";
 import Modal from "@/components/Modal";
 
-import { handleAllowNotification } from "@/webPushNotification/handleAllowNotification";
-
 const Login = () => {
   const navigate = useNavigate();
   const { postLoginMutation } = useLogin();
@@ -50,12 +48,12 @@ const Login = () => {
       />
     );
   };
+
   const loginHandler = () => {
     const loginFormData = { email, password };
     postLoginMutation(loginFormData, {
       onSuccess: () => {
         navigate("/home");
-        handleAllowNotification();
       },
       onError: (error: Error) => {
         const err = error as AxiosError<{ message: string }>;
@@ -67,6 +65,7 @@ const Login = () => {
       },
     });
   };
+
   return (
     <>
       <PopHeader text="" />

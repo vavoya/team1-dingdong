@@ -20,7 +20,6 @@ import {
 } from "../../hooks/useAddressToCoordinate";
 
 import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader";
-import { handleAllowNotification } from "@/webPushNotification/handleAllowNotification";
 import { AxiosError } from "axios";
 import { mountModal } from "@/components/Loading";
 import Modal from "@/components/Modal";
@@ -129,7 +128,6 @@ export default function UserInfoSignup() {
     postUserInfoMutation(finalUserInfo, {
       onSuccess: () => {
         navigate("/home");
-        handleAllowNotification(); // 웹 푸시 알림 셋팅을 위한 요청.
       },
       onError: (error: Error) => {
         const err = error as AxiosError<{ message: string }>;
