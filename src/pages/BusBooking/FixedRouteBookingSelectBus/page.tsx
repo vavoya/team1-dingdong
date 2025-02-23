@@ -45,12 +45,13 @@ export default function FixedRouteBookingSelectBus() {
 
   const mapJitter = useRef<number>(0.00000001);
 
-  const userBusStop = {
-    // 유저 승차지 또는 하자치 위치
-    lat: busInfoArray[selectedBusCardIndex].busStop.latitude,
-    lng: busInfoArray[selectedBusCardIndex].busStop.longitude,
-  };
-
+  const userBusStop = useMemo(
+    () => ({
+      lat: busInfoArray[selectedBusCardIndex].busStop.latitude,
+      lng: busInfoArray[selectedBusCardIndex].busStop.longitude,
+    }),
+    [selectedBusCardIndex]
+  );
   useEffect(() => {
     // 현재 버스카드 id를 가지고 값을 fetch한다.
     // ex) startPoint, endPoint, busPath, 승차지, 하차지 이름 3가지 받기.
@@ -89,13 +90,15 @@ export default function FixedRouteBookingSelectBus() {
     [busPathPoints] // serverDataList가 변경될 때만 다시 계산
   );
 
-  const locationToMarkOnMap = {
-    startPoint: clientDataList[0],
-    endPoint: clientDataList[clientDataList.length - 1],
-    busPath: clientDataList,
-    userBusStop,
-  };
-
+  const locationToMarkOnMap = useMemo(
+    () => ({
+      startPoint: clientDataList[0],
+      endPoint: clientDataList[clientDataList.length - 1],
+      busPath: clientDataList,
+      userBusStop,
+    }),
+    [clientDataList, userBusStop]
+  ); // 의존성 배열에 필요한 값만 넣어줍니다.
   useEffect(() => {
     setBusPathPoints(selectedBusPathPoints);
     setBusStopName(busInfoArray[selectedBusCardIndex].busStop.name);

@@ -60,8 +60,10 @@ export default function BusSelectMap({
 
   // 📌 **onCreate를 사용해 mapRef 설정**
   const handleMapCreate = (map: kakao.maps.Map) => {
-    mapRef.current = map;
-    updateMapBounds();
+    if (!mapRef.current) {
+      mapRef.current = map;
+      updateMapBounds();
+    }
   };
 
   // 📌 **지도 경계 업데이트 함수**
