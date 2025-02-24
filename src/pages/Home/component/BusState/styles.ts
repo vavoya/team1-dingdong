@@ -29,7 +29,7 @@ export const HeaderTitle = styled.span.withConfig({
     font-weight: 600;
     line-height: 150%;
 `
-export const HeaderRightSection = styled.div`
+export const HeaderRightSection = styled.button`
     display: flex;
     align-items: center;
     gap: 4px;
@@ -42,7 +42,7 @@ export const HeaderInfoText = styled.span`
     font-weight: 500;
     line-height: 150%;
 `
-export const HeaderActionButton = styled.button`
+export const HeaderActionSvgBox = styled.button`
     display: flex;
     width: 14px;
     height: 24px;

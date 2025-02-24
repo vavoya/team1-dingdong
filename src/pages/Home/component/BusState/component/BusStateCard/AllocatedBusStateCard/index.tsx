@@ -14,10 +14,10 @@ import {
 import {useNavigate} from "react-router-dom";
 import {getKstFormattedLabelPair} from "@/utils/time/getKstFormattedLabelPair.ts";
 import BusIcon from "@/components/designSystem/Icons/Home/BusIcon.tsx";
-import {formatKstTime} from "@/utils/time/formatKstTime.ts";
 import {getTravelDuration} from "@/utils/time/getTravelDuration.ts";
 import ArrowRightIcon from "@/components/designSystem/Icons/Home/ArrowRightIcon.tsx";
 import {TimeUntilArrival} from "@/pages/Home/component/BusState/component/BusStateCard/TimeUntilArriaval";
+import {getKstTime} from "@/utils/time/getKstTime.ts";
 
 interface AllocatedBusStateCardProps {
     boardingDate: string;
@@ -65,7 +65,7 @@ export function AllocatedBusStateCard({
             </CardBusInfo>
             <CardDestination>
                 <CardDestinationText>
-                    {`${formatKstTime(dropOffDate)} ${dropOffPoint} 도착`}
+                    {`${getKstTime(dropOffDate)} ${dropOffPoint} 도착`}
                 </CardDestinationText>
                 <Divider />
                 <CardDestinationText>

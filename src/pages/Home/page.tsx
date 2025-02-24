@@ -18,7 +18,6 @@ import {useRef} from "react";
 
 export default function Page() {
     const [me, reservations, unreadNotification, home]: [users_me_interface, users_reservations_interface, users_notifications_checkUnread_interface, users_home_locations_interface] = useLoaderData();
-
     const ref = useRef<HTMLDivElement>(null)
 
     return (

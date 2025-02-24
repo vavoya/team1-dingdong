@@ -31,7 +31,7 @@ export const Text = styled(Body2Medium)`
     text-align: center;
     font-style: normal;
 `
-export const Button = styled.button`
+export const SvgBox = styled.button`
     display: flex;
     width: 14px;
     height: 24px;
