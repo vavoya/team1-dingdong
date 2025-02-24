@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dingdong?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 1234
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+server:
+  servlet:
+    session:
+      cookie:
+        domain: ${CLIENT_ADDRESS}
+        same-site: strict
+        path: /
+
+client:
+  schema: ${CLIENT_SCHEMA}
+  ip: ${CLIENT_ADDRESS}
+  port: ${CLIENT_PORT}
+
+api:
+  tmap:
+    apikeys:
+      - ${API_KEY_1}
+      - ${API_KEY_2}
+      - ${API_KEY_3}
+
+fcm:
+  renotify: ${FCM_RENOTIFIY}
+  silent: ${FCM_SILENT}
+  requireInteraction: ${FCM_REQUIRE_INTERACTION}
+  link: ${FCM_TOUCH_LINK}
