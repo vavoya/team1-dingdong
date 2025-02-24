@@ -67,9 +67,10 @@ export default function TimeViewBottomModal({
     // 모달이 열리면 스크롤을 막음
     if (isEditablTimeViewModalOpen) {
       document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
     }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, [isEditablTimeViewModalOpen]);
 
   return (
