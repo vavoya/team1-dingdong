@@ -17,7 +17,12 @@ import LocateMeButton from "@/pages/BusTracker/components/LocateMeButton";
 import {useLoaderData} from "react-router-dom";
 import {bus_bus_stop_location_interface, bus_path_interface} from "@/route/loader/bus-tracker/loader.tsx";
 import PopBox from "@/pages/BusTracker/components/PopBox";
-import {TO_HOME_ALLOCATED, TO_SCHOOL_ALLOCATED, users_me_interface} from "@/api/query/users";
+import {
+    TO_HOME_ALLOCATED,
+    TO_SCHOOL_ALLOCATED,
+    users_me_interface,
+    users_reservations_interface
+} from "@/api/query/users";
 import {getBusCardFunction} from "@/pages/Home/utils/getBusCardFunction.tsx";
 
 export interface PositionType {
@@ -28,7 +33,7 @@ export interface PositionType {
 export default function BasicMap() {
     useKakaoLoader()
     const userLocation = useCurrentLocation();
-    const [busPath, busStopLocation, busSchedule, me]: [bus_path_interface, bus_bus_stop_location_interface, TO_SCHOOL_ALLOCATED | TO_HOME_ALLOCATED, users_me_interface] = useLoaderData();
+    const [busPath, busStopLocation, busSchedule, me]: [bus_path_interface, bus_bus_stop_location_interface, Extract<users_reservations_interface['reservationInfos']['content'][number], TO_SCHOOL_ALLOCATED | TO_HOME_ALLOCATED>, users_me_interface] = useLoaderData();
     const [location, setLocation] = useState({
         // 지도의 초기 위치
         center: { lat: busStopLocation.latitude, lng: busStopLocation.longitude },
@@ -55,9 +60,9 @@ export default function BasicMap() {
                 {/* 버스 경로 */}
                 <BusRoute path={busPath.points.map(({longitude, latitude}) => ({lat: latitude, lng: longitude}))} />
                 {/* 버스 정류장 오버레이 */}
-                <BusStopOverlay lat={busStopLocation.latitude} lng={busStopLocation.longitude} />
+                <BusStopOverlay position={{lat: busStopLocation.latitude, lng: busStopLocation.longitude}} boardingPoint={busSchedule.busStopName} />
                 {/* 버스 위치 오버레이 */}
-                <BusOverlay isRunning={busSchedule.operationInfo.busStatus === 'RUNNING'}/>
+                <BusOverlay setLocation={setLocation} isRunning={busSchedule.operationInfo.busStatus === 'RUNNING'}/>
                 {/* 사용자 위치 오버레이 */}
                 <UserOverlay lat={userLocation.lat} lng={userLocation.lng} />
             </Map>

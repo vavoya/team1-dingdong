@@ -5,7 +5,11 @@ import BusStopLocationIcon from "@/components/designSystem/Icons/BusTracker/BusS
 import BusStopLocationPinIcon from "@/components/designSystem/Icons/BusTracker/BusStopLocationPinIcon.tsx";
 
 
-export default function BusStopOverlay({lat, lng}: PositionType ) {
+interface BusStopOverlayProps {
+    position: PositionType;
+    boardingPoint: string;
+}
+export default function BusStopOverlay({position: {lat, lng}, boardingPoint}: BusStopOverlayProps ) {
 
     return (
 
@@ -21,7 +25,7 @@ export default function BusStopOverlay({lat, lng}: PositionType ) {
                 <BusStopInfoBox>
                     <BusStopLocationIcon />
                     <span>
-                        학동역
+                        {boardingPoint}
                     </span>
                     <span>
                         탑승
