@@ -1,7 +1,6 @@
 import PopHeader from "@/components/Headers/PopHeader";
 import {
     ItemButton, ItemDivde, ItemTitle,
-    ItemWrapper,
     Main,
     PageWrapper,
     UserEmail,
@@ -81,11 +80,11 @@ interface ItemProps {
 function Item({text, onClick = () => {}}: ItemProps) {
 
     return (
-        <ItemWrapper>
-            <ItemTitle>{text}</ItemTitle>
+        <li>
             <ItemButton onClick={onClick}>
+                <ItemTitle>{text}</ItemTitle>
                 <ArrowRightIcon />
             </ItemButton>
-        </ItemWrapper>
+        </li>
     )
 }
