@@ -5,7 +5,7 @@ import {users_notifications_checkUnread_interface} from "@/api/query/users";
 import {useEffect, useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {colors} from "@/styles/colors.ts";
-import useNotificationSync from "@/hooks/useNotificationSync";
+import {useNotification} from "@/components/Headers/HomeHeader/hook/useNotification";
 
 interface HomeHeaderProps {
     busStateRef: React.RefObject<HTMLDivElement>;
@@ -13,7 +13,7 @@ interface HomeHeaderProps {
 }
 export default function HomeHeader({busStateRef, unreadNotification}: HomeHeaderProps) {
     const navigate = useNavigate()
-    const isNotification = useNotificationSync({hasUnreadNotifications: unreadNotification.hasUnreadNotifications})
+    const isNotification = useNotification(unreadNotification.hasUnreadNotifications)
     const headerRef = useRef<HTMLDivElement>(null);
     const [headerColor, setHeaderColor] = useState<string>(colors.gray20)
 
@@ -48,7 +48,7 @@ export default function HomeHeader({busStateRef, unreadNotification}: HomeHeader
             <NavList>
                 <li>
                     <NavButton
-                        isNotification={isNotification[0]}
+                        isNotification={isNotification}
                         onClick={() => navigate('/notification')}>
                         <BellIcon />
                     </NavButton>
