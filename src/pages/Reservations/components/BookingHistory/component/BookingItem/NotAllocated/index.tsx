@@ -9,10 +9,10 @@ import {
     TripInfo,
     TripText
 } from "@/pages/Reservations/components/BookingHistory/styles.ts";
-import {formatKstDate} from "@/utils/time/formatKstDate.ts";
-import {formatKstTime} from "@/utils/time/formatKstTime.ts";
 import BookingActionButton from "../../BookingActionButton";
 import {FILTER_TEXT_LIST} from "@/pages/Reservations/components/BookingHistory";
+import {getKstDay} from "@/utils/time/getKstDay.ts";
+import {getKstTime} from "@/utils/time/getKstTime.ts";
 
 interface NotAllocatedItemProps {
     TO_HOME?: {
@@ -51,11 +51,11 @@ export default function NotAllocatedItem({TO_HOME, TO_SCHOOL, reservationId, del
                 <DateText>
                     {
                         TO_HOME != null ?
-                            formatKstDate(TO_HOME.boardingDate) : null
+                            getKstDay(TO_HOME.boardingDate) : null
                     }
                     {
                         TO_SCHOOL != null ?
-                            formatKstDate(TO_SCHOOL.dropOffDate) : null
+                            getKstDay(TO_SCHOOL.dropOffDate) : null
                     }
                 </DateText>
                 <TripInfo>
@@ -63,7 +63,7 @@ export default function NotAllocatedItem({TO_HOME, TO_SCHOOL, reservationId, del
                         {
                             // 하교 (학교)
                             TO_HOME != null ?
-                                `${TO_HOME.boardingPoint} ${formatKstTime(TO_HOME.boardingDate)} 탑승` : null
+                                `${TO_HOME.boardingPoint} ${getKstTime(TO_HOME.boardingDate)} 탑승` : null
                         }
                         {
                             // 등교 (집)
@@ -81,7 +81,7 @@ export default function NotAllocatedItem({TO_HOME, TO_SCHOOL, reservationId, del
                         {
                             // 등교 (학교)
                             TO_SCHOOL != null ?
-                                `학교 ${formatKstTime(TO_SCHOOL.dropOffDate)} 도착` : null
+                                `학교 ${getKstTime(TO_SCHOOL.dropOffDate)} 도착` : null
                         }
                     </TripText>
                 </TripInfo>

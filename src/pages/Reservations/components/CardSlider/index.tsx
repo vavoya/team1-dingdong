@@ -1,11 +1,11 @@
 import {useEffect, useRef, useState} from "react";
 import {ScheduledDepartures} from "./styles.ts";
 import {TO_HOME_ALLOCATED, TO_SCHOOL_ALLOCATED, users_reservations_interface} from "@/api/query/users";
-import {formatKstDate} from "@/utils/time/formatKstDate.ts";
-import {formatKstTime} from "@/utils/time/formatKstTime.ts";
 import RenderCards from "@/pages/Reservations/components/CardSlider/component/RenderCard";
 import Controller from "@/pages/Reservations/components/CardSlider/component/Controller";
 import {HiddenCard} from "@/pages/Reservations/components/CardSlider/component/Card";
+import {getKstDay} from "@/utils/time/getKstDay.ts";
+import {getKstTime} from "@/utils/time/getKstTime.ts";
 
 export const PREV = -1;
 export const CURRENT = 0;
@@ -64,9 +64,9 @@ export default function CardSlider({contents}: CardSliderProps) {
                     countRef={countRef}
                     data={contents.map(content => ({
                         direction: content.direction,
-                        date: content.direction === 'TO_HOME' ? formatKstDate(content.operationInfo.busStopArrivalTime, 1) : formatKstDate(content.expectedArrivalTime, 1),
+                        date: content.direction === 'TO_HOME' ? getKstDay(content.operationInfo.busStopArrivalTime, 1) : getKstDay(content.expectedArrivalTime, 1),
                         location: content.busStopName,
-                        time: `${content.direction === 'TO_HOME' ? formatKstTime(content.expectedDepartureTime) : formatKstTime(content.operationInfo.busStopArrivalTime)} 탑승`
+                        time: `${content.direction === 'TO_HOME' ? getKstDay(content.expectedDepartureTime) : getKstTime(content.operationInfo.busStopArrivalTime)} 탑승`
                     }))} />
             </ScheduledDepartures.Slider>
             <Controller

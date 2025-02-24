@@ -7,11 +7,11 @@ import {
     TripInfo,
     TripText
 } from "@/pages/Reservations/components/BookingHistory/styles.ts";
-import {formatKstDate} from "@/utils/time/formatKstDate.ts";
-import {formatKstTime} from "@/utils/time/formatKstTime.ts";
 import BusIcon from "@/components/designSystem/Icons/Home/BusIcon.tsx";
 import BookingActionButton from "../../BookingActionButton";
 import {TimeUntilArrival} from "@/pages/Home/component/BusState/component/BusStateCard/TimeUntilArriaval";
+import {getKstDay} from "@/utils/time/getKstDay.ts";
+import {getKstTime} from "@/utils/time/getKstTime.ts";
 
 interface AllocatedItemProps {
     status: TO_SCHOOL_ALLOCATED['operationInfo']['busStatus'] | TO_HOME_ALLOCATED['operationInfo']['busStatus'];
@@ -32,15 +32,15 @@ export default function AllocatedItem({
         <HistoryItem>
             <InfoBox>
                 <DateText>
-                    {formatKstDate(boardingDate)}
+                    {getKstDay(boardingDate)}
                 </DateText>
                 <TripInfo>
                     <TripText>
-                        {`${boardingPoint} ${formatKstTime(boardingDate)} 탑승`}
+                        {`${boardingPoint} ${getKstTime(boardingDate)} 탑승`}
                     </TripText>
                     <TripDivide/>
                     <TripText>
-                        {`${dropOffPoint} ${formatKstTime(dropOffDate)} 도착`}
+                        {`${dropOffPoint} ${getKstTime(dropOffDate)} 도착`}
                     </TripText>
                 </TripInfo>
                 <StatusInfo>
