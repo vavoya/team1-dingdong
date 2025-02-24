@@ -33,13 +33,14 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
                 },
                 staleTime: 1000 * 60, // 1분 동안 캐싱
             }),
-            queryClient.ensureQueryData({
+            queryClient.fetchQuery({
                 queryKey: [`/api/reservations/busSchedules/${busScheduleId}`],
                 queryFn: async () => {
-                    const response = await axiosInstance.get(`/api/users/reservations/busSchedules/${busScheduleId}`)
+                    const response = await axiosInstance.get(`/api/users/reservations/busSchedules/${busScheduleId}`);
                     return response.data;
                 },
-                staleTime: 1000 * 60, // 1분 동안 캐싱
+                staleTime: 0, // 즉시 새로고침
+                gcTime: 0, // 캐시 유지 시간 0으로 설정 → 즉시 삭제
             }),
             queryClient.ensureQueryData(users_me())
         ]);
