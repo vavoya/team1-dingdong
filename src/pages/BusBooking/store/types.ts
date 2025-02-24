@@ -34,7 +34,7 @@ export type TimeScheduleAction =
       };
     }
   | {
-      type: "SET_AI_RECOMMENDATIONS";
+      type: "SET_TIMETABLE_RECOMMENDATIONS";
       payload: {
         year: number;
         month: number;
@@ -43,7 +43,7 @@ export type TimeScheduleAction =
     }
   // 다른 액션들
   | {
-      type: "CLEAR_AI_RECOMMENDATIONS";
+      type: "CLEAR_TIMETABLE_RECOMMENDATIONS";
       payload: {
         year: number;
         month: number;

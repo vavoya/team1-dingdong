@@ -31,7 +31,7 @@ export function timeScheduleReducer(
         break;
       }
 
-      case "SET_AI_RECOMMENDATIONS": {
+      case "SET_TIMETABLE_RECOMMENDATIONS": {
         const { year, month, recommendations } = action.payload;
         if (!draft[year]) draft[year] = {};
         draft[year][month] = {};
@@ -53,7 +53,7 @@ export function timeScheduleReducer(
         break;
       }
 
-      case "CLEAR_AI_RECOMMENDATIONS": {
+      case "CLEAR_TIMETABLE_RECOMMENDATIONS": {
         const { year, month } = action.payload;
         if (draft[year] && draft[year][month]) {
           delete draft[year][month];
