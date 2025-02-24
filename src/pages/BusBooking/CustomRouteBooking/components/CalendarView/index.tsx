@@ -21,11 +21,6 @@ import {
 } from "@/pages/BusBooking/store/types";
 import { timeScheduleSelectors } from "@/pages/BusBooking/store/selectors";
 import { useGetTimeTableRecommendation } from "@/hooks/BusBooking/useCustomBooking";
-import {
-  convertTimeTableByCommuteType,
-  ServerRecommendationDataType,
-  timeTableRecommendationDatesByMonth,
-} from "@/utils/timetableRecommendation/convertToISOString";
 import { mountModal } from "@/components/Loading";
 import Modal from "@/components/Modal";
 import { useNavigate } from "react-router-dom";
@@ -63,28 +58,23 @@ export default function CalendarView({
     day: number;
   }>({ year: currentDate.year, month: currentDate.month + 1, day: 0 });
 
-  const TimeTableRecommendationArray: ServerRecommendationDataType =
-    useGetTimeTableRecommendation().data.data;
+  const timeTableRecommendationArray: string[] | null =
+    useGetTimeTableRecommendation({
+      yearMonth: `${currentDate.year}-${(currentDate.month + 1)
+        .toString()
+        .padStart(2, "0")}`,
+      direction: commuteType === "등교" ? "TO_SCHOOL" : "TO_HOME",
+    }).data?.data?.suggestionDates ?? null;
 
-  const [recommendationDates, setRecommendationDates] = useState<string[]>();
-
-  useEffect(() => {
-    if (TimeTableRecommendationArray) {
-      convertTimeTableByCommuteType(TimeTableRecommendationArray);
-
-      const finalRecommendationDates = timeTableRecommendationDatesByMonth(
-        currentDate.month,
-        commuteType
-      );
-      setRecommendationDates(finalRecommendationDates);
-    }
-  }, [TimeTableRecommendationArray, currentMonthIndex, commuteType]);
-
-  const makingTimeTableSuggestion = () => {
+  const makingTimeTableSuggestion = (type: string) => {
     const { render, unmountModal } = mountModal();
+    const titleType =
+      type === "none"
+        ? "시간표가 등록되지 않았어요"
+        : "등록하신 시간표는\n예매 가능한 시간대가 없어요";
     render(
       <Modal
-        title={["시간표가 등록되지 않았어요"]}
+        title={[titleType]}
         text={["시간표 등록을 하러 가볼까요?"]}
         isError={false}
         leftButton={{
@@ -133,28 +123,32 @@ export default function CalendarView({
     }
   }, [isTimeSelectModalOpen]);
 
-  const handleAIRecommendation = () => {
+  const handleTimeTableRecommendation = () => {
     // AI 추천 로직 (API 호출 등)
     setToolTipOn(false);
 
     if (AIBtnToggles[currentMonthIndex]) {
       dispatch(
-        timeScheduleActions.clearAIRecommendations({
+        timeScheduleActions.clearTimeTableRecommendations({
           year: currentDate.year,
           month: currentDate.month + 1, // 현재 달력에서 선택된 날짜.
         })
       );
     } else {
-      if (recommendationDates?.length === 0) {
+      if (timeTableRecommendationArray === null) {
+        makingTimeTableSuggestion("none");
+        return;
+      }
+      if (timeTableRecommendationArray.length === 0) {
         // 모달 호출
-        makingTimeTableSuggestion();
+        makingTimeTableSuggestion("empty");
         return;
       }
       dispatch(
-        timeScheduleActions.setAIRecommendations({
+        timeScheduleActions.setTimeTableRecommendations({
           ...currentDate,
           month: currentDate.month + 1,
-          recommendations: recommendationDates!,
+          recommendations: timeTableRecommendationArray!,
         })
       );
     }
@@ -234,7 +228,7 @@ export default function CalendarView({
         </S.MonthNavigator>
         <TimeTableRecommendationButton
           active={AIBtnToggles[currentMonthIndex]}
-          onClick={handleAIRecommendation}
+          onClick={handleTimeTableRecommendation}
         />
       </S.CalendarHeader>
 
