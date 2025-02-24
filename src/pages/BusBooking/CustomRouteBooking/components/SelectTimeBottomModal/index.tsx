@@ -62,9 +62,7 @@ export default function SelectTimeBottomModal({
   const handleTimeChange = useDebounce(
     // 이벤트 발생한지 2초 간 움직임이 없다면 reset
     (amPm: string, hour: string, minute: string) => {
-
       const newTime = parseAndCreateTime(selectedDate, amPm, hour, minute);
-
 
       const timeAvailability = handleTimeAvailability(newTime, commuteType);
       if (timeAvailability) {
@@ -213,6 +211,16 @@ export default function SelectTimeBottomModal({
       setRepeatIconToggle(returnValue);
     }
   }, [isTimeSelectModalOpen]);
+
+  useEffect(() => {
+    // 모달이 열리면 스크롤을 막음
+    if (isTimeSelectModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isTimeSelectModalOpen]);
+
   return (
     <BottomOverlayModal
       isOpen={isTimeSelectModalOpen}

@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 
 import { initializeApp } from "firebase/app";
-import { getMessaging } from "firebase/messaging";
+import { getMessaging, Messaging } from "firebase/messaging";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -17,4 +17,17 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const messaging = getMessaging(app);
+// export const messaging = getMessaging(app);
+
+// 서비스 워커 확인 후 FCM 초기화
+// messaging을 먼저 선언하고, 이후에 조건에 따라 설정
+export let messaging: Messaging | undefined = undefined;
+
+const isPWAOrNotIphone = "serviceWorker" in navigator;
+if (isPWAOrNotIphone) {
+  // ios의 경우 PWA 라면 서비스 워커 지원 가능. 일반 ios 에서 브라우저라면 지원 안되어서 막기.
+  console.log("서비스 워커 지원됨, FCM 사용 가능");
+  messaging = getMessaging(app);
+} else {
+  console.log("서비스 워커 미지원, FCM 비활성화");
+}

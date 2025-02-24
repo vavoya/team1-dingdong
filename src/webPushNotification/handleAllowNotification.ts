@@ -1,9 +1,15 @@
 import { getToken } from "firebase/messaging";
 import { messaging } from "./settingFCM";
-import { postDeviceToken } from "@/api/webPushNotification/notification";
+
+import { fcmTokenUtils } from "@/utils/fcmToken/fcmTokenStorage";
 const VAPID_KEY = import.meta.env.VITE_FCM_VAPID_KEY;
 
 export const handleAllowNotification = async () => {
+  // 먼저 Notification API 지원 여부 체크
+  if (!("Notification" in window)) {
+    return;
+  }
+
   if (Notification.permission === "default") {
     // 알림 설정을 아직 하지 않은 상태.
     const status = await Notification.requestPermission(); //granted, denied, default
@@ -19,7 +25,10 @@ export const handleAllowNotification = async () => {
         // 서비스 워커 등록 완료를 기다림
         await registerServiceWorker();
         const token = await getDeviceToken(); // 최대 3번까지 재시도
-        await postDeviceToken(token);
+
+        const { saveFCMTokenToStorage } = fcmTokenUtils();
+        saveFCMTokenToStorage(token);
+
         return "granted";
       } catch (error) {
         console.error(error);
@@ -50,7 +59,7 @@ export const retryGetDeviceToken = async (retries: number): Promise<string> => {
 
 const getDeviceToken = async (): Promise<string> => {
   // 권한이 허용된 후에 토큰을 가져옴
-  const token = await getToken(messaging, {
+  const token = await getToken(messaging!, {
     vapidKey: VAPID_KEY,
   });
   return token;

@@ -34,7 +34,7 @@ export const timeScheduleActions = {
     month,
     recommendations,
   }: RecommendationPayload) => ({
-    type: "SET_AI_RECOMMENDATIONS" as const,
+    type: "SET_TIMETABLE_RECOMMENDATIONS" as const,
     payload: { year, month, recommendations },
   }),
 
@@ -42,7 +42,7 @@ export const timeScheduleActions = {
     year,
     month,
   }: Omit<RecommendationPayload, "recommendations">) => ({
-    type: "CLEAR_AI_RECOMMENDATIONS" as const,
+    type: "CLEAR_TIMETABLE_RECOMMENDATIONS" as const,
     payload: { year, month },
   }),
 
