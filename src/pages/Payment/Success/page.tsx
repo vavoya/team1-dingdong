@@ -11,12 +11,10 @@ import {
     PageWrapper
 } from "@/pages/Payment/Success/styles.ts";
 import {useNavigate} from "react-router-dom";
-import useNotificationSync from "@/hooks/useNotificationSync";
 
 
 export default function Page() {
     const navigate = useNavigate();
-    useNotificationSync({})
 
     const defaultOptions = {
         loop: true,

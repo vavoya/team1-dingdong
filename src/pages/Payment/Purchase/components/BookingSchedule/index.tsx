@@ -9,8 +9,8 @@ import {
 import CalenderIcon from "@/components/designSystem/Icons/Reservations/CalenderIcon.tsx";
 import ClockIcon from "@/components/designSystem/Icons/Reservations/ClockIcon.tsx";
 import LocationIcon from "@/components/designSystem/Icons/Reservations/LocationIcon.tsx";
-import {formatKstDate} from "@/utils/time/formatKstDate.ts";
-import {formatKstTime} from "@/utils/time/formatKstTime.ts";
+import {getKstDay} from "@/utils/time/getKstDay.ts";
+import {getKstTime} from "@/utils/time/getKstTime.ts";
 
 
 interface BookingScheduleProps {
@@ -36,13 +36,13 @@ export default function BookingSchedule({direction, busStopName, time}: BookingS
                     <CardBodyItem>
                         <CalenderIcon />
                         <CardBodyItemText>
-                            {formatKstDate(time, 1)}
+                            {getKstDay(time, 1)}
                         </CardBodyItemText>
                     </CardBodyItem>
                     <CardBodyItem>
                         <ClockIcon />
                         <CardBodyItemText>
-                            {`${formatKstTime(time)} ${direction === 'TO_HOME' ? '하차' : '승차'}`}
+                            {`${getKstTime(time)} ${direction === 'TO_HOME' ? '하차' : '승차'}`}
                         </CardBodyItemText>
                     </CardBodyItem>
                     <CardBodyItem>
