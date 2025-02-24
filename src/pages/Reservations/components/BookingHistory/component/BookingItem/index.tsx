@@ -1,13 +1,15 @@
 import NoItem from "@/pages/Reservations/components/BookingHistory/component/BookingItem/No";
 import AllocatedItem from "@/pages/Reservations/components/BookingHistory/component/BookingItem/Allocated";
 import NotAllocatedItem from "@/pages/Reservations/components/BookingHistory/component/BookingItem/NotAllocated";
-import {deleteItem} from "@/pages/Reservations/utils/deleteItem.ts";
 import {Divide} from "@/pages/Reservations/components/BookingHistory/styles.ts";
 import LoadingCard from "@/pages/Home/component/LoadingCard";
 import {getNextBusState} from "@/pages/Reservations/utils/getNextBusState.ts";
 import useToast from "@/hooks/useToast";
 import {FilterType, ReservationsRecord} from "@/pages/Reservations/components/BookingHistory";
 import {useRevalidator} from "react-router-dom";
+import {deleteItem} from "@/pages/SocketLayout/utils/deleteItem.ts";
+import {changeItem} from "@/pages/SocketLayout/utils/changeItem.ts";
+import removeReservationCache from "@/api/queryCacheRemove/reservations/removeReservationCache.ts";
 
 
 interface RenderBookingItemList {
@@ -62,7 +64,17 @@ export default function RenderBookingItemList({reservationsObj, filterType, scho
                                 status={item.reservationStatus}
                                 deleteItem={async (deletedReservationId) => {
                                     try {
-                                        await deleteItem(deletedReservationId, reservationsObj, filterType, revalidate, state)
+                                        if (state === 'loading') return
+                                        await changeItem({reservationId: deletedReservationId, category: 'ALL'})
+
+                                        // 배차 대기에서 취소인거 지우기
+                                        await deleteItem({deletedReservationId, category: 'PENDING'})
+                                        await deleteItem({deletedReservationId, category: 'HOME'})
+
+                                        // 취소 위치를 모르니 캐시 지우기
+                                        removeReservationCache('CANCELED')
+
+                                        revalidate()
                                         addToast("예매가 성공적으로 취소 되었습니다.")
                                     }
                                     catch (error) {

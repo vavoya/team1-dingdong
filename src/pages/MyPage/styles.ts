@@ -41,23 +41,15 @@ export const UserEmail = styled(Body2Medium)`
     color: ${colors.textDontEditTextPrimary};
 `
 
-export const ItemWrapper = styled.li`
-    padding: 20px;
-    display: flex;
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-`
-
 export const ItemTitle = styled(Body1SemiBold)`
     color: ${colors.gray100};
 `
 
 export const ItemButton = styled.button`
-    width: 24px;
-    height: 24px;
+    padding: 20px;
     display: flex;
-    justify-content: center;
+    width: 100%;
+    justify-content: space-between;
     align-items: center;
 `
 

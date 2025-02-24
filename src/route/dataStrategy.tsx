@@ -12,7 +12,6 @@ export default async function dataStrategy(
         render(<LoadingModal text={"페이지 불러오는 중"} />);
     }, 1000); // 1초(1000ms) 뒤에 실행
 
-
     // 중앙 에러 처리. middleware + loader
     try {
         // middleware 실행

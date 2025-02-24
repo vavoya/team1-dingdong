@@ -2,7 +2,6 @@ import {LeftBox, NavButton, Title, Wrapper} from "@/components/Headers/PopHeader
 import ArrowLeftIcon from "@/components/designSystem/Icons/ArrowLeftIcon";
 import {NavigateFunction, useNavigate} from "react-router-dom";
 import {ReactNode} from "react";
-import useNotificationSync from "@/hooks/useNotificationSync";
 
 
 export const handleBack = (navigate: NavigateFunction) => {
@@ -19,7 +18,6 @@ interface PropHeaderProps {
 }
 export default function PopHeader({text, children}: PropHeaderProps) {
     const navigate = useNavigate();
-    useNotificationSync({})
 
     return (
         <Wrapper>

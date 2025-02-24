@@ -4,13 +4,12 @@ import {
     ImgActionButton, ImgActionText, ImgRegistrationBox, InfoText, InfoTitle,
     PageDescription, PageInfoSection, PageInfoTextBox,
     PageMain,
-    PageTitle, SaveButton, SaveButtonText,
+    PageTitle,
     TableHeader,
     TableHeaderText, TableWrapper
 } from "@/pages/TimetableManagement/styles.ts";
 // 컴포넌트
 import PopHeader from "@/components/Headers/PopHeader";
-import DefaultImgIcon from "@/components/designSystem/Icons/TimeTableManagement/DefaultImgIcon.tsx";
 import PlusIcon from "@/components/designSystem/Icons/TimeTableManagement/PlusIcon.tsx";
 import InfoIcon from "@/components/designSystem/Icons/TimeTableManagement/InfoIcon.tsx";
 import EasyTable, {ColumnInferface, RowInterace} from "@/pages/TimetableManagement/components/EasyTable";
@@ -82,13 +81,7 @@ export default function Page() {
 
     return (
         <div>
-            <PopHeader text={"시간표 등록"}>
-                <SaveButton onClick={() => fetchTimetable(timetableRef.current, addToast)}>
-                    <SaveButtonText>
-                        저장
-                    </SaveButtonText>
-                </SaveButton>
-            </PopHeader>
+            <PopHeader text={"시간표 등록"} />
             <PageMain>
                 <PageTitle>
                     시간표 등록으로 더 쉬운 예매
@@ -105,11 +98,10 @@ export default function Page() {
                 </TableWrapper>
                 <ImgRegistrationBox>
                     {/* 서버 이미지 없으면 */}
-                    <DefaultImgIcon />
-                    <ImgActionButton onClick={() => addToast("현재 지원하지 않는 기능입니다.")}>
+                    <ImgActionButton onClick={() => fetchTimetable(timetableRef.current, addToast)}>
                         <PlusIcon />
                         <ImgActionText>
-                            이미지 등록하기
+                            시간표 저장하기
                         </ImgActionText>
                     </ImgActionButton>
                 </ImgRegistrationBox>
@@ -117,10 +109,10 @@ export default function Page() {
                     <InfoIcon />
                     <PageInfoTextBox>
                         <InfoTitle>
-                            에브리타임 시간표를 업로드하면 등하교 시간이 반영돼요.
+                            시간표를 등록하면 등하교 예매를 더욱 편리하게 이용할 수 있습니다.
                         </InfoTitle>
                         <InfoText>
-                            에브리타임 시간표 탭 {">"} 설정 {">"} 이미지로 저장
+                            ※ 등교 시간은 반드시 하교 시간보다 앞선 시간이어야 합니다.
                         </InfoText>
                     </PageInfoTextBox>
                 </PageInfoSection>

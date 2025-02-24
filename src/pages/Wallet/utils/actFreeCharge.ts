@@ -1,6 +1,5 @@
 import {getFreeChargeAvailable} from "@/api/wallet/getFreeChargeAvailable.ts";
 import {postFreeCharge} from "@/api/wallet/postFreeCharge.ts";
-import {formatKst} from "@/utils/time/formatKst.ts";
 import {FREE_CHARGE_PRICE, INIT_WALLET_PAGE, INIT_WALLET_PAGE_SIZE} from "@/env.ts";
 import {queryClient} from "@/main.tsx";
 import {users_wallet_history_interface} from "@/api/query/users";
@@ -24,7 +23,7 @@ export async function actFreeCharge (revalidate: () => void, addToast: (msg: str
                             ...oldData.histories,
                             content: [
                                 {
-                                    timeStamp: formatKst((new Date).toISOString()),
+                                    timeStamp: new Date().toISOString(),
                                     type: "FREE_CHARGE",
                                     amountMoney: FREE_CHARGE_PRICE,
                                     remainMoney: FREE_CHARGE_PRICE + oldData.histories.content[0].remainMoney

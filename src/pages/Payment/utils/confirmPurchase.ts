@@ -1,10 +1,10 @@
 import {axiosInstance} from "@/api";
-import {formatKst} from "@/utils/time/formatKst.ts";
 import {queryClient} from "@/main.tsx";
 import {isAxiosError} from "axios";
 import {NavigateFunction} from "react-router-dom";
 import {ScheduleInterface} from "@/route/loader/payment/reservation/loader.tsx";
 import removeReservationCache from "@/api/queryCacheRemove/reservations/removeReservationCache.ts";
+import {formatUtcToKst} from "@/utils/time/formatUtcToKst.tsx";
 
 
 
@@ -34,7 +34,7 @@ export async function confirmPurchase (
                 token: token,
                 direction: api.schedule.direction,
                 dates: api.schedule.timeSchedule.map(date => ({
-                    date: formatKst(date)
+                    date: formatUtcToKst(date)
                 }))
             }) :
             await axiosInstance.post('/api/users/reservations/together', {
@@ -57,8 +57,15 @@ export async function confirmPurchase (
         })
 
         // 배차 대기 갱신 시키기
-        api.type === 'general' ?
-            removeReservationCache('PENDING') : null
+        if (api.type === 'general') {
+            removeReservationCache('PENDING')
+        }
+        else {
+            removeReservationCache('ALLOCATED')
+        }
+        removeReservationCache('HOME')
+        removeReservationCache('ALL')
+
         // 함께타기는 ALLOCATED인데, 이것은 캐시를 안하기에 안해도 된다.
 
 
@@ -80,6 +87,9 @@ export async function confirmPurchase (
             }
             else if (error.response.data.code === 'EXPIRED') {
                 addToast("결제 실패: 결제 세션이 만료되었습니다.")
+            }
+            else if (error.response.data.code === 'NO_SEATS') {
+                addToast("결제 실패: 남은 좌석이 없습니다.")
             }
             else {
                 addToast("결제 실패: 잘못된 결제 정보 입니다.")

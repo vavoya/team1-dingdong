@@ -2,7 +2,7 @@
 import {
     CardList,
     Header,
-    HeaderActionButton,
+    HeaderActionSvgBox,
     HeaderInfoText,
     HeaderLeftSection,
     HeaderRightSection,
@@ -44,15 +44,15 @@ export default function BusState({reservations, busStateRef, schoolName}: BusSta
                         {reservations.page.totalElements}
                     </HeaderTitle>
                 </HeaderLeftSection>
-                <HeaderRightSection>
+                <HeaderRightSection  onClick={() => {
+                    navigate('/reservations');
+                }}>
                     <HeaderInfoText>
                         전체보기
                     </HeaderInfoText>
-                    <HeaderActionButton onClick={() => {
-                        navigate('/reservations');
-                    }}>
+                    <HeaderActionSvgBox>
                         <ArrowRightIcon/>
-                    </HeaderActionButton>
+                    </HeaderActionSvgBox>
                 </HeaderRightSection>
             </Header>
             {

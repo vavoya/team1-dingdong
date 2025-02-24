@@ -1,4 +1,4 @@
-export function formatKstTime(isoString: string) {
+export function getKstTime(isoString: string) {
     let dateKst = new Date(isoString);
 
     const hour = dateKst.getHours().toString().padStart(2, '0'); // 24시 형식

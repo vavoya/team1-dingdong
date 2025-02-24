@@ -12,8 +12,8 @@ import {
 import {colors} from "@/styles/colors.ts";
 import ArrowRight2 from "@/components/designSystem/Icons/Payment/ArrowRight2.tsx";
 import {ScheduleInterface} from "@/route/loader/payment/reservation/loader.tsx";
-import {formatKstDate} from "@/utils/time/formatKstDate.ts";
-import {formatKstTime} from "@/utils/time/formatKstTime.ts";
+import {getKstDay} from "@/utils/time/getKstDay.ts";
+import {getKstTime} from "@/utils/time/getKstTime.ts";
 
 
 
@@ -115,7 +115,7 @@ export default function BookingSchedule({schedule, borderingPoint}: BookingSched
                             <Fragment key={index}>
                                 <TableBody>
                                     <TableText color={colors.gray100}>
-                                        {formatKstDate(time, 1)}
+                                        {getKstDay(time, 1)}
                                     </TableText>
                                 </TableBody>
                                 <TableBody>
@@ -125,7 +125,7 @@ export default function BookingSchedule({schedule, borderingPoint}: BookingSched
                                 </TableBody>
                                 <TableBody textAlignLeft={false}>
                                     <TableText color={colors.gray100}>
-                                        {formatKstTime(time)}
+                                        {getKstTime(time)}
                                     </TableText>
                                 </TableBody>
                             </Fragment>

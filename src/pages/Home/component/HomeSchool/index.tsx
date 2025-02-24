@@ -1,5 +1,5 @@
 // 스타일
-import {Content, Row, Wrapper, Text, Button, Title, Divider} from "@/pages/Home/component/HomeSchool/styles.ts";
+import {Content, Row, Wrapper, Text, Title, Divider, SvgBox} from "@/pages/Home/component/HomeSchool/styles.ts";
 // 컴포넌트
 import HomeIcon from "@/components/designSystem/Icons/HomeIcon.tsx";
 import ArrowRightIcon from "@/components/designSystem/Icons/Home/ArrowRightIcon.tsx";
@@ -16,17 +16,17 @@ export default function HomeSchool({stationName, schoolName}: HomeSchoolProps) {
 
     return (
         <Wrapper>
-            <Content>
+            <Content as={'button'}  onClick={() => {
+                navigate('/set-home-location')
+            }}>
                 <Row>
                     <HomeIcon/>
                     <Text>
                         탑승 위치
                     </Text>
-                    <Button onClick={() => {
-                        navigate('/set-home-location')
-                    }}>
+                    <SvgBox>
                         <ArrowRightIcon/>
-                    </Button>
+                    </SvgBox>
                 </Row>
                 <Title>
                     {stationName}

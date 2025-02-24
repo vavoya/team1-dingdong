@@ -30,6 +30,9 @@ export default async function loader({ request, params }: LoaderFunctionArgs) {
             if (code === "ALREADY_HAS_SAME_RESERVATION") {
                 return new CustomError(PaymentErrorType.DUPLICATE_BOOKING)
             }
+            if (code === "NO_SEATS") {
+                return new CustomError(PaymentErrorType.NO_SEATS)
+            }
         }
         return handleError(error);
     }

@@ -9,7 +9,7 @@ import {
 } from "@/pages/Home/component/BusState/component/BusStateCard/styles.ts";
 
 import {getKstFormattedLabelPair} from "@/utils/time/getKstFormattedLabelPair.ts";
-import {formatKstTime} from "@/utils/time/formatKstTime.ts";
+import {getKstTime} from "@/utils/time/getKstTime.ts";
 
 interface PendingBusStateCardProps {
     TO_HOME?: {
@@ -65,12 +65,12 @@ export function PendingBusStateCard({TO_HOME, TO_SCHOOL}: PendingBusStateCardPro
                     {
                         // 하교
                         TO_HOME != null ?
-                            `${formatKstTime(TO_HOME.boardingDate)} ${TO_HOME.dropOffPoint} 도착` : null
+                            `${getKstTime(TO_HOME.boardingDate)} ${TO_HOME.dropOffPoint} 도착` : null
                     }
                     {
                         // 등교
                         TO_SCHOOL != null ?
-                            `${formatKstTime(TO_SCHOOL.dropOffDate)} ${TO_SCHOOL.dropOffPoint} 도착` : null
+                            `${getKstTime(TO_SCHOOL.dropOffDate)} ${TO_SCHOOL.dropOffPoint} 도착` : null
                     }
                 </CardDestinationText>
             </CardDestination>
