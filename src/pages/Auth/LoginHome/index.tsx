@@ -8,6 +8,7 @@ import { mountModal } from "@/components/Loading";
 import Modal from "@/components/Modal";
 import { useEffect } from "react";
 import { handleAllowNotification } from "@/webPushNotification/handleAllowNotification";
+import { isNotificationSupported } from "@/webPushNotification/settingFCM";
 
 const defaultOptions = {
   loop: true,
@@ -44,6 +45,9 @@ export default function LoginHomeScreen() {
   };
 
   useEffect(() => {
+    if (!isNotificationSupported) {
+      return;
+    }
     if (Notification.permission !== "granted") {
       renderWebPushNotificationModal();
       handleAllowNotification();
