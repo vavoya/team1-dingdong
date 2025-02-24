@@ -29,7 +29,7 @@ export const timeScheduleActions = {
     payload: { year, month, day },
   }),
 
-  setAIRecommendations: ({
+  setTimeTableRecommendations: ({
     year,
     month,
     recommendations,
@@ -38,7 +38,7 @@ export const timeScheduleActions = {
     payload: { year, month, recommendations },
   }),
 
-  clearAIRecommendations: ({
+  clearTimeTableRecommendations: ({
     year,
     month,
   }: Omit<RecommendationPayload, "recommendations">) => ({
