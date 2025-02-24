@@ -162,14 +162,6 @@ export default function UserInfoSignup() {
           placeholder="클릭해서 주소를 선택해주세요"
           readonly={true}
         />
-
-        <CustomInput
-          name="addressNickname"
-          label="주소 별칭"
-          value={formData.addressNickname}
-          onChange={handleChange}
-          placeholder="주소 별칭을 설정해주세요"
-        />
       </CustomFormWrapper>
       <NextButtonWrapper>
         <SolidButton
