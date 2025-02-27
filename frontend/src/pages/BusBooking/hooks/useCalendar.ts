@@ -8,7 +8,6 @@ export default function useCalendar(calendarType: string = "customBooking", busT
   const dateInit = (() => {
     if (calendarType === "customBooking") {
       const minDateCanBooking = availableBookingMinDate();
-      console.log(minDateCanBooking, "!!");
       return {
         year: minDateCanBooking.getFullYear(),
         month: minDateCanBooking.getMonth(), //  (0: 1월, 1: 2월, ...)
