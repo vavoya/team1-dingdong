@@ -49,8 +49,7 @@ export default function FixedRouteBooking() {
 
   const [commuteType, setCommuteType] = useState<CommuteType>("등교");
 
-  // const loaderData = useLoaderData()[2].schedules; // loader 는 처음에만 사용
-  const loaderData: string[] = [];
+  const loaderData = useLoaderData()[2].schedules; // loader 는 처음에만 사용
 
   const [busTimeSchedule, setBusTimeSchedule] = useState<string[]>(loaderData ?? []);
 
@@ -129,9 +128,7 @@ export default function FixedRouteBooking() {
       timeSchedule: selectTimeScheduleArray[0],
     });
   };
-  // const [{ schoolName }] = useLoaderData();
-  const schoolName = "서울대";
-  console.log(busTimeSchedule, "스케줄");
+  const [{ schoolName }] = useLoaderData();
   return (
     <>
       <ExitHeader text="함께타기" onClick={exitButtonHandler} />
