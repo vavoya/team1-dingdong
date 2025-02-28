@@ -29,7 +29,7 @@ export default function FixedBookingCalendarView({
   // 현재 화면 캘린저
   console.log(getEarliestMonth(busTimeSchedule));
   const { currentDate, goToNextMonth, goToPreviousMonth } = useCalendar("fixed-bus-booking", busTimeSchedule);
-
+  console.log(goToNextMonth);
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
 
   const [dateButtonWidth, setDateButtonWidth] = useState(0);
@@ -42,12 +42,13 @@ export default function FixedBookingCalendarView({
   }
 
   // 주는 월 중에 가장 빠른 월 찾아서 셋팅.
-
+  console.log(currentDate.year, currentDate.month, "현ㄴ재ㅐ", currentMonthIndex);
   const months = useRef([
     getDaysInMonth(currentDate.year, currentDate.month),
     getDaysInMonth(currentDate.year, currentDate.month + 1),
   ]);
 
+  console.log(months);
   useEffect(() => {
     const screenWidth = window.innerWidth;
     const newScreenWidth = screenWidth <= constant.MAX_MOBILE_WIDTH ? screenWidth : constant.LAYOUT_WIDTH;
@@ -80,17 +81,17 @@ export default function FixedBookingCalendarView({
   };
 
   const hasAnySchedule = busTimeSchedule.length > 0;
-  const lastDayCanBook = busTimeSchedule[busTimeSchedule.length - 1];
+  // const lastDayCanBook = busTimeSchedule[busTimeSchedule.length - 1];
 
   const isPrevActive = hasAnySchedule && goToPreviousMonth(commuteType, "fixedBusBooking");
-  const isNextActive = hasAnySchedule && goToNextMonth(commuteType, "fixedBusBooking", lastDayCanBook);
+  // const isNextActive = hasAnySchedule && goToNextMonth(commuteType, "fixedBusBooking", lastDayCanBook);
 
   return (
     <S.CalendarWrapper>
       <S.CalendarHeader>
         <S.MonthNavigator>
           <S.CurrentMonth>
-            {currentDate.year}년 {formatMonthName(currentDate.month + 1)}
+            {currentDate.year}년 {formatMonthName(currentDate.month + 2)}
           </S.CurrentMonth>
 
           <S.IconBox>
@@ -105,11 +106,11 @@ export default function FixedBookingCalendarView({
 
             <S.IconWrapper
               onClick={() => {
-                if (!isNextActive) return;
+                if (true) return;
                 setCurrentMonthIndex(currentMonthIndex + 1);
               }}
             >
-              <ChevronRightIcon size={24} fill={isNextActive ? colors.gray50 : colors.gray40} />
+              <ChevronRightIcon size={24} fill={false ? colors.gray50 : colors.gray40} />
             </S.IconWrapper>
           </S.IconBox>
         </S.MonthNavigator>
@@ -126,7 +127,7 @@ export default function FixedBookingCalendarView({
           <S.GridContainer key={index} $visible={currentMonthIndex === index}>
             {array.map((day: number | string, dayIndex) => {
               if (typeof day === "number") {
-                const date = new Date(currentDate.year, currentDate.month, +day);
+                const date = new Date(currentDate.year, currentDate.month + 1, +day);
                 const disabledDate = isDateDisabled(date, commuteType, "fixedBusBooking");
 
                 return (
@@ -134,14 +135,14 @@ export default function FixedBookingCalendarView({
                     onClick={() => {
                       setSelectedDate({
                         year: currentDate.year,
-                        month: currentDate.month + 1,
+                        month: currentDate.month + 2,
                         day,
                       });
                     }}
                     $width={dateButtonWidth}
                     disabled={disabledDate || !isHaveSchedule(date)}
                     key={`${day}-${dayIndex}`}
-                    $isHighlighted={isDateHighlighted(currentDate.year, currentDate.month + 1, day)}
+                    $isHighlighted={isDateHighlighted(currentDate.year, currentDate.month + 2, day)}
                   >
                     {day}
                   </S.DayButton>
