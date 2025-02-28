@@ -57,7 +57,7 @@ export default function FixedRouteBooking() {
 
   // 서버에서 새로운 데이터가 들어오면 업데이트
   useEffect(() => {
-    if (busTimeResponse?.data?.data?.schedules.length > 0) {
+    if (busTimeResponse?.data?.data?.schedules.length >= 0) {
       setBusTimeSchedule(busTimeResponse?.data?.data.schedules);
     }
   }, [busTimeResponse]);
