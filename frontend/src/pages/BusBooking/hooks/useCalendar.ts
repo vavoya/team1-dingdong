@@ -22,7 +22,10 @@ export default function useCalendar(calendarType: string = "customBooking", busT
       };
     }
   })();
+
   const [currentDate, setCurrentDate] = useState(dateInit);
+  // // eslint-disable-next-line
+  // debugger;
 
   // busTimeSchedule이 업데이트될 때 currentDate를 갱신
   useEffect(() => {
@@ -35,7 +38,7 @@ export default function useCalendar(calendarType: string = "customBooking", busT
         month: earliestMonthToBook, // (0: 1월, 1: 2월, ...)
       });
     }
-  }, [busTimeSchedule, calendarType]); // busTimeSchedule 변경 감지
+  }, [busTimeSchedule]); // busTimeSchedule 변경 감지
 
   // 이전 달로 이동
   const goToPreviousMonth = (commuteType: CommuteType, calendarType = "customBooking") => {
@@ -50,24 +53,49 @@ export default function useCalendar(calendarType: string = "customBooking", busT
 
     const date = new Date(year, month, lastDay);
 
-    // // eslint-disable-next-line
-    // debugger;
     if (isDateDisabled(date, commuteType, calendarType)) return false; // 이동 불가.
-    setCurrentDate((prev) => {
-      // 1월에서 이전 달로 가면 작년 12월로
-      if (prev.month === 0) {
-        return {
-          year: prev.year - 1,
-          month: 11,
-        };
+
+    if (calendarType === "fixedBusBooking") {
+      // 예약 가능한 이전 마지막 날짜의 월이 현재 월보다 작으면 비활성화.
+      // date가 마지막 날보다 크다면 false.
+      const earliestMonthToBook = getEarliestMonth(busTimeSchedule);
+
+      const canGoPrev = earliestMonthToBook <= date.getMonth();
+
+      if (canGoPrev) {
+        setCurrentDate((prev) => {
+          // 1월에서 이전 달로 가면 작년 12월로
+          if (prev.month === 0) {
+            return {
+              year: prev.year - 1,
+              month: 11,
+            };
+          }
+          //  월만 감소
+          return {
+            year: prev.year,
+            month: prev.month - 1,
+          };
+        });
       }
-      //  월만 감소
-      return {
-        year: prev.year,
-        month: prev.month - 1,
-      };
-    });
-    return true; // 이동 가능.
+      return canGoPrev;
+    } else {
+      setCurrentDate((prev) => {
+        // 1월에서 이전 달로 가면 작년 12월로
+        if (prev.month === 0) {
+          return {
+            year: prev.year - 1,
+            month: 11,
+          };
+        }
+        //  월만 감소
+        return {
+          year: prev.year,
+          month: prev.month - 1,
+        };
+      });
+    }
+    return true;
   };
 
   const goToNextMonth = (commuteType: CommuteType, calendarType = "customBooking", lastDayCanBook = "") => {
@@ -79,30 +107,48 @@ export default function useCalendar(calendarType: string = "customBooking", busT
     }
 
     const date = new Date(year, month, day);
-
+    if (isDateDisabled(date, commuteType, calendarType)) return false;
     if (calendarType === "fixedBusBooking") {
       // 예약 가능한 마지막 날짜가 다음 월보다 작으면 비활성화.
       // date가 마지막 날보다 크다면 false.
+      if (isDateDisabled(date, commuteType, calendarType)) return false;
+      const canGoNext = new Date(lastDayCanBook).getMonth() <= date.getMonth();
+      if (canGoNext) {
+        setCurrentDate((prev) => {
+          // 12월에서 다음 달로 가면 다음 년도 1월로
+          if (prev.month === 11) {
+            return {
+              year: prev.year + 1,
+              month: 0,
+            };
+          }
+          // 그 외의 경우는 단순히 월만 증가
+          return {
+            year: prev.year,
+            month: prev.month + 1,
+          };
+        });
+        return canGoNext;
+      }
 
-      return !(new Date(lastDayCanBook) < date);
+      return true;
+    } else {
+      setCurrentDate((prev) => {
+        // 12월에서 다음 달로 가면 다음 년도 1월로
+        if (prev.month === 11) {
+          return {
+            year: prev.year + 1,
+            month: 0,
+          };
+        }
+        // 그 외의 경우는 단순히 월만 증가
+        return {
+          year: prev.year,
+          month: prev.month + 1,
+        };
+      });
     }
 
-    if (isDateDisabled(date, commuteType, calendarType)) return false;
-
-    setCurrentDate((prev) => {
-      // 12월에서 다음 달로 가면 다음 년도 1월로
-      if (prev.month === 11) {
-        return {
-          year: prev.year + 1,
-          month: 0,
-        };
-      }
-      // 그 외의 경우는 단순히 월만 증가
-      return {
-        year: prev.year,
-        month: prev.month + 1,
-      };
-    });
     return true;
   };
   return { currentDate, goToPreviousMonth, goToNextMonth };
