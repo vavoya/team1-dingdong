@@ -27,7 +27,7 @@ export default function FixedBookingCalendarView({
   // AI 버튼 관리
 
   // 현재 화면 캘린저
-  console.log(getEarliestMonth(busTimeSchedule));
+
   const { currentDate, goToNextMonth, goToPreviousMonth } = useCalendar("fixed-bus-booking", busTimeSchedule);
   console.log(goToNextMonth);
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
@@ -48,7 +48,7 @@ export default function FixedBookingCalendarView({
     getDaysInMonth(currentDate.year, currentDate.month + 1),
   ]);
 
-  console.log(months);
+
   useEffect(() => {
     const screenWidth = window.innerWidth;
     const newScreenWidth = screenWidth <= constant.MAX_MOBILE_WIDTH ? screenWidth : constant.LAYOUT_WIDTH;
@@ -83,8 +83,9 @@ export default function FixedBookingCalendarView({
   const hasAnySchedule = busTimeSchedule.length > 0;
   // const lastDayCanBook = busTimeSchedule[busTimeSchedule.length - 1];
 
-  const isPrevActive = hasAnySchedule && goToPreviousMonth(commuteType, "fixedBusBooking");
-  // const isNextActive = hasAnySchedule && goToNextMonth(commuteType, "fixedBusBooking", lastDayCanBook);
+  // const isPrevActive = hasAnySchedule;
+  // const isNextActive = hasAnySchedule;
+
 
   return (
     <S.CalendarWrapper>
@@ -97,20 +98,30 @@ export default function FixedBookingCalendarView({
           <S.IconBox>
             <S.IconWrapper
               onClick={() => {
-                if (!isPrevActive) return;
-                setCurrentMonthIndex(currentMonthIndex - 1);
+                if (!hasAnySchedule) return;
+                // 클릭 시에만 이동
+                const canMove = goToPreviousMonth(commuteType, "fixedBusBooking");
+                if (canMove) {
+                  setCurrentMonthIndex(currentMonthIndex - 1);
+                }
               }}
             >
-              <ChevronLeftIcon size={24} fill={isPrevActive ? colors.gray50 : colors.gray40} />
+              <ChevronLeftIcon size={24} />
             </S.IconWrapper>
 
             <S.IconWrapper
               onClick={() => {
-                if (true) return;
-                setCurrentMonthIndex(currentMonthIndex + 1);
+                if (!hasAnySchedule) return;
+                // 클릭 시에만 이동
+                const lastDayCanBook = busTimeSchedule[busTimeSchedule.length - 1];
+
+                const canMove = goToNextMonth(commuteType, "fixedBusBooking", lastDayCanBook);
+                if (canMove) {
+                  setCurrentMonthIndex(currentMonthIndex + 1);
+                }
               }}
             >
-              <ChevronRightIcon size={24} fill={false ? colors.gray50 : colors.gray40} />
+              <ChevronRightIcon size={24} />
             </S.IconWrapper>
           </S.IconBox>
         </S.MonthNavigator>

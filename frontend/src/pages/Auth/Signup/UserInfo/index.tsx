@@ -11,10 +11,7 @@ import { useDaumPostcodePopup } from "react-daum-postcode";
 import { SCRIPT_URLS } from "@/constants/daumPostCode";
 import { isValidNameFormat } from "@/utils/signUp/userInfoFormatValidation";
 import { usePostUserInfo } from "@/hooks/SignUp/useSignUp";
-import {
-  GeoLocationType,
-  useGeoLocationAddress,
-} from "../../hooks/useAddressToCoordinate";
+import { GeoLocationType, useGeoLocationAddress } from "../../hooks/useAddressToCoordinate";
 
 import useKakaoLoader from "@/hooks/useKakaoLoader/useKakaoLoader";
 import { AxiosError } from "axios";
@@ -42,8 +39,7 @@ export default function UserInfoSignup() {
     address: "",
     addressNickname: "우리집",
   });
-  const [homeGeoLocation, setHomeGeoLocation] =
-    useState<GeoLocationType | null>(null);
+  const [homeGeoLocation, setHomeGeoLocation] = useState<GeoLocationType | null>(null);
 
   useEffect(() => {
     if (!location.state) {
@@ -70,7 +66,7 @@ export default function UserInfoSignup() {
   const open = useDaumPostcodePopup(SCRIPT_URLS.daumPostCode);
 
   const handleComplete = (data: any) => {
-    let fullAddress = data.roadAddress;
+    const fullAddress = data.roadAddress;
 
     setFormData((prev) => ({
       ...prev,
@@ -100,9 +96,7 @@ export default function UserInfoSignup() {
   }, [formData.name]);
 
   const submitButtonActive =
-    isValidNameFormat(formData.name) &&
-    formData.address.length > 0 &&
-    formData.addressNickname.length > 0;
+    isValidNameFormat(formData.name) && formData.address.length > 0 && formData.addressNickname.length > 0;
 
   const submitUserInfoHandler = () => {
     if (!homeGeoLocation) return;
@@ -164,12 +158,7 @@ export default function UserInfoSignup() {
         />
       </CustomFormWrapper>
       <NextButtonWrapper>
-        <SolidButton
-          type="submit"
-          text="완료"
-          onClick={submitUserInfoHandler}
-          active={submitButtonActive}
-        />
+        <SolidButton type="submit" text="완료" onClick={submitUserInfoHandler} active={submitButtonActive} />
       </NextButtonWrapper>{" "}
     </>
   );
