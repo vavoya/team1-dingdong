@@ -28,7 +28,6 @@ export default function useCalendar(calendarType: string = "customBooking", busT
   // // eslint-disable-next-line
   // debugger;
 
-
   // busTimeSchedule이 업데이트될 때 currentDate를 갱신
   useEffect(() => {
     if (calendarType === "fixed-bus-booking" && busTimeSchedule.length > 0) {
