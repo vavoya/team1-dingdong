@@ -50,9 +50,8 @@ export default function FixedRouteBooking() {
   const [commuteType, setCommuteType] = useState<CommuteType>("등교");
 
   const loaderData = useLoaderData()[2].schedules; // loader 는 처음에만 사용
-
+  console.log(loaderData, "데이터");
   const [busTimeSchedule, setBusTimeSchedule] = useState<string[]>(loaderData ?? []);
-
   // get 요청 정보
   const busTimeResponse = useGetBusTimeSchedule(commuteType === "등교" ? "TO_SCHOOL" : "TO_HOME");
 

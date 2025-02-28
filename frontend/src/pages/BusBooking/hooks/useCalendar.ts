@@ -24,15 +24,17 @@ export default function useCalendar(calendarType: string = "customBooking", busT
   })();
 
   const [currentDate, setCurrentDate] = useState(dateInit);
+
   // // eslint-disable-next-line
   // debugger;
+
 
   // busTimeSchedule이 업데이트될 때 currentDate를 갱신
   useEffect(() => {
     if (calendarType === "fixed-bus-booking" && busTimeSchedule.length > 0) {
       const now = new Date();
       const earliestMonthToBook = getEarliestMonth(busTimeSchedule);
-
+      console.log(earliestMonthToBook, "가장");
       setCurrentDate({
         year: now.getFullYear(),
         month: earliestMonthToBook, // (0: 1월, 1: 2월, ...)
@@ -40,6 +42,7 @@ export default function useCalendar(calendarType: string = "customBooking", busT
     }
   }, [busTimeSchedule]); // busTimeSchedule 변경 감지
 
+  console.log(currentDate, "???");
   // 이전 달로 이동
   const goToPreviousMonth = (commuteType: CommuteType, calendarType = "customBooking") => {
     const daysInPrevMonth = totalDaysInMonth(currentDate.year, currentDate.month - 1);

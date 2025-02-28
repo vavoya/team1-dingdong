@@ -29,7 +29,7 @@ export default function FixedBookingCalendarView({
   // 현재 화면 캘린저
 
   const { currentDate, goToNextMonth, goToPreviousMonth } = useCalendar("fixed-bus-booking", busTimeSchedule);
-
+  console.log(goToNextMonth);
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
 
   const [dateButtonWidth, setDateButtonWidth] = useState(0);
@@ -42,7 +42,7 @@ export default function FixedBookingCalendarView({
   }
 
   // 주는 월 중에 가장 빠른 월 찾아서 셋팅.
-
+  console.log(currentDate.year, currentDate.month, "현ㄴ재ㅐ", currentMonthIndex);
   const months = useRef([
     getDaysInMonth(currentDate.year, currentDate.month),
     getDaysInMonth(currentDate.year, currentDate.month + 1),
@@ -86,12 +86,13 @@ export default function FixedBookingCalendarView({
   // const isPrevActive = hasAnySchedule;
   // const isNextActive = hasAnySchedule;
 
+
   return (
     <S.CalendarWrapper>
       <S.CalendarHeader>
         <S.MonthNavigator>
           <S.CurrentMonth>
-            {currentDate.year}년 {formatMonthName(currentDate.month + 1)}
+            {currentDate.year}년 {formatMonthName(currentDate.month + 2)}
           </S.CurrentMonth>
 
           <S.IconBox>
@@ -137,7 +138,7 @@ export default function FixedBookingCalendarView({
           <S.GridContainer key={index} $visible={currentMonthIndex === index}>
             {array.map((day: number | string, dayIndex) => {
               if (typeof day === "number") {
-                const date = new Date(currentDate.year, currentDate.month, +day);
+                const date = new Date(currentDate.year, currentDate.month + 1, +day);
                 const disabledDate = isDateDisabled(date, commuteType, "fixedBusBooking");
 
                 return (
@@ -145,14 +146,14 @@ export default function FixedBookingCalendarView({
                     onClick={() => {
                       setSelectedDate({
                         year: currentDate.year,
-                        month: currentDate.month + 1,
+                        month: currentDate.month + 2,
                         day,
                       });
                     }}
                     $width={dateButtonWidth}
                     disabled={disabledDate || !isHaveSchedule(date)}
                     key={`${day}-${dayIndex}`}
-                    $isHighlighted={isDateHighlighted(currentDate.year, currentDate.month + 1, day)}
+                    $isHighlighted={isDateHighlighted(currentDate.year, currentDate.month + 2, day)}
                   >
                     {day}
                   </S.DayButton>
