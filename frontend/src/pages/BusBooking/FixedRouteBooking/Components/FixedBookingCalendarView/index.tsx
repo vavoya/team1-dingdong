@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as S from "./styles";
 import ChevronLeftIcon from "@/components/designSystem/Icons/ChevronLeftIcon";
-import { colors } from "@/styles/colors";
 import ChevronRightIcon from "@/components/designSystem/Icons/ChevronRightIcon";
 // import AIRecommendationButton from "@/components/Button/AIRecommendationButton";
 import useCalendar from "@/pages/BusBooking/hooks/useCalendar";
@@ -9,7 +8,6 @@ import { formatMonthName, getDaysInMonth, isDateDisabled } from "@/utils/calenda
 import * as constant from "@/constants/calendarConstants";
 import { CommuteType } from "@/pages/BusBooking/types/commuteType";
 import { SelectedDateType } from "../../page";
-import { getEarliestMonth } from "@/utils/fixedBusBooking/getEarliestMonthUtils";
 
 interface FixedBookingCalendarViewProps {
   busTimeSchedule: string[];
@@ -47,7 +45,6 @@ export default function FixedBookingCalendarView({
     getDaysInMonth(currentDate.year, currentDate.month),
     getDaysInMonth(currentDate.year, currentDate.month + 1),
   ]);
-
 
   useEffect(() => {
     const screenWidth = window.innerWidth;
